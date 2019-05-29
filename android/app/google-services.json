@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "719000176076",
+    "firebase_url": "https://sosnypfypj2019-6a6fd.firebaseio.com",
+    "project_id": "sosnypfypj2019-6a6fd",
+    "storage_bucket": "sosnypfypj2019-6a6fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719000176076:android:24e773a314adced3",
+        "android_client_info": {
+          "package_name": "com.example.sosnyp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "719000176076-94ejkg0l5e55j451amujjfljvgv0r7ea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiliV5izXpe7TEWYf-zaOZ88dLD6Cv0Fo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "719000176076-94ejkg0l5e55j451amujjfljvgv0r7ea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
