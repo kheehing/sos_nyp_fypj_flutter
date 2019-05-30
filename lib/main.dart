@@ -1,12 +1,14 @@
-// Don't rename this file!
+// DO NOT RENAME THIS FILE
 import 'package:flutter/material.dart';
-import 'fun/testconfb.dart';  //TestPage()
-import 'fun/home.dart';       //HomePage()
-import 'fun/login.dart';      //LoginPage()
+import 'fun/test( DB connection ).dart';  //TestPage()
+import 'fun/home.dart';                   //HomePage()
+import 'fun/login.dart';                  //LoginPage()
+
 void main() {
   runApp(MaterialApp(
     home: new LoginPage(),
     initialRoute: '/',
+    // Routes
     routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new HomePage(),
       '/Login': (BuildContext context) => new LoginPage(),
