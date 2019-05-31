@@ -9,11 +9,15 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 
+// class _LoginPageStatus extends State<LoginPage>{
+//   String _email, _password;
+// }
+
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
@@ -32,7 +36,7 @@ class _LoginPageState extends State<LoginPage>
                   Container(
                     //Name
                     child: Text(
-                      'EXAMPLE NAME',
+                      'SOS APP',
                       style: TextStyle(
                         fontSize: 25,
                         fontFamily: 'Black_label',
@@ -66,10 +70,10 @@ class _LoginPageState extends State<LoginPage>
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.white,
                     ),
-                    margin: new EdgeInsets.fromLTRB(0, 50, 0, 50),
+                    margin: new EdgeInsets.fromLTRB(0, 30, 0, 50),
                   ),
                   new Container(
-                    margin: new EdgeInsets.fromLTRB(0, 50, 0, 50),
+                    margin: new EdgeInsets.fromLTRB(0, 30, 0, 50),
                     child: Container(
                       child: Column(
                         children: <Widget>[
@@ -137,9 +141,8 @@ class _LoginPageState extends State<LoginPage>
                                 ),
                                 SizedBox(height: 8.0), // Space
                                 // Password TextForm
-                                TextFormField(
+                                TextField(
                                   autofocus: false,
-                                  initialValue: '',
                                   obscureText: true,
                                   autocorrect: false,
                                   decoration: InputDecoration(
@@ -151,7 +154,6 @@ class _LoginPageState extends State<LoginPage>
                                             BorderRadius.circular(10)),
                                   ),
                                 ),
-                                SizedBox(height: 0), // Space
                                 Container(
                                   child: FlatButton(
                                     onPressed: () {
@@ -205,7 +207,7 @@ class _LoginPageState extends State<LoginPage>
                                 // LoginButton,
                               ],
                             ),
-                            margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
                           ),
                         ],
                       ),
