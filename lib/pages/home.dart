@@ -22,12 +22,12 @@ Future<bool> _exitApp(BuildContext context) {
           title: new Text('Do you want to exit this application?'),
           actions: <Widget>[
             new FlatButton(
-              onPressed: () => Navigator.of(context).pop(false),
               child: new Text('No'),
+              onPressed: () => Navigator.of(context).pop(false),
             ),
             new FlatButton(
-              onPressed: () => Navigator.of(context).pop(true),
               child: new Text('Yes'),
+              onPressed: () => Navigator.of(context).pop(true),
             ),
           ],
         ),
@@ -117,13 +117,10 @@ class _HomePageState extends State<HomePage>
                               width: 10,
                             ),
                             gradient: LinearGradient(
-                              // Where the linear gradient begins and ends
                               begin: Alignment.topRight,
                               end: Alignment.bottomLeft,
-                              // Add one stop for each color. Stops should increase from 0 to 1
                               stops: [0.1, 0.9],
                               colors: [
-                                // Colors are easy thanks to Flutter's Colors class.
                                 Color.fromRGBO(0, 0, 255, 10),
                                 Color.fromRGBO(0, 0, 255, 100),
                               ],

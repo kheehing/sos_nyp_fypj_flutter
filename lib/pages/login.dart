@@ -12,6 +12,7 @@ class LoginPage extends StatefulWidget {
 // class _LoginPageStatus extends State<LoginPage>{
 //   String _email, _password;
 // }
+void validate() {}
 
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
@@ -92,84 +93,94 @@ class _LoginPageState extends State<LoginPage>
                             margin: new EdgeInsets.fromLTRB(15, 15, 0, 0),
                           ),
                           Container(
-                            child: Column(
-                              children: <Widget>[
-                                // Login Text
-                                SizedBox(height: 30.0), // Space
-                                Container(
-                                  child: Text(
-                                    'Email',
-                                    style: TextStyle(
-                                      fontFamily: 'Black_label',
-                                    ),
-                                    textAlign: TextAlign.left,
-                                    maxLines: 1,
-                                    softWrap: false,
-                                  ),
-                                  alignment: Alignment.centerLeft,
-                                  margin: new EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                ),
-                                SizedBox(height: 8.0), // Space
-                                // Email TextForm
-                                TextFormField(
-                                  keyboardType: TextInputType.emailAddress,
-                                  autofocus: false,
-                                  autocorrect: false,
-                                  initialValue: '',
-                                  decoration: InputDecoration(
-                                    hintText: '',
-                                    contentPadding:
-                                        EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                ),
-                                SizedBox(height: 8.0), // Space
-                                Container(
-                                  child: Text(
-                                    'Password',
-                                    style: TextStyle(
-                                      fontFamily: 'Black_label',
-                                    ),
-                                    textAlign: TextAlign.left,
-                                    maxLines: 1,
-                                    softWrap: false,
-                                  ),
-                                  alignment: Alignment.centerLeft,
-                                  margin: new EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                ),
-                                SizedBox(height: 8.0), // Space
-                                // Password TextForm
-                                TextField(
-                                  autofocus: false,
-                                  obscureText: true,
-                                  autocorrect: false,
-                                  decoration: InputDecoration(
-                                    hintText: '',
-                                    contentPadding:
-                                        EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                ),
-                                Container(
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      //function
-                                    },
+                            child: new Form(
+                              child: Column(
+                                children: <Widget>[
+                                  // Login Text
+                                  SizedBox(height: 30.0), // Space
+                                  Container(
                                     child: Text(
-                                      'Forgot Password?',
+                                      'Email',
                                       style: TextStyle(
-                                        color: Colors.blue,
-                                        decoration: TextDecoration.underline,
+                                        fontFamily: 'Black_label',
+                                      ),
+                                      textAlign: TextAlign.left,
+                                      maxLines: 1,
+                                      softWrap: false,
+                                    ),
+                                    alignment: Alignment.centerLeft,
+                                    margin:
+                                        new EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                  ),
+                                  SizedBox(height: 8.0), // Space
+                                  // Email TextForm
+                                  new TextFormField(
+                                    keyboardType: TextInputType.emailAddress,
+                                    autofocus: false,
+                                    autocorrect: false,
+                                    initialValue: '',
+                                    validator: (value) => value.isEmpty
+                                        ? 'Email can\'t be empty'
+                                        : null,
+                                    decoration: InputDecoration(
+                                      hintText: '',
+                                      contentPadding:
+                                          EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.0), // Space
+                                  Container(
+                                    child: Text(
+                                      'Password',
+                                      style: TextStyle(
+                                        fontFamily: 'Black_label',
+                                      ),
+                                      textAlign: TextAlign.left,
+                                      maxLines: 1,
+                                      softWrap: false,
+                                    ),
+                                    alignment: Alignment.centerLeft,
+                                    margin:
+                                        new EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                  ),
+                                  SizedBox(height: 8.0), // Space
+                                  // Password TextForm
+                                  TextFormField(
+                                    autofocus: false,
+                                    obscureText: true,
+                                    autocorrect: false,
+                                    validator: (value) => value.isEmpty
+                                        ? 'Password can\'t be empty'
+                                        : null,
+                                    decoration: InputDecoration(
+                                      hintText: '',
+                                      contentPadding:
+                                          EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: FlatButton(
+                                      onPressed: () {
+                                        //function
+                                      },
+                                      child: Text(
+                                        'Forgot Password?',
+                                        style: TextStyle(
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline,
+                                        ),
                                       ),
                                     ),
+                                    alignment: Alignment.centerRight,
                                   ),
-                                  alignment: Alignment.centerRight,
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                           ),
@@ -178,12 +189,16 @@ class _LoginPageState extends State<LoginPage>
                             child: Column(
                               children: <Widget>[
                                 Container(
-                                    // Remember me check box
-                                    // Remember me check box
-                                    // Remember me check box
-                                    // Remember me check box
-                                    // Remember me check box
-                                    ),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.blue),
+                                  child: Icon(
+                                    Icons.check_box_outline_blank,
+                                    size: 20,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                // LoginButton
                                 Container(
                                   child: ButtonTheme(
                                     minWidth: 150,
@@ -193,10 +208,8 @@ class _LoginPageState extends State<LoginPage>
                                       child: Text('Log In',
                                           style:
                                               TextStyle(color: Colors.white)),
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pushNamed('/Home');
-                                      },
+                                      onPressed: validate,
+                                      // () {Navigator.of(context).popAndPushNamed('/Home');},
                                       shape: new RoundedRectangleBorder(
                                           borderRadius:
                                               new BorderRadius.circular(10)),
