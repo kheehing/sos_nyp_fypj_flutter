@@ -15,7 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 Future<bool> _exitApp(BuildContext context) {
-  Navigator.of(context).pop('Screen 1');
   return showDialog(
         context: context,
         child: new AlertDialog(
