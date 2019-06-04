@@ -13,6 +13,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController _emailController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -22,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 15.0, right: 15.0),
         children: <Widget>[
-          Form(
+          new Form(
             key: _formKey,
             child: Stack(
               children: <Widget>[
@@ -90,28 +92,34 @@ class _LoginPageState extends State<LoginPage> {
                                 margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                                 child: TextFormField(
                                     keyboardType: TextInputType.emailAddress,
+                                    controller: _emailController,
                                     autofocus: false,
                                     autocorrect: false,
-                                    initialValue: '',
-                                    decoration:
-                                        new InputDecoration(hintText: 'Email'),
+                                    initialValue: null,
+                                    decoration: new InputDecoration(
+                                      hintText: 'Email',
+                                    ),
                                     validator: (value) {
                                       if (value.isEmpty) {
+                                        print('Empty Email');
                                         return "Email Can't be empty";
                                       }
                                     })),
                             Container(
                                 margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
                                 child: TextFormField(
+                                    keyboardType: TextInputType.text,
+                                    controller: _passwordController,
                                     obscureText: true,
                                     autofocus: false,
                                     autocorrect: false,
-                                    initialValue: '',
+                                    initialValue: null,
                                     decoration: new InputDecoration(
                                       hintText: 'password',
                                     ),
                                     validator: (value) {
                                       if (value.isEmpty) {
+                                        print('Empty Password');
                                         return "Password Can't be empty";
                                       }
                                     })),
@@ -147,7 +155,10 @@ class _LoginPageState extends State<LoginPage> {
                                 style: TextStyle(color: Colors.white)),
                             onPressed: () {
                               if (_formKey.currentState.validate()) {
-                                Navigator.of(context).popAndPushNamed('/Home');
+                                print('Email: ' +
+                                    _emailController.text +
+                                    ', Password: ' +
+                                    _passwordController.text);
                               }
                             },
                             shape: new RoundedRectangleBorder(

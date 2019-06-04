@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sosnyp/main.dart';
 import 'profile.dart'; //ProfilePage() testing can delete
@@ -17,19 +17,19 @@ class HomePage extends StatefulWidget {
 Future<bool> _exitApp(BuildContext context) {
   return showDialog(
         context: context,
-        child: new AlertDialog(
-          title: new Text('Do you want to exit this application?'),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text('No'),
-              onPressed: () => Navigator.of(context).pop(false),
+        builder: (_) => new AlertDialog(
+              title: new Text('Do you want to exit this application?'),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text('No'),
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+                new FlatButton(
+                  child: new Text('Yes'),
+                  onPressed: () => Navigator.of(context).pop(true),
+                ),
+              ],
             ),
-            new FlatButton(
-              child: new Text('Yes'),
-              onPressed: () => Navigator.of(context).pop(true),
-            ),
-          ],
-        ),
       ) ??
       false;
 }
