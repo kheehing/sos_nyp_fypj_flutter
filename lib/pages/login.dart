@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'auth.dart';
-import 'auth_provider.dart';
+// import 'auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({this.onSignedIn});
+  // const LoginPage({this.onSignedIn});
+  LoginPage({this.auth, this.onSignedIn});
+  final BaseAuth auth;
   final VoidCallback onSignedIn;
 
   @override
@@ -35,13 +37,12 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   FormType _formType = FormType.login;
-  String _email, _password;
+
 // login validate
   bool validateAndSave() {
     final FormState form = _formKey.currentState;
     if (_formKey.currentState.validate()) {
       if (form.validate()) {
-        form.save();
         return true;
       }
       return false;
@@ -52,13 +53,14 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> validateAndSubmit() async {
     if (validateAndSave()) {
       try {
-          print('try');
-        final BaseAuth auth = AuthProvider.of(context).auth;
         if (_formType == FormType.login) {
-          final String userId = await auth.signInWithEmailAndPassword(
-              _emailController.text, _passwordController.text);
+          final String userId =
+              await widget.auth.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
           print('Signed in: $userId');
-          print('_formType.login');
+        } else {
+          final String userId =
+              await widget.auth.createUserWithEmailAndPassword(_emailController.text, _passwordController.text);
+          print('Registered user: $userId');
         }
         widget.onSignedIn();
       } catch (e) {
@@ -148,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                                   autofocus: false,
                                   autocorrect: false,
                                   initialValue: null,
-                                  onSaved: (value)=> _password = value,
+                                  // onSaved: (value) => _email = value,
                                   decoration: new InputDecoration(
                                     hintText: 'Email',
                                   ),
@@ -163,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                                     autofocus: false,
                                     autocorrect: false,
                                     initialValue: null,
-                                    onSaved: (value)=> _password = value,
+                                    // onSaved: (value) => _password = value,
                                     decoration: new InputDecoration(
                                       hintText: 'password',
                                     ),

@@ -1,30 +1,41 @@
 import 'package:flutter/material.dart';
-import 'auth_provider.dart';
+// import 'auth_provider.dart';
 import 'auth.dart';
-import 'home.dart';
+// import 'home.dart';
 import 'login.dart';
 
 class RootPage extends StatefulWidget {
+  RootPage({this.auth});
+  final BaseAuth auth;
   @override
-  State<StatefulWidget> createState() => _RootPageState();
+  State<StatefulWidget> createState() => new _RootPageState();
 }
 
 enum AuthStatus {
-  notDetermined,
   notSignedIn,
   signedIn,
 }
 
 class _RootPageState extends State<RootPage> {
-  AuthStatus authStatus = AuthStatus.notDetermined;
+  AuthStatus _authStatus = AuthStatus.notSignedIn;
 
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   final BaseAuth auth = AuthProvider.of(context).auth;
+  //   auth.currentUser().then((String userId) {
+  //     setState(() {
+  //       _authStatus =
+  //           userId == null ? AuthStatus.notSignedIn : AuthStatus.signedIn;
+  //     });
+  //   });
+  // }
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final BaseAuth auth = AuthProvider.of(context).auth;
-    auth.currentUser().then((String userId) {
+  void initState() {
+    super.initState();
+    widget.auth.currentUser().then((userId) {
       setState(() {
-        authStatus =
+        _authStatus =
             userId == null ? AuthStatus.notSignedIn : AuthStatus.signedIn;
       });
     });
@@ -32,39 +43,32 @@ class _RootPageState extends State<RootPage> {
 
   // void _signedIn() {
   //   setState(() {
-  //     authStatus = AuthStatus.signedIn;
-  //   });
-  // }
-
-  // void _signedOut() {
-  //   setState(() {
-  //     authStatus = AuthStatus.notSignedIn;
+  //     _authStatus = AuthStatus.signedIn;
   //   });
   // }
 
   @override
   Widget build(BuildContext context) {
-    switch (authStatus) {
-      case AuthStatus.notDetermined:
-        return _buildWaitingScreen();
+    switch (_authStatus) {
       case AuthStatus.notSignedIn:
-        return LoginPage(
-            // onSignedIn: _signedIn,
-            );
+        return new LoginPage(
+          auth: widget.auth,
+        );
       case AuthStatus.signedIn:
-        return HomePage(
-            // onSignedOut: _signedOut,
-            );
+        return new Scaffold(
+          body: new Container(
+            child: Text('success'),
+          ),
+        );
     }
-    return null;
   }
 
-  Widget _buildWaitingScreen() {
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
+  // Widget _buildWaitingScreen() {
+  //   return Scaffold(
+  //     body: Container(
+  //       alignment: Alignment.center,
+  //       child: CircularProgressIndicator(),
+  //     ),
+  //   );
+  // }
 }

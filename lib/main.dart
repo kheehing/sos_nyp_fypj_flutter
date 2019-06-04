@@ -12,55 +12,25 @@
 
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sosnyp/pages/auth.dart';
 //  My Pages
-import 'pages/login.dart'; //LoginPage()
+// import 'pages/login.dart'; //LoginPage()
 import 'pages/profile.dart'; //ProfilePage()
 import 'pages/home.dart'; //homePage()
+import 'pages/root.dart'; //homePage()
 
-// My Test Pages
-// import 'Test/_Test( Swiping ).dart'; //SwipeDemoApp()
-
-void main() {
-  runApp(MaterialApp(
-    home: new LoginPage(), // _handleWindowDisplay()
-    initialRoute: '/',
-    // Routes
-    routes: <String, WidgetBuilder>{
-      '/Home': (BuildContext context) => new HomePage(),
-      '/Login': (BuildContext context) => new LoginPage(),
-      '/Profile': (BuildContext context) => new ProfilePage(),
-    },
-  ));
-}
 
 class MyApp extends StatelessWidget {
   const MyApp();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: new LoginPage(),
+    return new MaterialApp(
+      home: new RootPage(auth: new Auth(),),
     );
   }
 }
 
-// Widget _handleWindowDisplay() {
-//   return StreamBuilder(
-//       stream: FirebaseAuth.instance.onAuthStateChanged,
-//       builder: (BuildContext context, snapshot) {
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return Center(
-//             child: Text('Loading...'),// Add animation (loading screen)
-//           );
-//         } else {
-//           if (snapshot.hasData) {
-//             return HomePage();
-//           } else {
-//             return LoginPage();
-//           }
-//         }
-//       });
-// } //authen
 
 //  leading for AppBar
 final myLeading = Builder(
