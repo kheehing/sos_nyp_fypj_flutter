@@ -11,6 +11,19 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 
+String validateEmail(String value) {
+  Pattern pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  RegExp regex = new RegExp(pattern);
+  if (value.isEmpty) {
+    print('Empty Password');
+    return "Password Can't be empty";
+  } else if (!regex.hasMatch(value))
+    return 'Enter Valid Email';
+  else
+    return null;
+}
+
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailController = new TextEditingController();
@@ -91,20 +104,16 @@ class _LoginPageState extends State<LoginPage> {
                             Container(
                                 margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                                 child: TextFormField(
-                                    keyboardType: TextInputType.emailAddress,
-                                    controller: _emailController,
-                                    autofocus: false,
-                                    autocorrect: false,
-                                    initialValue: null,
-                                    decoration: new InputDecoration(
-                                      hintText: 'Email',
-                                    ),
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        print('Empty Email');
-                                        return "Email Can't be empty";
-                                      }
-                                    })),
+                                  keyboardType: TextInputType.emailAddress,
+                                  controller: _emailController,
+                                  autofocus: false,
+                                  autocorrect: false,
+                                  initialValue: null,
+                                  decoration: new InputDecoration(
+                                    hintText: 'Email',
+                                  ),
+                                  validator: validateEmail,
+                                )),
                             Container(
                                 margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
                                 child: TextFormField(
