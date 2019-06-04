@@ -13,7 +13,6 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 //  My Pages
-import 'pages/test( DB connection ).dart'; //TestPage()
 import 'pages/login.dart'; //LoginPage()
 import 'pages/profile.dart'; //ProfilePage()
 import 'pages/home.dart'; //homePage()
@@ -29,7 +28,6 @@ void main() {
     routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new HomePage(),
       '/Login': (BuildContext context) => new LoginPage(),
-      '/Test': (BuildContext context) => new TestPage(),
       '/Profile': (BuildContext context) => new ProfilePage(),
     },
   ));

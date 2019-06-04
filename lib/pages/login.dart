@@ -1,33 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-final formKey = new GlobalKey<FormState>();
+import 'auth.dart';
+import 'auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
-  final String title;
-  const LoginPage({Key key, this.title}) : super(key: key);
+  const LoginPage({this.onSignedIn});
+  final VoidCallback onSignedIn;
 
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  State<StatefulWidget> createState() => _LoginPageState();
 }
 
+// Email validator
 String validateEmail(String value) {
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
   RegExp regex = new RegExp(pattern);
   if (value.isEmpty) {
-    print('Empty Password');
-    return "Password Can't be empty";
+    print('Empty Email');
+    return "Email Can't be empty";
   } else if (!regex.hasMatch(value))
     return 'Enter Valid Email';
   else
     return null;
 }
 
+enum FormType {
+  login,
+  register,
+}
+
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
+  FormType _formType = FormType.login;
+  String _email, _password;
+// login validate
+  bool validateAndSave() {
+    final FormState form = _formKey.currentState;
+    if (_formKey.currentState.validate()) {
+      if (form.validate()) {
+        form.save();
+        return true;
+      }
+      return false;
+    }
+  }
+
+// login validate
+  Future<void> validateAndSubmit() async {
+    if (validateAndSave()) {
+      try {
+          print('try');
+        final BaseAuth auth = AuthProvider.of(context).auth;
+        if (_formType == FormType.login) {
+          final String userId = await auth.signInWithEmailAndPassword(
+              _emailController.text, _passwordController.text);
+          print('Signed in: $userId');
+          print('_formType.login');
+        }
+        widget.onSignedIn();
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -109,6 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                                   autofocus: false,
                                   autocorrect: false,
                                   initialValue: null,
+                                  onSaved: (value)=> _password = value,
                                   decoration: new InputDecoration(
                                     hintText: 'Email',
                                   ),
@@ -123,6 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                                     autofocus: false,
                                     autocorrect: false,
                                     initialValue: null,
+                                    onSaved: (value)=> _password = value,
                                     decoration: new InputDecoration(
                                       hintText: 'password',
                                     ),
@@ -147,36 +188,26 @@ class _LoginPageState extends State<LoginPage> {
                                                 TextDecoration.underline,
                                           )),
                                     ))),
+                            Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                    margin: EdgeInsets.fromLTRB(0, 180, 0, 0),
+                                    child: ButtonTheme(
+                                        minWidth: 150,
+                                        height: 50,
+                                        child: RaisedButton(
+                                          color: Colors.blueAccent,
+                                          child: Text('Log In',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                          onPressed: validateAndSubmit,
+                                          shape: new RoundedRectangleBorder(
+                                              borderRadius:
+                                                  new BorderRadius.circular(
+                                                      10)),
+                                        )))),
                           ])),
                     ]))),
-                Container(
-                    margin: EdgeInsets.fromLTRB(0, 380, 0, 0),
-                    child: Column(children: <Widget>[
-                      // remember me
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: ButtonTheme(
-                          minWidth: 150,
-                          height: 50,
-                          child: RaisedButton(
-                            color: Colors.blueAccent,
-                            child: Text('Log In',
-                                style: TextStyle(color: Colors.white)),
-                            onPressed: () {
-                              if (_formKey.currentState.validate()) {
-                                print('Email: ' +
-                                    _emailController.text +
-                                    ', Password: ' +
-                                    _passwordController.text);
-                              }
-                            },
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(10)),
-                          ),
-                        ),
-                      ),
-                      // LoginButton,
-                    ])),
               ],
             ),
           ),
