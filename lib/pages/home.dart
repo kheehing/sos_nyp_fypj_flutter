@@ -18,7 +18,7 @@ Future<bool> _exitApp(BuildContext context) {
   return showDialog(
         context: context,
         builder: (_) => new AlertDialog(
-              title: new Text('Do you want to exit this application?'),
+              title: new Text('Exit this application?'),
               actions: <Widget>[
                 new FlatButton(
                   child: new Text('No'),
@@ -34,8 +34,7 @@ Future<bool> _exitApp(BuildContext context) {
       false;
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>{
   @override
   Widget build(BuildContext context) {
     double thisWidth = MediaQuery.of(context).size.width;

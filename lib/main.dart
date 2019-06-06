@@ -9,16 +9,14 @@
 //  locate it in ur Command Prompt(cmd) e.g.(cd C:\Users\<user>\Desktop\Flutter_SOS)
 //  flutter run             run ur program
 //  or u can press ctrl + f5 when using Visual Studio code
-
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sosnyp/pages/auth.dart';
 //  My Pages
-// import 'pages/login.dart'; //LoginPage()
-import 'pages/profile.dart'; //ProfilePage()
 import 'pages/home.dart'; //homePage()
-import 'pages/root.dart'; //homePage()
+import 'pages/login.dart'; //LoginPage()
+import 'pages/profile.dart'; //ProfilePage()
 
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp();
@@ -26,11 +24,29 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new RootPage(auth: new Auth(),),
+      home: _handleWindowDisplay(),
     );
   }
 }
 
+Widget _handleWindowDisplay() {
+  return StreamBuilder(
+    stream: FirebaseAuth.instance.onAuthStateChanged,
+    builder: (BuildContext context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return new Scaffold(
+          body: Text('watafak'),
+        );
+      } else {
+        if (snapshot.hasData) {
+          return HomePage();
+        } else {
+          return LoginPage();
+        }
+      }
+    },
+  );
+}
 
 //  leading for AppBar
 final myLeading = Builder(
@@ -45,7 +61,6 @@ final myLeading = Builder(
   },
 );
 
-
 //  Drawer
 class MyDrawer extends StatelessWidget {
   @override
@@ -55,7 +70,7 @@ class MyDrawer extends StatelessWidget {
         DrawerHeader(
           child: Row(
             children: <Widget>[
-              Container(),
+              Icon(Icons.menu),
               Container(),
               Container(),
             ],
@@ -76,19 +91,18 @@ class MyDrawer extends StatelessWidget {
         ListTile(
           title: Text('Profile'),
           onTap: () {
-            Navigator.of(context).pushNamed('/Profile');
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
-            );
+            // Navigator.of(context).pushNamed('/Profile');
+            Route route = MaterialPageRoute(builder: (context) => ProfilePage());
+            Navigator.push(context, route);
             Navigator.pop(context);
           },
         ),
         ListTile(
-          title: Text('Item 2'),
+          title: Text('LogOut'),
           onTap: () {
-            Navigator.of(context).pushNamed('/Home');
-            Navigator.pop(context);
+            FirebaseAuth.instance.signOut().then((value) {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            });
           },
         ),
       ]),

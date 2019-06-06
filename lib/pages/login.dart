@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'auth.dart';
-// import 'auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
-  // const LoginPage({this.onSignedIn});
-  LoginPage({this.auth, this.onSignedIn});
-  final BaseAuth auth;
-  final VoidCallback onSignedIn;
-
   @override
   State<StatefulWidget> createState() => _LoginPageState();
 }
@@ -27,46 +21,20 @@ String validateEmail(String value) {
     return null;
 }
 
-enum FormType {
-  login,
-  register,
-}
-
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
-  FormType _formType = FormType.login;
 
 // login validate
-  bool validateAndSave() {
-    final FormState form = _formKey.currentState;
-    if (_formKey.currentState.validate()) {
-      if (form.validate()) {
-        return true;
-      }
-      return false;
-    }
-  }
-
-// login validate
-  Future<void> validateAndSubmit() async {
-    if (validateAndSave()) {
-      try {
-        if (_formType == FormType.login) {
-          final String userId =
-              await widget.auth.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
-          print('Signed in: $userId');
-        } else {
-          final String userId =
-              await widget.auth.createUserWithEmailAndPassword(_emailController.text, _passwordController.text);
-          print('Registered user: $userId');
-        }
-        widget.onSignedIn();
-      } catch (e) {
-        print('Error: $e');
-      }
-    }
+  bool _validateAndSave() {
+    FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+            email: _emailController.text, password: _passwordController.text)
+        .then((onValue) {})
+        .catchError((error) {
+      debugPrint("Error : " + error);
+    });
   }
 
   @override
@@ -150,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
                                   autofocus: false,
                                   autocorrect: false,
                                   initialValue: null,
-                                  // onSaved: (value) => _email = value,
                                   decoration: new InputDecoration(
                                     hintText: 'Email',
                                   ),
@@ -165,7 +132,6 @@ class _LoginPageState extends State<LoginPage> {
                                     autofocus: false,
                                     autocorrect: false,
                                     initialValue: null,
-                                    // onSaved: (value) => _password = value,
                                     decoration: new InputDecoration(
                                       hintText: 'password',
                                     ),
@@ -202,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                                           child: Text('Log In',
                                               style: TextStyle(
                                                   color: Colors.white)),
-                                          onPressed: validateAndSubmit,
+                                          onPressed: _validateAndSave,
                                           shape: new RoundedRectangleBorder(
                                               borderRadius:
                                                   new BorderRadius.circular(
