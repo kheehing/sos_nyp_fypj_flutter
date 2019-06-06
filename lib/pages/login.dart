@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = new TextEditingController();
 
 // login validate
-  bool _validateAndSave() {
+  void _validateAndSave() {
     FirebaseAuth.instance
         .signInWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text)
@@ -99,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(
                             fontSize: 25,
                             fontFamily: 'Black_label',
+                            fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.left,
                           maxLines: 1,

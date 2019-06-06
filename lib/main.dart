@@ -47,8 +47,47 @@ Widget _handleWindowDisplay() {
     builder: (BuildContext context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return new Scaffold(
-          body: Text('watafak'),
-        );
+            body: new Center(
+                child: Stack(
+          children: <Widget>[
+            Container(
+                margin: EdgeInsets.only(bottom: 250),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.add,
+                        size: 50,
+                        color: Colors.red,
+                      ),
+                      Text(
+                        'SOS APP',
+                        textAlign: TextAlign.left,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: TextStyle(
+                          fontSize: 50,
+                          fontFamily: 'Black_label',
+                        ),
+                      )
+                    ])),
+            Container(
+              margin: EdgeInsets.only(top: 150),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 10,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.red)),
+                    ),
+                  ]),
+            ),
+          ],
+        )));
       } else {
         if (snapshot.hasData) {
           return HomePage();
@@ -82,7 +121,8 @@ class MyDrawer extends StatelessWidget {
         DrawerHeader(
           child: Row(
             children: <Widget>[
-              Icon(Icons.menu),
+              Text('test'),
+              Text('test'),
               Container(),
               Container(),
             ],
@@ -95,18 +135,12 @@ class MyDrawer extends StatelessWidget {
           title: Text('Home'),
           onTap: () {
             Navigator.of(context).pushNamed('/Home');
-            // Route route = MaterialPageRoute(builder: (context) => HomePage());
-            // Navigator.push(context, route);
-            // Navigator.pop(context);
           },
         ),
         ListTile(
           title: Text('Profile'),
           onTap: () {
             Navigator.of(context).pushNamed('/Profile');
-            // Route route = MaterialPageRoute(builder: (context) => ProfilePage());
-            // Navigator.push(context, route);
-            // Navigator.pop(context);
           },
         ),
         ListTile(

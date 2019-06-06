@@ -9,11 +9,17 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => new _ProfilePageState();
 }
 
+enum ProfileMode {
+  view,
+  update,
+}
+
+ProfileMode _mode = ProfileMode.update;
+
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    // double thisWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
@@ -23,7 +29,171 @@ class _ProfilePageState extends State<ProfilePage>
       body: Center(
         child: Column(
           children: <Widget>[
-            Text('Profile Test'),
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.fromLTRB(50, 100, 0, 0),
+              child: Text('Image left side'),
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.fromLTRB(50, 30, 0, 0),
+              child: Text(
+                'Name',
+                maxLines: 2,
+                softWrap: true,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 30,
+                  fontFamily: 'black_label',
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.fromLTRB(50, 0, 0, 0),
+              child: Text(
+                'Admin',
+                maxLines: 1,
+                softWrap: false,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'black_label',
+                ),
+              ),
+            ),
+            Stack(
+              children: <Widget>[
+                new Container(
+                  padding: EdgeInsets.fromLTRB(0, 82, 0, 130),
+                  margin: new EdgeInsets.fromLTRB(30, 30, 30, 50),
+                  decoration: new BoxDecoration(
+                      border: new Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        new BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 15,
+                        )
+                      ]),
+                  foregroundDecoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  margin: new EdgeInsets.fromLTRB(30, 30, 30, 50),
+                  child: Column(
+                    children: <Widget>[
+                      Stack(
+                        children: <Widget>[
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              padding: EdgeInsets.all(10),
+                              child: Row(children: <Widget>[
+                                Expanded(
+                                    child: Text('Admin Number',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            fontFamily: 'black_label',
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600))),
+                                Expanded(
+                                    child: Text('data',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontFamily: 'black_label',
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500))),
+                              ])),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                              padding: EdgeInsets.all(10),
+                              child: Row(children: <Widget>[
+                                Expanded(
+                                    child: Text('School',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            fontFamily: 'black_label',
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600))),
+                                Expanded(
+                                    child: Text('data',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontFamily: 'black_label',
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500))),
+                              ])),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                              padding: EdgeInsets.all(10),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      child: Text(
+                                    'Course',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        fontFamily: 'black_label',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600),
+                                  )),
+                                  Expanded(
+                                      child: Text('data',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontFamily: 'black_label',
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500))),
+                                ],
+                              )),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 150, 0, 0),
+                              padding: EdgeInsets.all(10),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      child: Text(
+                                    'Mobile Number',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        fontFamily: 'black_label',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600),
+                                  )),
+                                  Expanded(
+                                      child: Text('data',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontFamily: 'black_label',
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500))),
+                                ],
+                              )),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              child: RaisedButton(
+                color: Colors.blueAccent,
+                child: Text(
+                  'Update Profile',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                onPressed: () {
+                  //;
+                },
+              ),
+            )
           ],
         ),
       ),
