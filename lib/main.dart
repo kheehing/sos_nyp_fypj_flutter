@@ -16,7 +16,19 @@ import 'pages/home.dart'; //homePage()
 import 'pages/login.dart'; //LoginPage()
 import 'pages/profile.dart'; //ProfilePage()
 
-void main() => runApp(MyApp());
+// void main() => runApp(MyApp());
+void main() {
+  runApp(MaterialApp(
+    home: _handleWindowDisplay(),
+    initialRoute: '/',
+    // Routes
+    routes: <String, WidgetBuilder>{
+      '/Home': (BuildContext context) => new HomePage(),
+      '/Login': (BuildContext context) => new LoginPage(),
+      '/Profile': (BuildContext context) => new ProfilePage(),
+    },
+  ));
+}
 
 class MyApp extends StatelessWidget {
   const MyApp();
@@ -83,18 +95,18 @@ class MyDrawer extends StatelessWidget {
           title: Text('Home'),
           onTap: () {
             Navigator.of(context).pushNamed('/Home');
-            Route route = MaterialPageRoute(builder: (context) => HomePage());
-            Navigator.push(context, route);
-            Navigator.pop(context);
+            // Route route = MaterialPageRoute(builder: (context) => HomePage());
+            // Navigator.push(context, route);
+            // Navigator.pop(context);
           },
         ),
         ListTile(
           title: Text('Profile'),
           onTap: () {
-            // Navigator.of(context).pushNamed('/Profile');
-            Route route = MaterialPageRoute(builder: (context) => ProfilePage());
-            Navigator.push(context, route);
-            Navigator.pop(context);
+            Navigator.of(context).pushNamed('/Profile');
+            // Route route = MaterialPageRoute(builder: (context) => ProfilePage());
+            // Navigator.push(context, route);
+            // Navigator.pop(context);
           },
         ),
         ListTile(
