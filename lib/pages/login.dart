@@ -22,6 +22,7 @@ String validateEmail(String value) {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
@@ -34,7 +35,11 @@ class _LoginPageState extends State<LoginPage> {
               email: _emailController.text, password: _passwordController.text)
           .then((onValue) {})
           .catchError((error) {
-        debugPrint("Error : " + error);
+        // debugPrint("Error: " + error.toString());
+        // debugPrint(error);
+        _scaffoldKey.currentState.showSnackBar(new SnackBar(
+          content: new Text("Wrong Email or Password"),
+        ));
       });
     }
   }
@@ -42,6 +47,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: _scaffoldKey,
+      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       body: Center(
           child: ListView(
