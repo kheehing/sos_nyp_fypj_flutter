@@ -17,17 +17,69 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   // TextEditingController _schoolController = new TextEditingController();
   // TextEditingController _courseController = new TextEditingController();
   // TextEditingController _mobileController = new TextEditingController();
+  String _gender, _school, _course;
 
-  String _validate(String value) {
-    if (value.isEmpty) {
-      return "";
-    } else
-      return null;
-  }
+  // String _validate(String value) {
+  //   if (value.isEmpty) {
+  //     return "";
+  //   } else
+  //     return null;
+  // }
 
   _updateProfile() {
     if (_formKey.currentState.validate()) {
       print('success');
+    }
+  }
+
+  _getCourse(var school) {
+    List<dynamic> array = [];
+    switch (school.toString()) {
+      case 'SIT':
+        array = ['ICT', 'BFT', 'BIA', 'CDF', 'DIS', 'DIT', 'DBI', 'DFI'];
+        return array;
+        break;
+      case 'SBM':
+        array = ['DAF', 'DBF', 'DBM', 'CBP', 'FBB', 'HTM', 'MMM', 'SWM'];
+        return array;
+        break;
+      case 'SCL':
+        array = ['BPT', 'CPT', 'FSN', 'DMC', 'DMB', 'DPS', 'CGT'];
+        return array;
+        break;
+      case 'SDN':
+        array = ['DID', 'DSD', 'DIA', 'DVC'];
+        return array;
+        break;
+      case 'SEG':
+        array = [
+          'CEP',
+          'AAT',
+          'DBE',
+          'ADM',
+          'ECE',
+          'EEE',
+          'DEB',
+          'IME',
+          'NMS',
+          'DRM',
+          'AEE',
+          'AMP',
+          'DPE',
+          'DES',
+          'MIT'
+        ];
+        return array;
+        break;
+      case 'SHS':
+        array = ['DIN', 'OHT', 'DSS'];
+        return array;
+        break;
+      case 'SIDM':
+        array = ['AVE', 'DGAD', 'GDT', 'DID', 'MGD'];
+        return array;
+        break;
+      default:
     }
   }
 
@@ -36,7 +88,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     return new Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          title: Text('Profile'),
+          title: Text('Update Profile'),
           leading: myLeading,
         ),
         drawer: new MyDrawer(),
@@ -114,85 +166,130 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                           style: TextStyle(
                                               fontFamily: 'black_label',
                                               fontSize: 15,
-                                              color: Colors.grey.shade400,
                                               fontWeight: FontWeight.w600))),
                                   Container(
+                                      alignment: Alignment.centerRight,
                                       height: 30,
-                                      child: TextFormField(
-                                          validator: _validate,
-                                          textAlign: TextAlign.center,
-                                          autocorrect: false,
+                                      child: DropdownButton<String>(
+                                        value: _gender,
+                                        onChanged: (String newValue) {
+                                          setState(() {
+                                            _gender = newValue;
+                                          });
+                                        },
+                                        items: <String>['Male', 'Female']
+                                            .map<DropdownMenuItem<String>>(
+                                                (String value) {
+                                          return DropdownMenuItem<String>(
+                                              value: value, child: Text(value));
+                                        }).toList(),
+                                        style: new TextStyle(
+                                          inherit: false,
+                                          color: Colors.black,
+                                        ),
+                                      )),
+                                ])),
+                            Container(
+                                margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                                padding: EdgeInsets.all(10),
+                                child: Row(children: <Widget>[
+                                  Expanded(
+                                      child: Text('School',
+                                          textAlign: TextAlign.left,
                                           style: TextStyle(
                                               fontFamily: 'black_label',
                                               fontSize: 15,
-                                              
-                                              fontWeight: FontWeight.w500))),
+                                              fontWeight: FontWeight.w600))),
+                                  Container(
+                                      alignment: Alignment.centerRight,
+                                      height: 30,
+                                      child: DropdownButton<String>(
+                                        value: _school,
+                                        onChanged: (String newValue) {
+                                          setState(() {
+                                            _school = newValue;
+                                          });
+                                        },
+                                        items: <String>[
+                                          'SIT',
+                                          'SBM',
+                                          'SDN',
+                                          'SCL',
+                                          'SEG',
+                                          'SHS',
+                                          'SIDM'
+                                        ].map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                          return DropdownMenuItem<String>(
+                                              value: value, child: Text(value));
+                                        }).toList(),
+                                        style: new TextStyle(
+                                          inherit: false,
+                                          color: Colors.black,
+                                        ),
+                                      )),
                                 ])),
-                            // Container(
-                            //     margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                            //     padding: EdgeInsets.all(10),
-                            //     child: Row(children: <Widget>[
-                            //       Expanded(
-                            //           child: Text('School',
-                            //               textAlign: TextAlign.left,
-                            //               style: TextStyle(
-                            //                   fontFamily: 'black_label',
-                            //                   fontSize: 15,
-                            //                   fontWeight: FontWeight.w600))),
-                            //       Expanded(
-                            //           child: TextField(
-                            //               textAlign: TextAlign.center,
-                            //               style: TextStyle(
-                            //                   fontFamily: 'black_label',
-                            //                   fontSize: 15,
-                            //                   fontWeight: FontWeight.w500))),
-                            //     ])),
-                            // Container(
-                            //     margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                            //     padding: EdgeInsets.all(10),
-                            //     child: Row(
-                            //       children: <Widget>[
-                            //         Expanded(
-                            //             child: Text(
-                            //           'Course',
-                            //           textAlign: TextAlign.left,
-                            //           style: TextStyle(
-                            //               fontFamily: 'black_label',
-                            //               fontSize: 15,
-                            //               fontWeight: FontWeight.w600),
-                            //         )),
-                            //         Expanded(
-                            //             child: Text('data',
-                            //                 textAlign: TextAlign.center,
-                            //                 style: TextStyle(
-                            //                     fontFamily: 'black_label',
-                            //                     fontSize: 15,
-                            //                     fontWeight: FontWeight.w500))),
-                            //       ],
-                            //     )),
-                            // Container(
-                            //     margin: EdgeInsets.fromLTRB(0, 150, 0, 0),
-                            //     padding: EdgeInsets.all(10),
-                            //     child: Row(
-                            //       children: <Widget>[
-                            //         Expanded(
-                            //             child: Text(
-                            //           'Mobile Number',
-                            //           textAlign: TextAlign.left,
-                            //           style: TextStyle(
-                            //               fontFamily: 'black_label',
-                            //               fontSize: 15,
-                            //               fontWeight: FontWeight.w600),
-                            //         )),
-                            //         Expanded(
-                            //             child: Text('data',
-                            //                 textAlign: TextAlign.center,
-                            //                 style: TextStyle(
-                            //                     fontFamily: 'black_label',
-                            //                     fontSize: 15,
-                            //                     fontWeight: FontWeight.w500))),
-                            //       ],
-                            //     )),
+                            Container(
+                                margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
+                                padding: EdgeInsets.all(10),
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                        child: Text(
+                                      'Course',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          fontFamily: 'black_label',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600),
+                                    )),
+                                    Container(
+                                        alignment: Alignment.centerRight,
+                                        height: 30,
+                                        child: DropdownButton<String>(
+                                          value: _course,
+                                          onChanged: (String newValue) {
+                                            setState(() {
+                                              _course = newValue;
+                                            });
+                                          },
+                                          items: <String>['fss','sgfs']
+                                              .map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                            return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value));
+                                          }).toList(),
+                                          style: new TextStyle(
+                                            inherit: false,
+                                            color: Colors.black,
+                                          ),
+                                        )),
+                                  ],
+                                )),
+                            Container(
+                                margin: EdgeInsets.fromLTRB(0, 150, 0, 0),
+                                padding: EdgeInsets.all(10),
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                        child: Text(
+                                      'Mobile Number',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          fontFamily: 'black_label',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600),
+                                    )),
+                                    Expanded(
+                                        child: Text('data',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontFamily: 'black_label',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500))),
+                                  ],
+                                )),
                           ],
                         )
                       ],
