@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'pages/home.dart'; //homePage()
 import 'pages/login.dart'; //LoginPage()
 import 'pages/profile.dart'; //ProfilePage()
+import 'pages/updateprofile.dart'; //UpdatePage()
 
 // void main() => runApp(MyApp());
 void main() {
@@ -26,21 +27,12 @@ void main() {
       '/Home': (BuildContext context) => new HomePage(),
       '/Login': (BuildContext context) => new LoginPage(),
       '/Profile': (BuildContext context) => new ProfilePage(),
+      '/UpdateProfile': (BuildContext context) => new UpdateProfilePage(),
     },
   ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp();
-
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: _handleWindowDisplay(),
-    );
-  }
-}
-
+String currentUser;
 Widget _handleWindowDisplay() {
   return StreamBuilder(
     stream: FirebaseAuth.instance.onAuthStateChanged,
@@ -90,6 +82,7 @@ Widget _handleWindowDisplay() {
         )));
       } else {
         if (snapshot.hasData) {
+          currentUser = snapshot.data.uid;
           return HomePage();
         } else {
           return LoginPage();
@@ -123,8 +116,6 @@ class MyDrawer extends StatelessWidget {
             children: <Widget>[
               Text('test'),
               Text('test'),
-              Container(),
-              Container(),
             ],
           ),
           decoration: BoxDecoration(

@@ -35,8 +35,6 @@ class _LoginPageState extends State<LoginPage> {
               email: _emailController.text, password: _passwordController.text)
           .then((onValue) {})
           .catchError((error) {
-        // debugPrint("Error: " + error.toString());
-        // debugPrint(error);
         _scaffoldKey.currentState.showSnackBar(new SnackBar(
           content: new Text("Wrong Email or Password"),
         ));

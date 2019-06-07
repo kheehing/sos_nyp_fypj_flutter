@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -34,53 +35,61 @@ Future<bool> _exitApp(BuildContext context) {
       false;
 }
 
+Future<String> inputData() async {
+  final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  final String uid = user.uid.toString();
+  return uid;
+}
+
+final test = FirebaseAuth.instance.currentUser();
+_helpButton() {
+  print(currentUser);
+}
+
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     double thisWidth = MediaQuery.of(context).size.width;
     return WillPopScope(
-      onWillPop: () => _exitApp(context),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Home'),
-          leading: myLeading,
-        ),
-        drawer: new MyDrawer(),
-        body: Center(
-            child: Container(
-              margin: EdgeInsets.all(10),
-          width: thisWidth,
-          height: thisWidth-20,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(99999),
-            border: new Border.all(
-              color: Colors.white70,
-              width: 10,
-            ),
-            gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                stops: [
-                  0.1,
-                  0.9
-                ],
-                colors: [
-                  Color.fromRGBO(255, 0, 0, 10),
-                  Color.fromRGBO(255, 0, 0, 100),
-                ]),
+        onWillPop: () => _exitApp(context),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Home'),
+            leading: myLeading,
           ),
-          child: Center(
-              child: Text(
-            'Help',
-            maxLines: 1,
-            softWrap: false,
-            style: TextStyle(
-              fontSize: 100,
-              color: Colors.white70,
-            ),
-          )),
-        )),
-      ),
-    );
+          drawer: new MyDrawer(),
+          body: Center(
+              child: Container(
+                  height: thisWidth - 20,
+                  width: thisWidth,
+                  margin: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(99999),
+                      border: new Border.all(
+                        color: Colors.red,
+                        width: 10,
+                      )),
+                  child: Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Material(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(thisWidth),
+                        child: MaterialButton(
+                            onPressed: _helpButton,
+                            shape: new RoundedRectangleBorder(
+                                borderRadius:
+                                    new BorderRadius.circular(thisWidth)),
+                            child: Text(
+                              'HELP',
+                              maxLines: 1,
+                              softWrap: false,
+                              style: TextStyle(
+                                  fontSize: 100,
+                                  color: Colors.white,
+                                  fontFamily: 'black_label',
+                                  fontWeight: FontWeight.w600),
+                            )),
+                      )))),
+        ));
   }
 }
