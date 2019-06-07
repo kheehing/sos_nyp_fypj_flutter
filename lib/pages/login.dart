@@ -28,13 +28,15 @@ class _LoginPageState extends State<LoginPage> {
 
 // login validate
   void _validateAndSave() {
-    FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-            email: _emailController.text, password: _passwordController.text)
-        .then((onValue) {})
-        .catchError((error) {
-      debugPrint("Error : " + error);
-    });
+    if (_formKey.currentState.validate()) {
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text)
+          .then((onValue) {})
+          .catchError((error) {
+        debugPrint("Error : " + error);
+      });
+    }
   }
 
   @override
