@@ -17,7 +17,8 @@ import 'package:flutter/material.dart';
 import 'pages/home.dart'; //homePage()
 import 'pages/login.dart'; //LoginPage()
 import 'pages/profile.dart'; //ProfilePage()
-import 'pages/updateprofile.dart'; //UpdatePage()
+import 'pages/updateprofile.dart'; //UpdateProfilePage()
+import 'pages/rootProfile.dart'; //RootProfilePage()
 
 void main() {
   runApp(MaterialApp(
@@ -28,6 +29,7 @@ void main() {
       '/Home': (BuildContext context) => new HomePage(),
       '/Login': (BuildContext context) => new LoginPage(),
       '/Profile': (BuildContext context) => new ProfilePage(),
+      '/RootProfile': (BuildContext context) => new RootProfilePage(),
       '/UpdateProfile': (BuildContext context) => new UpdateProfilePage(),
     },
   ));
@@ -125,25 +127,32 @@ class MyDrawer extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: Text('Home'),
-          onTap: () {
-            Navigator.of(context).pushNamed('/Home');
-          },
-        ),
+            title: Text('Home'),
+            onTap: () {
+              Navigator.of(context).pushNamed('/Home');
+            }),
         ListTile(
-          title: Text('Profile'),
-          onTap: () {
-            Navigator.of(context).pushNamed('/Profile');
-          },
-        ),
+            title: Text('ProfileRoot'),
+            onTap: () {
+              Navigator.of(context).pushNamed('/RootProfile');
+            }),
         ListTile(
-          title: Text('LogOut'),
-          onTap: () {
-            FirebaseAuth.instance.signOut().then((value) {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            });
-          },
-        ),
+            title: Text('ProfileUpdate'),
+            onTap: () {
+              Navigator.of(context).pushNamed('/UpdateProfile');
+            }),
+        ListTile(
+            title: Text('Profile'),
+            onTap: () {
+              Navigator.of(context).pushNamed('/Profile');
+            }),
+        ListTile(
+            title: Text('LogOut'),
+            onTap: () {
+              FirebaseAuth.instance.signOut().then((value) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              });
+            }),
       ]),
     );
   }
