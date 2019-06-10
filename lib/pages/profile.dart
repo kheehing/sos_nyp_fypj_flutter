@@ -24,9 +24,11 @@ class _ProfilePageState extends State<ProfilePage> {
           children: <Widget>[
             Align(
               alignment: Alignment(1, -0.2),
-              child: Icon(Icons.face,
-              size: 500,
-              color: Colors.grey,),
+              child: Icon(
+                Icons.face,
+                size: 500,
+                color: Colors.grey,
+              ),
             ),
             Column(children: <Widget>[
               Container(

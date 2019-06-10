@@ -1,11 +1,12 @@
+import 'dart:async';
+
+import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-// import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sosnyp/main.dart';
-// import 'profile.dart'; //ProfilePage() testing can delete
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -41,12 +42,18 @@ Future<String> inputData() async {
   return uid;
 }
 
-final test = FirebaseAuth.instance.currentUser();
-_helpButton() {
-  print(currentUser);
-}
-
 class _HomePageState extends State<HomePage> {
+  PermissionStatus _status;
+
+  // @override
+  void iniState() {
+    super.initState();
+    PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.locationWhenInUse)
+        .then(_updateStatus);
+    // Location
+  }
+
   @override
   Widget build(BuildContext context) {
     double thisWidth = MediaQuery.of(context).size.width;
@@ -91,5 +98,28 @@ class _HomePageState extends State<HomePage> {
                             )),
                       )))),
         ));
+  }
+
+  void _updateStatus(PermissionStatus status) {
+    if (status != _status) {
+      setState(() {
+        _status = status;
+      });
+    }
+  }
+
+  void _onStatusRequest(Map<PermissionGroup, PermissionStatus> statuses) {
+    final status = statuses[PermissionGroup.locationWhenInUse];
+    _updateStatus(status);
+    if (status != PermissionStatus.granted) {
+      PermissionHandler().openAppSettings();
+    }
+  }
+
+  _helpButton() {
+    PermissionHandler().requestPermissions(
+        [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
+
+    print(currentUser);
   }
 }

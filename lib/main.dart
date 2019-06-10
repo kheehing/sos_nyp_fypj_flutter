@@ -2,6 +2,7 @@
 //==================================================================================
 //  To debug the project (run the app on your emulator/phone);
 //  make sure Flutter is installed and there is a path in your system environment variable(env) or u can just launch from flutter console everytime;
+//  - https://flutter.dev/docs/get-started/install/windows
 //  you can use Android Studio or Visual Studio code;
 //  flutter doctor          check your status
 //  flutter doctor -v       check your status indepth
@@ -9,6 +10,7 @@
 //  locate it in ur Command Prompt(cmd) e.g.(cd C:\Users\<user>\Desktop\Flutter_SOS)
 //  flutter run             run ur program
 //  or u can press ctrl + f5 when using Visual Studio code
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 //  My Pages
@@ -17,7 +19,6 @@ import 'pages/login.dart'; //LoginPage()
 import 'pages/profile.dart'; //ProfilePage()
 import 'pages/updateprofile.dart'; //UpdatePage()
 
-// void main() => runApp(MyApp());
 void main() {
   runApp(MaterialApp(
     home: _handleWindowDisplay(),
@@ -33,6 +34,7 @@ void main() {
 }
 
 String currentUser;
+
 Widget _handleWindowDisplay() {
   return StreamBuilder(
     stream: FirebaseAuth.instance.onAuthStateChanged,
