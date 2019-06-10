@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sosnyp/main.dart';
-import 'updateprofile_report.dart';
+import 'updateprofile_repo.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   final String title;
@@ -12,9 +13,14 @@ class UpdateProfilePage extends StatefulWidget {
 
 class _UpdateProfilePageState extends State<UpdateProfilePage> {
   final _formKey = GlobalKey<FormState>();
-  String _selectedGender, _changedMobile;
+  String _selectedGender;
 
-  // For Multi depen
+  RegExp adminRegex = new RegExp(r'^([0-9]){6}([A-Za-z]){1}$');
+  TextEditingController _controllerAdmin = new TextEditingController();
+  TextEditingController _controllerName = new TextEditingController();
+  TextEditingController _controllerMobile = new TextEditingController();
+
+  // For Multi dependent dropdown
   Repository repo = Repository();
   List<String> _school = ["Choose a school"];
   List<String> _course = ["Choose .."];
@@ -37,6 +43,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         ),
         drawer: new MyDrawer(),
         body: Center(
+            child: Form(
+          key: _formKey,
           child: Stack(
             children: <Widget>[
               new Container(
@@ -66,35 +74,92 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                         Container(
                             margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                             padding: EdgeInsets.all(10),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                    child: Text(
-                                  'Mobile Number',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontFamily: 'black_label',
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600),
-                                )),
-                                Expanded(
-                                    child: TextField(
-                                        onChanged: (value) => _changedMobile,
-                                        keyboardType: TextInputType.number,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontFamily: 'black_label',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500))),
-                              ],
-                            )),
+                            child: Row(children: <Widget>[
+                              Container(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    'Name',
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontFamily: 'black_label',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600),
+                                  )),
+                              Expanded(
+                                  child: TextFormField(
+                                      controller: _controllerName,
+                                      validator: _validateName,
+                                      keyboardType: TextInputType.text,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: 'black_label',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500))),
+                            ])),
                         Container(
-                            margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                            margin: EdgeInsets.fromLTRB(0, 60, 0, 0),
                             padding: EdgeInsets.all(10),
                             child: Row(children: <Widget>[
+                              Container(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    'Admin',
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontFamily: 'black_label',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600),
+                                  )),
                               Expanded(
+                                child: TextFormField(
+                                    controller: _controllerAdmin,
+                                    validator: _validateAdmin,
+                                    keyboardType: TextInputType.text,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontFamily: 'black_label',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500),
+                                    decoration: InputDecoration()),
+                              ),
+                            ])),
+                        Container(
+                            margin: EdgeInsets.fromLTRB(0, 120, 0, 0),
+                            padding: EdgeInsets.all(10),
+                            child: Row(children: <Widget>[
+                              Container(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    'Mobile',
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontFamily: 'black_label',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600),
+                                  )),
+                              Expanded(
+                                  child: TextFormField(
+                                      maxLength: 8,
+                                      controller: _controllerMobile,
+                                      keyboardType: TextInputType.phone,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: 'black_label',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500))),
+                            ])),
+                        Container(
+                            margin: EdgeInsets.fromLTRB(0, 180, 0, 0),
+                            padding: EdgeInsets.all(10),
+                            child: Row(children: <Widget>[
+                              Container(
+                                  padding: EdgeInsets.only(right: 10),
                                   child: Text('School',
                                       textAlign: TextAlign.left,
+                                      maxLines: 1,
                                       style: TextStyle(
                                           fontFamily: 'black_label',
                                           fontSize: 15,
@@ -116,37 +181,70 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                               ),
                             ])),
                         Container(
-                            margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                            margin: EdgeInsets.fromLTRB(0, 230, 0, 0),
                             padding: EdgeInsets.all(10),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                    child: Text(
-                                  'Course',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontFamily: 'black_label',
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600),
-                                )),
-                                Expanded(
-                                  child: DropdownButton<String>(
-                                    isExpanded: true,
-                                    items: _course
-                                        .map((String dropDownStringItem) {
-                                      return DropdownMenuItem<String>(
-                                        value: dropDownStringItem,
-                                        child: Text(dropDownStringItem),
-                                      );
-                                    }).toList(),
-                                    // onChanged: (value) => print(value),
-                                    onChanged: (value) =>
-                                        _onSelectedCourse(value),
-                                    value: _selectedCourse,
-                                  ),
+                            child: Row(children: <Widget>[
+                              Container(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    'Course',
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontFamily: 'black_label',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600),
+                                  )),
+                              Expanded(
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  items:
+                                      _course.map((String dropDownStringItem) {
+                                    return DropdownMenuItem<String>(
+                                      value: dropDownStringItem,
+                                      child: Text(dropDownStringItem),
+                                    );
+                                  }).toList(),
+                                  // onChanged: (value) => print(value),
+                                  onChanged: (value) =>
+                                      _onSelectedCourse(value),
+                                  value: _selectedCourse,
                                 ),
-                              ],
-                            )),
+                              ),
+                            ])),
+                        Container(
+                            margin: EdgeInsets.fromLTRB(0, 280, 0, 0),
+                            padding: EdgeInsets.all(10),
+                            child: Row(children: <Widget>[
+                              Container(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    'Gender',
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontFamily: 'black_label',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600),
+                                  )),
+                              Expanded(
+                                  child: DropdownButton<String>(
+                                isExpanded: true,
+                                items: <String>['Male', 'Female']
+                                    .map((String dropDownStringItem) {
+                                  return DropdownMenuItem<String>(
+                                    value: dropDownStringItem,
+                                    child: Text(dropDownStringItem),
+                                  );
+                                }).toList(),
+                                // onChanged: (value) => print(value),
+                                onChanged: (value) {
+                                  _selectedGender = value;
+                                  setState(() => _selectedGender = value);
+                                },
+                                value: _selectedGender,
+                              )),
+                            ])),
                       ],
                     ),
                     Container(
@@ -154,7 +252,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                             EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         child: RaisedButton(
                             color: Colors.blueAccent,
-                            child: Text('Update Profile',
+                            child: Text('Update',
                                 style: TextStyle(
                                   color: Colors.white,
                                 )),
@@ -164,39 +262,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               ),
             ],
           ),
-        ));
-    // SafeArea(
-    //   child: Container(
-    //     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
-    //     child: Column(
-    //       children: <Widget>[
-    // DropdownButton<String>(
-    //   isExpanded: true,
-    //   items: _school.map((String dropDownStringItem) {
-    //     return DropdownMenuItem<String>(
-    //       value: dropDownStringItem,
-    //       child: Text(dropDownStringItem),
-    //     );
-    //   }).toList(),
-    //   onChanged: (value) => _onSelectedSchool(value),
-    //   value: _selectedSchool,
-    // ),
-    // DropdownButton<String>(
-    //   isExpanded: true,
-    //   items: _course.map((String dropDownStringItem) {
-    //     return DropdownMenuItem<String>(
-    //       value: dropDownStringItem,
-    //       child: Text(dropDownStringItem),
-    //     );
-    //   }).toList(),
-    //   // onChanged: (value) => print(value),
-    //   onChanged: (value) => _onSelectedCourse(value),
-    //   value: _selectedCourse,
-    // ),
-    //       ],
-    //     ),
-    //   ),
-    // ) // WORKING
+        )));
   }
 
   void _onSelectedSchool(String value) {
@@ -212,9 +278,40 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     setState(() => _selectedCourse = value);
   }
 
+  String _validateAdmin(String value) {
+    Pattern pattern = r'^([0-9]){6}([A-Za-z]){1}$';
+    RegExp regex = new RegExp(pattern);
+    if (value.isEmpty) {
+      return "Admin Can't be empty";
+    } else if (!regex.hasMatch(value))
+      return 'Enter Valid Admin';
+    else
+      return null;
+  }
+
+  String _validateName(String value) {
+    Pattern pattern = r'\d';
+    RegExp regex = new RegExp(pattern);
+    if (value.isEmpty) {
+      return "Name Can't be empty";
+    } else if (regex.hasMatch(value)) {
+      return 'Name Can\'t Contian numbers';
+    } else
+      return null;
+  }
+
   void _updateProfile() {
-    if (_formKey.currentState.validate()) {
-      print('success');
-    }
+    setState(() {
+      if (_formKey.currentState.validate()) {
+        Firestore.instance.collection('profile').document(currentUser).setData({
+          'name': _controllerName.text,
+          'Admin': _controllerAdmin.text,
+          'mobile': _controllerMobile.text,
+          'school': _selectedSchool,
+          'course': _selectedCourse,
+          'gender': _selectedGender,
+        });
+      }
+    });
   }
 }
