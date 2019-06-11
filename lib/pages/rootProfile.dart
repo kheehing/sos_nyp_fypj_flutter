@@ -17,21 +17,33 @@ class _RootProfileState extends State<RootProfilePage> {
         ),
         drawer: new MyDrawer(),
         body: StreamBuilder(
-            stream: Firestore.instance.collection('profile').snapshots(),
+            initialData: 'Na',
+            stream: Firestore.instance
+                .collection('profile')
+                .document(currentUser)
+                .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) return loadingScreen();
-              return ListView.builder(
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) =>
-                    _buildListItem(context, snapshot.data.documents[index]),
-              );
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  // itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) =>
+                      _buildListItem(context, snapshot.data),
+                );
+              }
             }));
   }
 }
 
-Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-  final _gender = document['gender'].toString().toLowerCase();
-  print(_gender);
+// Widget _buildList (BuildContext context, List<DocumentSnapshot> snapshot){
+//   return ListView(
+//     padding: const EdgeInsets.all(10),
+//     children: snapshot.map((data) => _buildList(context,data)).toList(),
+//   )
+// }
+
+Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+  // final _gender = document['gender'].toString().toLowerCase();
   return ListTile(
       title: Stack(children: <Widget>[
     Align(
@@ -60,7 +72,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
       Container(
           alignment: Alignment.centerLeft,
           margin: EdgeInsets.symmetric(horizontal: 40),
-          child: Text(document['name'],
+          child: Text(data['name'],
               textAlign: TextAlign.left,
               maxLines: 2,
               style: TextStyle(
@@ -72,7 +84,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
         alignment: Alignment.centerLeft,
         margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
         child: Text(
-          document['admin'],
+          data['admin'],
           maxLines: 1,
           softWrap: false,
           textAlign: TextAlign.left,
@@ -124,7 +136,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
                                       fontWeight: FontWeight.w600),
                                 )),
                             Expanded(
-                                child: Text(document['mobile'],
+                                child: Text(data['mobile'],
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontFamily: 'black_label',
@@ -145,7 +157,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600))),
                           Expanded(
-                              child: Text(document['school'],
+                              child: Text(data['school'],
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontFamily: 'black_label',
@@ -168,12 +180,11 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
                                       fontWeight: FontWeight.w600),
                                 )),
                             Expanded(
-                                child: Text(document['course'],
+                                child: Text(data['course'],
                                     textAlign: TextAlign.center,
                                     maxLines: 2,
                                     style: TextStyle(
                                         fontFamily: 'black_label',
-                                        
                                         fontSize: 15,
                                         fontWeight: FontWeight.w500))),
                           ],
