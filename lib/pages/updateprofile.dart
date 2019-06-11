@@ -31,13 +31,21 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   void initState() {
     var _documents =
         Firestore.instance.collection('profile').document(currentUser).get();
-    _documents.then((data) {
-      final _name = data.data['name'];
+    _documents.then((db) {
+      print(db);
+      final _name = db.data['name'];
       _controllerName.text = _name;
-      final _admin = data.data['admin'];
+      final _admin = db.data['admin'];
       _controllerAdmin.text = _admin;
-      final _mobile = data.data['mobile'];
+      final _mobile = db.data['mobile'];
       _controllerMobile.text = _mobile;
+      final _schoolDB = db.data['school'];
+      setState(() => _selectedSchool = _schoolDB);
+      _onSelectedSchool(_schoolDB);
+      final _courseDB = db.data['course'];
+      setState(() => _selectedCourse = _courseDB);
+      final _genderDB = db.data['gender'];
+      setState(() => _selectedGender = _genderDB);
     });
     _school = List.from(_school)..addAll(repo.getSchool());
     super.initState();
@@ -248,6 +256,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       Expanded(
                                           child: DropdownButton<String>(
                                         isExpanded: true,
+                                        hint: Text('Gender'),
                                         items: <String>['Male', 'Female']
                                             .map((String dropDownStringItem) {
                                           return DropdownMenuItem<String>(
@@ -292,11 +301,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   void _onSelectedCourse(String value) {
+    _selectedCourse = value;
     setState(() => _selectedCourse = value);
   }
 
   String _validateAdmin(String value) {
-    Pattern pattern = r'^([0-9]){6}([A-Za-z]){1}$';
+    Pattern pattern = r'^([0-9]{6})([A-Za-z]{1})$';
     RegExp regex = new RegExp(pattern);
     if (value.isEmpty) {
       return "Admin Can't be empty";
@@ -331,10 +341,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       var _documents =
           Firestore.instance.collection('profile').document(currentUser).get();
       _documents.then((data) {
-        if (data.data.isEmpty) {
-          _addDataBase();
-        } else {
-          _updateDataBase();
+        if (_validateSchoolCourse()) {
+          if (data.data.isEmpty) {
+            _addDataBase();
+          } else {
+            _updateDataBase();
+          }
         }
       });
     });
@@ -369,5 +381,52 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       }).catchError((onError) {});
       Navigator.of(context).popAndPushNamed('/RootProfile');
     }
+  }
+
+  _validateSchoolCourse() {
+    if (_selectedSchool == 'Choose a school') {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                title: new Text(
+                  'Select your school',
+                  textAlign: TextAlign.center,
+                ));
+          });
+    } else if (_selectedCourse == 'Choose ..') {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                title: new Text(
+                  'Select your course',
+                  textAlign: TextAlign.center,
+                ));
+          });
+    } else if (_selectedGender == null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                title: new Text(
+                  'Select your Sex',
+                  textAlign: TextAlign.center,
+                ));
+          });
+    } else
+      return true;
   }
 }
