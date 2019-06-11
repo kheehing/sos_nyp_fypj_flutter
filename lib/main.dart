@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 //  My Pages
 import 'pages/home.dart'; //homePage()
 import 'pages/login.dart'; //LoginPage()
-import 'pages/profile.dart'; //ProfilePage()
 import 'pages/updateprofile.dart'; //UpdateProfilePage()
 import 'pages/rootProfile.dart'; //RootProfilePage()
 
@@ -28,7 +27,6 @@ void main() {
     routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new HomePage(),
       '/Login': (BuildContext context) => new LoginPage(),
-      '/Profile': (BuildContext context) => new ProfilePage(),
       '/RootProfile': (BuildContext context) => new RootProfilePage(),
       '/UpdateProfile': (BuildContext context) => new UpdateProfilePage(),
     },
@@ -42,48 +40,7 @@ Widget _handleWindowDisplay() {
     stream: FirebaseAuth.instance.onAuthStateChanged,
     builder: (BuildContext context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return new Scaffold(
-            body: new Center(
-                child: Stack(
-          children: <Widget>[
-            Container(
-                margin: EdgeInsets.only(bottom: 250),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.add,
-                        size: 50,
-                        color: Colors.red,
-                      ),
-                      Text(
-                        'SOS APP',
-                        textAlign: TextAlign.left,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: TextStyle(
-                          fontSize: 50,
-                          fontFamily: 'Black_label',
-                        ),
-                      )
-                    ])),
-            Container(
-              margin: EdgeInsets.only(top: 150),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 10,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.red)),
-                    ),
-                  ]),
-            ),
-          ],
-        )));
+        return loadingScreen();
       } else {
         if (snapshot.hasData) {
           currentUser = snapshot.data.uid;
@@ -129,22 +86,17 @@ class MyDrawer extends StatelessWidget {
         ListTile(
             title: Text('Home'),
             onTap: () {
-              Navigator.of(context).pushNamed('/Home');
-            }),
-        ListTile(
-            title: Text('ProfileRoot'),
-            onTap: () {
-              Navigator.of(context).pushNamed('/RootProfile');
-            }),
-        ListTile(
-            title: Text('ProfileUpdate'),
-            onTap: () {
-              Navigator.of(context).pushNamed('/UpdateProfile');
+              Navigator.of(context).popAndPushNamed('/Home');
             }),
         ListTile(
             title: Text('Profile'),
             onTap: () {
-              Navigator.of(context).pushNamed('/Profile');
+              Navigator.of(context).popAndPushNamed('/RootProfile');
+            }),
+        ListTile(
+            title: Text('ProfileUpdate'),
+            onTap: () {
+              Navigator.of(context).popAndPushNamed('/UpdateProfile');
             }),
         ListTile(
             title: Text('LogOut'),
@@ -156,4 +108,47 @@ class MyDrawer extends StatelessWidget {
       ]),
     );
   }
+}
+
+Widget loadingScreen() {
+  return new Scaffold(
+      body: new Center(
+          child: Stack(
+    children: <Widget>[
+      Container(
+          margin: EdgeInsets.only(bottom: 250),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.add,
+                  size: 50,
+                  color: Colors.red,
+                ),
+                Text(
+                  'SOS APP',
+                  textAlign: TextAlign.left,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontFamily: 'Black_label',
+                  ),
+                )
+              ])),
+      Container(
+        margin: EdgeInsets.only(top: 150),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          SizedBox(
+            height: 100,
+            width: 100,
+            child: CircularProgressIndicator(
+                strokeWidth: 10,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.red)),
+          ),
+        ]),
+      ),
+    ],
+  )));
 }
