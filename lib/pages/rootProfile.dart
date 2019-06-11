@@ -30,8 +30,8 @@ class _RootProfileState extends State<RootProfilePage> {
 }
 
 Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-  final _gender = document['gender'].toString().toLowerCase();
-  print(_gender);
+  // final _gender = document['name'].toString().toLowerCase();
+
   return ListTile(
       title: Stack(children: <Widget>[
     Align(
@@ -44,7 +44,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     Column(children: <Widget>[
       Container(
         alignment: Alignment.centerLeft,
-        margin: EdgeInsets.fromLTRB(30, 50, 0, 10),
+        margin: EdgeInsets.fromLTRB(40, 80, 0, 0),
         child: Icon(
           Icons.account_circle,
           size: 100,
@@ -59,7 +59,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
       ),
       Container(
           alignment: Alignment.centerLeft,
-          margin: EdgeInsets.symmetric(horizontal: 40),
+          margin: EdgeInsets.symmetric(horizontal: 20),
           child: Text(document['name'],
               textAlign: TextAlign.left,
               maxLines: 2,
@@ -70,7 +70,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
               ))),
       Container(
         alignment: Alignment.centerLeft,
-        margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+        margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: Text(
           document['admin'],
           maxLines: 1,
@@ -85,7 +85,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
       Stack(
         children: <Widget>[
           new Container(
-            padding: EdgeInsets.symmetric(vertical: 85),
+            padding: EdgeInsets.symmetric(vertical: 80),
             margin: new EdgeInsets.fromLTRB(30, 15, 30, 50),
             decoration: new BoxDecoration(
                 border: new Border.all(color: Colors.white),
@@ -170,10 +170,8 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
                             Expanded(
                                 child: Text(document['course'],
                                     textAlign: TextAlign.center,
-                                    maxLines: 2,
                                     style: TextStyle(
                                         fontFamily: 'black_label',
-                                        
                                         fontSize: 15,
                                         fontWeight: FontWeight.w500))),
                           ],
@@ -181,7 +179,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
                   ],
                 ),
                 Container(
-                    margin: EdgeInsets.only(top: 30),
+                    margin: EdgeInsets.only(top: 20),
                     child: RaisedButton(
                       color: Colors.blueAccent,
                       child: Text('Update Profile',
