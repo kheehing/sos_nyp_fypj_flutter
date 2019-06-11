@@ -331,7 +331,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       var _documents =
           Firestore.instance.collection('profile').document(currentUser).get();
       _documents.then((data) {
-        if (data.data['admin'] == null) {
+        if (data.data.isEmpty) {
           _addDataBase();
         } else {
           _updateDataBase();
@@ -350,7 +350,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         'course': _selectedCourse,
         'gender': _selectedGender,
       }).catchError((onError) {});
-      Navigator.of(context).popAndPushNamed('/Profile');
+      Navigator.of(context).popAndPushNamed('/RootProfile');
     }
   }
 
@@ -367,7 +367,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         'course': _selectedCourse,
         'gender': _selectedGender,
       }).catchError((onError) {});
-      Navigator.of(context).popAndPushNamed('/Profile');
+      Navigator.of(context).popAndPushNamed('/RootProfile');
     }
   }
 }

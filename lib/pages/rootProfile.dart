@@ -187,7 +187,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
                             color: Colors.white,
                           )),
                       onPressed: () {
-                        Navigator.of(context).pushNamed('/UpdateProfile');
+                        Navigator.of(context).popAndPushNamed('/UpdateProfile');
                       },
                     ))
               ],
