@@ -26,7 +26,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   List<String> _course = ["Choose .."];
   String _selectedSchool = "Choose a school";
   String _selectedCourse = "Choose ..";
-
+  //
   @override
   void initState() {
     var _documents =
