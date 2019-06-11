@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sosnyp/main.dart';
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
   final String title;

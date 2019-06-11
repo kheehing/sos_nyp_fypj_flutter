@@ -13,8 +13,10 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sosnyp/pages/homeAdmin.dart';
 //  My Pages
 import 'pages/home.dart'; //homePage()
+import 'pages/homeAdmin.dart'; //HomeAdminPage()
 import 'pages/login.dart'; //LoginPage()
 import 'pages/updateprofile.dart'; //UpdateProfilePage()
 import 'pages/rootProfile.dart'; //RootProfilePage()
@@ -44,7 +46,10 @@ Widget _handleWindowDisplay() {
       } else {
         if (snapshot.hasData) {
           currentUser = snapshot.data.uid;
-          return HomePage();
+          if (currentUser == 'Sa7pRwTTNWgFks2ETFHIWJ84AIA2') {
+            return HomeAdminPage();
+          } else
+            return HomePage();
         } else {
           return LoginPage();
         }
@@ -68,6 +73,7 @@ final myLeading = Builder(
 
 //  Drawer
 class MyDrawer extends StatelessWidget {
+// final GlobalKey<MyDrawer> _drawerKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -83,11 +89,6 @@ class MyDrawer extends StatelessWidget {
             color: Colors.blue,
           ),
         ),
-        ListTile(
-            title: Text('Home'),
-            onTap: () {
-              Navigator.of(context).popAndPushNamed('/Home');
-            }),
         ListTile(
             title: Text('Profile'),
             onTap: () {
@@ -105,10 +106,28 @@ class MyDrawer extends StatelessWidget {
                 Navigator.of(context).popUntil((route) => route.isFirst);
               });
             }),
+            
       ]),
     );
   }
 }
+
+// _adminListTiles() {
+//   if (currentUser == 'Sa7pRwTTNWgFks2ETFHIWJ84AIA2') {
+//     return new ListTile(
+//         title: Text('Home'),
+//         onTap: () {
+//           Navigator.of(_drawerKey).popAndPushNamed('/Home');
+//         });
+//     }
+//   } else {
+//     ListTile(
+//         title: Text('Home'),
+//         onTap: () {
+//           Navigator.of(context).popAndPushNamed('/Home');
+//         });
+//   }
+
 
 Widget loadingScreen() {
   return new Scaffold(
