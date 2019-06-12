@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sosnyp/main.dart';
 import 'profileDefault.dart';
-import 'dart:async';
 
-class RootProfilePage extends StatefulWidget {
+class ProfilePage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _RootProfileState();
+  State<StatefulWidget> createState() => _ProfileState();
 }
 
-class _RootProfileState extends State<RootProfilePage> {
+class _ProfileState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(

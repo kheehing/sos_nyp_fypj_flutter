@@ -19,7 +19,7 @@ import 'pages/home.dart'; //homePage()
 import 'pages/homeAdmin.dart'; //HomeAdminPage()
 import 'pages/login.dart'; //LoginPage()
 import 'pages/updateprofile.dart'; //UpdateProfilePage()
-import 'pages/rootProfile.dart'; //RootProfilePage()
+import 'pages/Profile.dart'; //ProfilePage()
 
 void main() {
   runApp(MaterialApp(
@@ -29,7 +29,7 @@ void main() {
     routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new HomePage(),
       '/Login': (BuildContext context) => new LoginPage(),
-      '/RootProfile': (BuildContext context) => new RootProfilePage(),
+      '/Profile': (BuildContext context) => new ProfilePage(),
       '/UpdateProfile': (BuildContext context) => new UpdateProfilePage(),
     },
   ));
@@ -97,7 +97,7 @@ class MyDrawer extends StatelessWidget {
         ListTile(
             title: Text('Profile'),
             onTap: () {
-              Navigator.of(context).popAndPushNamed('/RootProfile');
+              Navigator.of(context).popAndPushNamed('/Profile');
             }),
         ListTile(
             title: Text('LogOut'),
