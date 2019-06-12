@@ -12,8 +12,8 @@
 //  or u can press ctrl + f5 when using Visual Studio code
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:sosnyp/pages/homeAdmin.dart';
+import 'package:flutter/material.dart';
 //  My Pages
 import 'pages/home.dart'; //homePage()
 import 'pages/homeAdmin.dart'; //HomeAdminPage()
@@ -90,14 +90,14 @@ class MyDrawer extends StatelessWidget {
           ),
         ),
         ListTile(
+            title: Text('Home'),
+            onTap: () {
+              Navigator.of(context).popAndPushNamed('/Home');
+            }),
+        ListTile(
             title: Text('Profile'),
             onTap: () {
               Navigator.of(context).popAndPushNamed('/RootProfile');
-            }),
-        ListTile(
-            title: Text('ProfileUpdate'),
-            onTap: () {
-              Navigator.of(context).popAndPushNamed('/UpdateProfile');
             }),
         ListTile(
             title: Text('LogOut'),
@@ -106,7 +106,6 @@ class MyDrawer extends StatelessWidget {
                 Navigator.of(context).popUntil((route) => route.isFirst);
               });
             }),
-            
       ]),
     );
   }
@@ -114,12 +113,12 @@ class MyDrawer extends StatelessWidget {
 
 // _adminListTiles() {
 //   if (currentUser == 'Sa7pRwTTNWgFks2ETFHIWJ84AIA2') {
-//     return new ListTile(
-//         title: Text('Home'),
-//         onTap: () {
-//           Navigator.of(_drawerKey).popAndPushNamed('/Home');
-//         });
-//     }
+// return new ListTile(
+//     title: Text('Home'),
+//     onTap: () {
+//       Navigator.of(_drawerKey).popAndPushNamed('/Home');
+//     });
+// }
 //   } else {
 //     ListTile(
 //         title: Text('Home'),
@@ -127,7 +126,6 @@ class MyDrawer extends StatelessWidget {
 //           Navigator.of(context).popAndPushNamed('/Home');
 //         });
 //   }
-
 
 Widget loadingScreen() {
   return new Scaffold(

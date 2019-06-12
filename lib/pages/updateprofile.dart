@@ -46,6 +46,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       final _genderDB = db.data['gender'];
       setState(() => _selectedGender = _genderDB);
     });
+
     _school = List.from(_school)..addAll(repo.getSchool());
     super.initState();
   }
@@ -341,7 +342,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
           Firestore.instance.collection('profile').document(currentUser).get();
       _documents.then((data) {
         if (_validateSchoolCourse()) {
-          if (data.data.isEmpty) {
+          if (data.data == null) {
             _addDataBase();
           } else {
             _updateDataBase();
@@ -352,6 +353,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   void _addDataBase() {
+    print('########################## ADDING ##########################');
     if (_formKey.currentState.validate()) {
       Firestore.instance.collection('profile').document(currentUser).setData({
         'name': _controllerName.text,
@@ -366,6 +368,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   void _updateDataBase() {
+    print('########################## UPDATEING ##########################');
     if (_formKey.currentState.validate()) {
       Firestore.instance
           .collection('profile')
