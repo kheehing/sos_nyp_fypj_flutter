@@ -31,7 +31,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     var _documents =
         Firestore.instance.collection('profile').document(currentUser).get();
     _documents.then((db) {
-      print(db);
       final _name = db.data['name'];
       _controllerName.text = _name;
       final _admin = db.data['admin'];
