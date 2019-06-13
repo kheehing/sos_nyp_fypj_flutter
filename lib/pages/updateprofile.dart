@@ -362,12 +362,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         'course': _selectedCourse,
         'gender': _selectedGender,
       }).catchError((onError) {});
-      Navigator.of(context).popAndPushNamed('/RootProfile');
+      Navigator.of(context).popAndPushNamed('/Profile');
     }
   }
 
   void _updateDataBase() {
-    print('########################## UPDATEING ##########################');
+    print('########################## UPDATING ##########################');
     if (_formKey.currentState.validate()) {
       Firestore.instance
           .collection('profile')
@@ -380,7 +380,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         'course': _selectedCourse,
         'gender': _selectedGender,
       }).catchError((onError) {});
-      Navigator.of(context).popAndPushNamed('/RootProfile');
+      Navigator.of(context).popAndPushNamed('/Profile');
     }
   }
 

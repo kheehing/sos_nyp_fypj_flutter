@@ -21,6 +21,7 @@ import 'package:sosnyp/pages/home.dart';
 import 'package:sosnyp/pages/login.dart';
 import 'package:sosnyp/pages/updateprofile.dart';
 import 'package:sosnyp/pages/Profile.dart';
+import 'package:sosnyp/pages/setting.dart';
 
 // import 'pages/_Test( Locatoin ).dart';
 void main() {
@@ -31,6 +32,7 @@ void main() {
     routes: <String, WidgetBuilder>{
       '/Dashboard': (BuildContext context) => new DashBoardPage(),
       '/Home': (BuildContext context) => new HomePage(),
+      '/Setting': (BuildContext context) => new SettingPage(),
       '/Login': (BuildContext context) => new LoginPage(),
       '/Profile': (BuildContext context) => new ProfilePage(),
       '/UpdateProfile': (BuildContext context) => new UpdateProfilePage(),
@@ -132,6 +134,7 @@ class _MyDrawerState extends State<MyDrawer>
       SizedBox(height: 50),
       _listTile(Icon(Icons.home), 'Home', 'Home'),
       _listTile(Icon(Icons.face), 'Profile', 'Profile'),
+      _listTile(Icon(Icons.settings), 'Setting', 'Setting'),
       _listTilesAdmin(context),
       _line(),
       ListTile(
