@@ -43,8 +43,8 @@
 	<false/>
 	
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is required for this app</string>
-	<key>NSLocationWhenInUsageDescription</key>
-	<string>Your location is required for this app</string>
+	<string>Needed to access location</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Needed to access location</string>
 </dict>
 </plist>

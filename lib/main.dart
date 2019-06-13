@@ -14,6 +14,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 //  My Pages
 import 'package:sosnyp/pages/dashBoard.dart';
 import 'package:sosnyp/pages/home.dart';
@@ -21,6 +22,7 @@ import 'package:sosnyp/pages/login.dart';
 import 'package:sosnyp/pages/updateprofile.dart';
 import 'package:sosnyp/pages/Profile.dart';
 
+// import 'pages/_Test( Locatoin ).dart';
 void main() {
   runApp(MaterialApp(
     home: _handleWindowDisplay(),
@@ -55,6 +57,10 @@ Widget _handleWindowDisplay() {
   );
 }
 
+// ###############################################################################
+// ################################### Widgets ###################################
+// ###############################################################################
+
 //  leading for AppBar
 final myLeading = Builder(
   builder: (BuildContext context) {
@@ -68,142 +74,74 @@ final myLeading = Builder(
   },
 );
 
-//  Drawer
-class MyDrawer extends StatelessWidget {
-// final GlobalKey<MyDrawer> _drawerKey = GlobalKey();
+//Drawer
+class MyDrawer extends StatefulWidget {
+  final String title;
+  const MyDrawer({Key key, this.title}) : super(key: key);
+
+  @override
+  _MyDrawerState createState() => new _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer>
+    with SingleTickerProviderStateMixin {
+  TextEditingController _controllerName = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    ListTile _drawerTile(String route, String userType) {
-      var listtile;
-      if (userType == 'admin') {
-        if (currentUser == 'Sa7pRwTTNWgFks2ETFHIWJ84AIA2') {
-          listtile = ListTile(
-              title: Text(route),
-              onTap: () {
-                Navigator.of(context).popAndPushNamed('/' + route);
-              });
-        }
-      } else if (userType == 'all') {
-        listtile = ListTile(
-            title: Text(route),
-            onTap: () {
-              Navigator.of(context).popAndPushNamed('/' + route);
-            });
-      }
-      return listtile;
+    Future<DocumentSnapshot> _documents =
+        Firestore.instance.collection('profile').document(currentUser).get();
+    _documents.then((db) async {
+      final _name = await db.data['name'];
+      _controllerName.text = 'User: ' + _name;
+    });
+
+    Container _line() {
+      return Container(
+          margin: EdgeInsets.symmetric(horizontal: 30),
+          child: TextField(
+            enabled: false,
+          ));
     }
 
-    // @override
-    // Widget build(BuildContext context) {
-    //   return StreamBuilder<QuerySnapshot>(
-    //     stream: Firestore.instance.collection('profile').snapshots(),
-    //     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    ListTile _listTile(Icon icon, String title, String navigator) {
+      return ListTile(
+          leading: icon,
+          title: Text(title),
+          onTap: () {
+            Navigator.of(context).popAndPushNamed('/' + navigator);
+          });
+    }
 
-    //     },
-    //   );
-    // }
+    Widget _listTilesAdmin(BuildContext context) {
+      if (currentUser == 'Sa7pRwTTNWgFks2ETFHIWJ84AIA2') {
+        return Column(children: <Widget>[
+          _line(),
+          Container(
+              margin: EdgeInsets.symmetric(vertical: 5), child: Text('Admin')),
+          _listTile(Icon(Icons.dashboard), 'DashBoard', 'Dashboard'),
+        ]);
+      } else
+        return SizedBox(height: 0);
+    }
 
     return Drawer(
         child: Scrollbar(
-      child: ListView(
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              Container(
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 100),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black45,
-                          blurRadius: 20,
-                        )
-                      ]),
-                  foregroundDecoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                  )),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                padding: EdgeInsets.fromLTRB(7, 4, 10, 10),
-                child: Column(
-                  children: <Widget>[
-                    Container(),
-                    Text(
-                      'test',
-                    ),
-                    Text('test'),
-                    Text('test'),
-                    Text('test'),
-                    Text('test'),
-                    Text('test'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          RaisedButton(
-              child: Text('Home'),
-              onPressed: () {
-                Navigator.of(context).popAndPushNamed('/Home');
-              }),
-          RaisedButton(
-              child: Text('Profile'),
-              onPressed: () {
-                Navigator.of(context).popAndPushNamed('/Profile');
-              }),
-          RaisedButton(
-              child: Text('LogOut'),
-              onPressed: () {
-                FirebaseAuth.instance.signOut().then((value) {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                });
-              })
-        ],
-      ),
-    )
-
-        // ListView(children: <Widget>[
-        //   DrawerHeader(
-        //     child: Row(
-        //       children: <Widget>[
-        //         Text(currentUser),
-        //       ],
-        //     ),
-        //     decoration: BoxDecoration(
-        //       color: Colors.blue,
-        //       gradient: LinearGradient(
-        //         begin: Alignment.topRight,
-        //         end: Alignment.bottomLeft,
-        //         stops: [0, 0.25, 0.5, 0.75, 1],
-        //         colors: [
-        //           Colors.blue[900],
-        //           Colors.blue[800],
-        //           Colors.blue[700],
-        //           Colors.blue[600],
-        //           Colors.blue[500],
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        //   // animated container
-        //   // silverlist / gird ?
-        //   _silverList(),
-        //   _drawerTile('Dashboard', 'admin'),
-        //   _drawerTile('Home', 'all'),
-        //   _drawerTile('Profile', 'all'),
-        //   ListTile(
-        //       title: Text('LogOut'),
-        //       onTap: () {
-        //         FirebaseAuth.instance.signOut().then((value) {
-        //           Navigator.of(context).popUntil((route) => route.isFirst);
-        //         });
-        //       }),
-        // ]),
-        );
+            child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+      SizedBox(height: 50),
+      _listTile(Icon(Icons.home), 'Home', 'Home'),
+      _listTile(Icon(Icons.face), 'Profile', 'Profile'),
+      _listTilesAdmin(context),
+      _line(),
+      ListTile(
+          leading: Icon(Icons.power_settings_new),
+          title: Text('Logout'),
+          onTap: () {
+            FirebaseAuth.instance.signOut().then((value) {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            });
+          }),
+    ])));
   }
 }
 
