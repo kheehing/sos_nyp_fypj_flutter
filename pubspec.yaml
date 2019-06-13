@@ -33,7 +33,6 @@ dependencies:
 
   rxdart:
   permission_handler:
-  geolocator: "^2.1.0"
   location:
 
   # The following adds the Cupertino Icons font to your application.

@@ -22,6 +22,7 @@ import 'package:sosnyp/pages/login.dart';
 import 'package:sosnyp/pages/updateprofile.dart';
 import 'package:sosnyp/pages/Profile.dart';
 import 'package:sosnyp/pages/setting.dart';
+import 'package:sosnyp/pages/css_test.dart';
 
 // import 'pages/_Test( Locatoin ).dart';
 void main() {
@@ -35,6 +36,7 @@ void main() {
       '/Setting': (BuildContext context) => new SettingPage(),
       '/Login': (BuildContext context) => new LoginPage(),
       '/Profile': (BuildContext context) => new ProfilePage(),
+      '/Testing': (BuildContext context) => new TestingPage(),
       '/UpdateProfile': (BuildContext context) => new UpdateProfilePage(),
     },
   ));
@@ -135,6 +137,7 @@ class _MyDrawerState extends State<MyDrawer>
       _listTile(Icon(Icons.home), 'Home', 'Home'),
       _listTile(Icon(Icons.face), 'Profile', 'Profile'),
       _listTile(Icon(Icons.settings), 'Setting', 'Setting'),
+      _listTile(Icon(Icons.access_alarms), 'TestButton', 'Testing'),
       _listTilesAdmin(context),
       _line(),
       ListTile(

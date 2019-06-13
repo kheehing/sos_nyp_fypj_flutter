@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sosnyp/main.dart';
-import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:location/location.dart';
 
@@ -20,6 +19,7 @@ class _SettingPageState extends State<SettingPage> {
           title: Text('Setting'),
           leading: myLeading,
         ),
+        drawer: MyDrawer(),
         body: Center(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
