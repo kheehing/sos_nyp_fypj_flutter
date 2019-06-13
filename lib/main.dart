@@ -98,6 +98,7 @@ class _MyDrawerState extends State<MyDrawer>
 
     Container _line() {
       return Container(
+        height: 10,
           margin: EdgeInsets.symmetric(horizontal: 30),
           child: TextField(
             enabled: false,
