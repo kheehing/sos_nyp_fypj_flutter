@@ -2,6 +2,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sosnyp/main.dart';
@@ -42,6 +43,8 @@ Future<String> inputData() async {
 }
 
 class _HomePageState extends State<HomePage> {
+  Map<String, double> userLocation;
+  var location = new Location();
   PermissionStatus _status;
 
   // @override
@@ -118,7 +121,21 @@ class _HomePageState extends State<HomePage> {
   _helpButton() {
     PermissionHandler().requestPermissions(
         [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
+    _getLocation().then((value) {
+      setState(() {
+        userLocation = value;
+      });
+    });
+    print('UserLocation: ' + userLocation.toString());
+  }
 
-    print(currentUser);
+  Future<Map<String, double>> _getLocation() async {
+    var currentLocation = <String, double>{};
+    try {
+      currentLocation = await location.getLocation();
+    } catch (e) {
+      currentLocation = null;
+    }
+    return currentLocation;
   }
 }

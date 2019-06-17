@@ -18,7 +18,11 @@ class _TestingPageState extends State<TestingPage> {
         leading: myLeading,
       ),
       drawer: new MyDrawer(),
-      body: Text('somebutton'),
+      body: Center(
+        child: RaisedButton(
+          child: Text('data'),
+        ),
+      ),
     );
   }
 }
