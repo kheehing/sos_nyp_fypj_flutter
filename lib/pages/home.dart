@@ -1,4 +1,5 @@
 import 'package:permission_handler/permission_handler.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
@@ -24,11 +25,11 @@ Future<bool> _exitApp(BuildContext context) {
               actions: <Widget>[
                 new FlatButton(
                   child: new Text('No'),
-                  onPressed: () => Navigator.of(context).pop(false),
+                  onPressed: () => Navigator.pop(context, false),
                 ),
                 new FlatButton(
                   child: new Text('Yes'),
-                  onPressed: () => Navigator.of(context).pop(true),
+                  onPressed: () => Navigator.pop(context, true),
                 ),
               ],
             ),
@@ -123,10 +124,41 @@ class _HomePageState extends State<HomePage> {
         [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
     _getLocation().then((value) {
       setState(() {
+        var _documents = Firestore.instance
+            .collection('help.current')
+            .document(currentUser)
+            .get();
+        _documents.then((data) {
+          if (data.data == null) {
+            debugPrint(
+                '########################## ADDING ##########################');
+            Firestore.instance
+                .collection('help.current')
+                .document(currentUser)
+                .setData({
+              'latitude': userLocation['latitude'].toString(),
+              'longitude': userLocation['longitude'].toString(),
+              'status': '',
+              'helper': '',
+              'helper status': '',
+              'user': currentUser,
+            }).catchError((onError) {});
+          } else {
+            debugPrint(
+                '########################## UPDATING ##########################');
+            Firestore.instance
+                .collection('help.current')
+                .document(currentUser)
+                .updateData({
+              'latitude': userLocation['latitude'].toString(),
+              'longitude': userLocation['longitude'].toString(),
+            }).catchError((onError) {});
+          }
+        });
         userLocation = value;
+        print('UserLocation: ' + userLocation.toString());
       });
     });
-    print('UserLocation: ' + userLocation.toString());
   }
 
   Future<Map<String, double>> _getLocation() async {

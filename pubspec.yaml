@@ -53,8 +53,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application:
-  assets:
-    - assets/download.png
+  # assets:
+  #   - assets/download.png
 
   # To add fonts to your application:
   fonts:

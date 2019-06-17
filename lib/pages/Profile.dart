@@ -34,7 +34,7 @@ _streamBuilder() {
 }
 
 Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-  if (data.data == null) {
+  if (data['name'] == null || data.data == null) {
     return ProfileEmptyPage();
   } else {
     final _gender = data['gender'].toString().toLowerCase();
@@ -203,8 +203,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
                               color: Colors.white,
                             )),
                         onPressed: () {
-                          Navigator.of(context)
-                              .popAndPushNamed('/UpdateProfile');
+                          Navigator.pushNamed(context, '/UpdateProfile');
                         },
                       ))
                 ],

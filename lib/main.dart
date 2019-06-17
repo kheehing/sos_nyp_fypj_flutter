@@ -27,19 +27,86 @@ import 'package:sosnyp/pages/css_test.dart';
 // import 'pages/_Test( Locatoin ).dart';
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: _handleWindowDisplay(),
-    initialRoute: '/',
-    // Routes
-    routes: <String, WidgetBuilder>{
-      '/Dashboard': (BuildContext context) => new DashBoardPage(),
-      '/Home': (BuildContext context) => new HomePage(),
-      '/Setting': (BuildContext context) => new SettingPage(),
-      '/Login': (BuildContext context) => new LoginPage(),
-      '/Profile': (BuildContext context) => new ProfilePage(),
-      '/Testing': (BuildContext context) => new TestingPage(),
-      '/UpdateProfile': (BuildContext context) => new UpdateProfilePage(),
+    onGenerateRoute: (RouteSettings settings) {
+      switch (settings.name) {
+        case '/Login':
+          return MaterialPageRoute(builder: (context) => LoginPage());
+          break;
+        // case '/Home':
+        //   return MaterialPageRoute(builder: (context) => HomePage());
+        //   break;
+        case '/Home':
+          return FadeRoute(page: HomePage());
+          break;
+        case '/Profile':
+          return FadeRoute(page: ProfilePage());
+          break;
+        case '/UpdateProfile':
+          return SlideLeftRoute(page: UpdateProfilePage());
+          break;
+        case '/Dashboard':
+          return FadeRoute(page: DashBoardPage());
+          break;
+        case '/Setting':
+          return FadeRoute(page: SettingPage());
+          break;
+        case '/Testing':
+          return FadeRoute(page: TestingPage());
+          break;
+      }
     },
   ));
+}
+
+class FadeRoute extends PageRouteBuilder {
+  final Widget page;
+  FadeRoute({this.page})
+      : super(
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              page,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+        );
+}
+
+class SlideLeftRoute extends PageRouteBuilder {
+  final Widget page;
+  SlideLeftRoute({this.page})
+      : super(
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              page,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
+        );
 }
 
 String currentUser;
@@ -102,7 +169,7 @@ class _MyDrawerState extends State<MyDrawer>
 
     Container _line() {
       return Container(
-        height: 10,
+          height: 10,
           margin: EdgeInsets.symmetric(horizontal: 30),
           child: TextField(
             enabled: false,
@@ -114,7 +181,7 @@ class _MyDrawerState extends State<MyDrawer>
           leading: icon,
           title: Text(title),
           onTap: () {
-            Navigator.of(context).popAndPushNamed('/' + navigator);
+            Navigator.popAndPushNamed(context, '/' + navigator);
           });
     }
 
@@ -152,6 +219,7 @@ class _MyDrawerState extends State<MyDrawer>
   }
 }
 
+// LoadingScreen
 Widget loadingScreen() {
   return new Scaffold(
       body: new Center(

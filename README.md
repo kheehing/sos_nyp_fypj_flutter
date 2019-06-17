@@ -6,7 +6,17 @@ There are many cases of special needs students with physical disabilities, espec
 ## Objective:
 To create a mobile application that provides assistance for special needs students with physical disabilities in time of emergency
 
-
+## Accounts created for the app
+### Admin
+#### UserName:
+admin@gmail.com
+#### Password:
+123456
+### User
+#### UserName:
+testing@gmail.com
+#### Password:
+123qwe
 
 
 ## Getting Started With Flutter

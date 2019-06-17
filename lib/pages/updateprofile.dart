@@ -12,6 +12,7 @@ class UpdateProfilePage extends StatefulWidget {
 }
 
 class _UpdateProfilePageState extends State<UpdateProfilePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   String _selectedGender;
 
@@ -53,6 +54,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+        key: _scaffoldKey,
         resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
           title: Text('Profile'),
@@ -206,7 +208,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       ),
                                     ])),
                                 Container(
-                                    margin: EdgeInsets.fromLTRB(0, 230, 0, 0),
+                                    margin: EdgeInsets.fromLTRB(0, 240, 0, 0),
                                     padding: EdgeInsets.all(10),
                                     child: Row(children: <Widget>[
                                       Container(
@@ -238,7 +240,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       ),
                                     ])),
                                 Container(
-                                    margin: EdgeInsets.fromLTRB(0, 280, 0, 0),
+                                    margin: EdgeInsets.fromLTRB(0, 300, 0, 0),
                                     padding: EdgeInsets.all(10),
                                     child: Row(children: <Widget>[
                                       Container(
@@ -352,7 +354,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   void _addDataBase() {
-    print('########################## ADDING ##########################');
+    debugPrint('########################## ADDING ##########################');
     if (_formKey.currentState.validate()) {
       Firestore.instance.collection('profile').document(currentUser).setData({
         'name': _controllerName.text,
@@ -362,12 +364,13 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         'course': _selectedCourse,
         'gender': _selectedGender,
       }).catchError((onError) {});
-      Navigator.of(context).popAndPushNamed('/Profile');
+      Navigator.of(context).pop();
     }
   }
 
   void _updateDataBase() {
-    print('########################## UPDATING ##########################');
+    debugPrint(
+        '########################## UPDATING ##########################');
     if (_formKey.currentState.validate()) {
       Firestore.instance
           .collection('profile')
@@ -380,53 +383,20 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         'course': _selectedCourse,
         'gender': _selectedGender,
       }).catchError((onError) {});
-      Navigator.of(context).popAndPushNamed('/Profile');
+      Navigator.of(context).pop();
     }
   }
 
   _validateSchoolCourse() {
     if (_selectedSchool == 'Choose a school') {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                title: new Text(
-                  'Select your school',
-                  textAlign: TextAlign.center,
-                ));
-          });
+      _scaffoldKey.currentState
+          .showSnackBar(new SnackBar(content: new Text("Select your School")));
     } else if (_selectedCourse == 'Choose ..') {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                title: new Text(
-                  'Select your course',
-                  textAlign: TextAlign.center,
-                ));
-          });
+      _scaffoldKey.currentState
+          .showSnackBar(new SnackBar(content: new Text("Select your Course")));
     } else if (_selectedGender == null) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                title: new Text(
-                  'Select your Sex',
-                  textAlign: TextAlign.center,
-                ));
-          });
+      _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(content: new Text("Select your Siological Sex")));
     } else
       return true;
   }

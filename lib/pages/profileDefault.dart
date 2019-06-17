@@ -100,7 +100,7 @@ class _ProfileEmptyPageState extends State<ProfileEmptyPage> {
                                           fontSize: 15,
                                           fontWeight: FontWeight.w600))),
                               Expanded(
-                                  child: Text('data',
+                                  child: Text('-',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontFamily: 'black_label',
@@ -122,7 +122,7 @@ class _ProfileEmptyPageState extends State<ProfileEmptyPage> {
                                       fontWeight: FontWeight.w600),
                                 )),
                                 Expanded(
-                                    child: Text('data',
+                                    child: Text('-',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontFamily: 'black_label',
@@ -145,7 +145,7 @@ class _ProfileEmptyPageState extends State<ProfileEmptyPage> {
                                       fontWeight: FontWeight.w600),
                                 )),
                                 Expanded(
-                                    child: Text('data',
+                                    child: Text('-',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontFamily: 'black_label',
