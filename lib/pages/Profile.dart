@@ -79,9 +79,9 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 17.5,
                   fontFamily: 'black_label',
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.bold,
                 ))),
         Container(
           alignment: Alignment.centerLeft,
@@ -92,7 +92,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
             softWrap: false,
             textAlign: TextAlign.left,
             style: TextStyle(
-                fontSize: 12,
+                fontSize: 15,
                 fontFamily: 'black_label',
                 fontWeight: FontWeight.w900),
           ),

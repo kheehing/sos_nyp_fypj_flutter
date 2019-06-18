@@ -1,6 +1,5 @@
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:location/location.dart';
@@ -21,27 +20,26 @@ Future<bool> _exitApp(BuildContext context) {
   return showDialog(
         context: context,
         builder: (_) => new AlertDialog(
-              title: new Text('Exit this application?'),
-              actions: <Widget>[
-                new FlatButton(
-                  child: new Text('No'),
-                  onPressed: () => Navigator.pop(context, false),
-                ),
-                new FlatButton(
-                  child: new Text('Yes'),
-                  onPressed: () => Navigator.pop(context, true),
-                ),
-              ],
-            ),
+                title: new Text('Exit this application?'),
+                actions: <Widget>[
+                  new FlatButton(
+                    child: new Text('No'),
+                    onPressed: () => Navigator.pop(context, false),
+                  ),
+                  new FlatButton(
+                    child: new Text('Yes'),
+                    onPressed: () => Navigator.pop(context, true),
+                  ),
+                ]),
       ) ??
       false;
 }
 
-Future<String> inputData() async {
-  final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-  final String uid = user.uid.toString();
-  return uid;
-}
+// Future<String> inputData() async {
+//   final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+//   final String uid = user.uid.toString();
+//   return uid;
+// }
 
 class _HomePageState extends State<HomePage> {
   Map<String, double> userLocation;
@@ -68,38 +66,43 @@ class _HomePageState extends State<HomePage> {
             leading: myLeading,
           ),
           drawer: new MyDrawer(),
-          body: Center(
+          body: Align(
+              alignment: Alignment(0, 1),
               child: Container(
-                  height: thisWidth - 20,
+                  height: thisWidth - 10,
                   width: thisWidth,
                   margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(99999),
-                      border: new Border.all(
-                        color: Colors.red,
-                        width: 10,
-                      )),
-                  child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Material(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(thisWidth),
-                        child: MaterialButton(
-                            onPressed: _helpButton,
-                            shape: new RoundedRectangleBorder(
-                                borderRadius:
-                                    new BorderRadius.circular(thisWidth)),
-                            child: Text(
-                              'HELP',
-                              maxLines: 1,
-                              softWrap: false,
-                              style: TextStyle(
-                                  fontSize: 100,
-                                  color: Colors.white,
-                                  fontFamily: 'black_label',
-                                  fontWeight: FontWeight.w600),
-                            )),
-                      )))),
+                    borderRadius: BorderRadius.circular(thisWidth),
+                    boxShadow: [
+                      new BoxShadow(
+                        color: Colors.black45,
+                        blurRadius: 10,
+                      )
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(thisWidth),
+                    child: MaterialButton(
+                        onPressed: _helpButton,
+                        shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(thisWidth)),
+                        child: FittedBox(
+                          child: Text(
+                            'HELP',
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(
+                                fontSize: 99999,
+                                color: Colors.white,
+                                fontFamily: 'black_label',
+                                fontWeight: FontWeight.w600),
+                          ),
+                          fit: BoxFit.fitWidth,
+                        )),
+                  ))),
         ));
   }
 
@@ -142,6 +145,7 @@ class _HomePageState extends State<HomePage> {
               'helper': '',
               'helper status': '',
               'user': currentUser,
+              'time': DateTime.now(),
             }).catchError((onError) {});
           } else {
             debugPrint(
@@ -152,6 +156,7 @@ class _HomePageState extends State<HomePage> {
                 .updateData({
               'latitude': userLocation['latitude'].toString(),
               'longitude': userLocation['longitude'].toString(),
+              'time': DateTime.now(),
             }).catchError((onError) {});
           }
         });

@@ -1,23 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sosnyp/main.dart';
-import 'dart:async';
 
 class DashBoardPage extends StatefulWidget {
-  final String title;
-  const DashBoardPage({Key key, this.title}) : super(key: key);
-
   @override
   _DashBoardPageState createState() => new _DashBoardPageState();
-}
-
-Future<String> inputData() async {
-  final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-  final String uid = user.uid.toString();
-  return uid;
 }
 
 class _DashBoardPageState extends State<DashBoardPage> {
@@ -26,7 +15,6 @@ class _DashBoardPageState extends State<DashBoardPage> {
   @override
   Widget build(BuildContext context) {
     return new DefaultTabController(
-      length: 2,
       child: Scaffold(
         drawer: new MyDrawer(),
         appBar: AppBar(
@@ -36,6 +24,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
             tabs: [
               Tab(child: Text('Current')),
               Tab(child: Text('Attended')),
+              Tab(child: Text('Statistics')),
             ],
           ),
         ),
@@ -54,51 +43,88 @@ class _DashBoardPageState extends State<DashBoardPage> {
                   );
                 }),
             Icon(Icons.directions_transit),
+            Text('Statistics'),
           ],
         ),
       ),
+      length: 3,
     );
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    if (!document.exists) {
+      return loadingScreen();
+    }
     TextEditingController _controllerName = new TextEditingController();
+    TextEditingController _controllerNameDialog = new TextEditingController();
+
     Firestore.instance
         .collection('profile')
         .document(document['user'].toString())
         .get()
         .then((data) {
       setState(() async {
-        _controllerName.text = await data['name'];
+        String _name = await data['name'];
+        _controllerName.text = _name;
+        _controllerNameDialog.text = _name + ' Details';
       });
     });
+
+    void _showDialog() {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: TextField(
+                controller: _controllerNameDialog,
+                enabled: false,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                ),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'black_label',
+                    fontWeight: FontWeight.w900),
+              ),
+            );
+          });
+    }
+
     return ListTile(
       title: Row(
         children: <Widget>[
           Expanded(
-            child: TextField(
-              controller: _controllerName,
-              enabled: false,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-              ),
-              style: Theme.of(context).textTheme.headline,
+              child: TextField(
+                  controller: _controllerName,
+                  enabled: false,
+                  decoration: InputDecoration(border: InputBorder.none),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontFamily: 'black_label',
+                      fontWeight: FontWeight.w900))),
+          Container(
+            width: 180,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    document['latitude'].toString(),
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    document['longitude'].toString(),
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                )
+              ],
             ),
           ),
-          Expanded(
-            child: Text(
-              document['latitude'].toString(),
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              document['longitude'].toString(),
-              style: Theme.of(context).textTheme.display1,
-            ),
-          )
         ],
       ),
       onTap: () {
+        _showDialog();
         print('Should increase votes here.');
       },
     );

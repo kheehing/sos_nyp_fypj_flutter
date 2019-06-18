@@ -23,6 +23,8 @@ import 'package:sosnyp/pages/updateprofile.dart';
 import 'package:sosnyp/pages/Profile.dart';
 import 'package:sosnyp/pages/setting.dart';
 import 'package:sosnyp/pages/css_test.dart';
+import 'package:sosnyp/pages/inbox.dart';
+import 'package:sosnyp/pages/googleMap.dart';
 
 // import 'pages/_Test( Locatoin ).dart';
 void main() {
@@ -54,6 +56,12 @@ void main() {
           break;
         case '/Testing':
           return FadeRoute(page: TestingPage());
+          break;
+        case '/Inbox':
+          return FadeRoute(page: InboxPage());
+          break;
+        case '/GoogleMap':
+          return SlideLeftRoute(page: GoogleMapPage());
           break;
       }
     },
@@ -192,6 +200,7 @@ class _MyDrawerState extends State<MyDrawer>
           Container(
               margin: EdgeInsets.symmetric(vertical: 5), child: Text('Admin')),
           _listTile(Icon(Icons.dashboard), 'DashBoard', 'Dashboard'),
+          _listTile(Icon(Icons.inbox), 'Inbox', 'Inbox'),
         ]);
       } else
         return SizedBox(height: 0);
@@ -205,6 +214,7 @@ class _MyDrawerState extends State<MyDrawer>
       _listTile(Icon(Icons.face), 'Profile', 'Profile'),
       _listTile(Icon(Icons.settings), 'Setting', 'Setting'),
       _listTile(Icon(Icons.access_alarms), 'TestButton', 'Testing'),
+      _listTile(Icon(Icons.map), 'Map', 'GoogleMap'),
       _listTilesAdmin(context),
       _line(),
       ListTile(
