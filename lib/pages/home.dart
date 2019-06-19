@@ -139,9 +139,10 @@ class _HomePageState extends State<HomePage> {
                 .collection('help.current')
                 .document(currentUser)
                 .setData({
+              'type': 'help',
               'latitude': userLocation['latitude'].toString(),
               'longitude': userLocation['longitude'].toString(),
-              'status': '',
+              'status': 'Help',
               'helper': '',
               'helper status': '',
               'user': currentUser,
