@@ -57,10 +57,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         key: _scaffoldKey,
         resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
-          title: Text('Profile'),
-          leading: myLeading,
+          title: Text('Update Profile'),
         ),
-        drawer: new MyDrawer(),
         body: ListTile(
             title: Center(
                 child: Form(

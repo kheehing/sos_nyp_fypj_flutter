@@ -1,20 +1,13 @@
-import 'package:permission_handler/permission_handler.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
-import 'package:location/location.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:sosnyp/main.dart';
 import 'dart:async';
 
-class HomePage extends StatefulWidget {
-  final String title;
-  const HomePage({Key key, this.title}) : super(key: key);
-
-  @override
-  _HomePageState createState() => new _HomePageState();
-}
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:sosnyp/main.dart';
 
 Future<bool> _exitApp(BuildContext context) {
   return showDialog(
@@ -35,11 +28,13 @@ Future<bool> _exitApp(BuildContext context) {
       false;
 }
 
-// Future<String> inputData() async {
-//   final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-//   final String uid = user.uid.toString();
-//   return uid;
-// }
+class HomePage extends StatefulWidget {
+  final String title;
+  const HomePage({Key key, this.title}) : super(key: key);
+
+  @override
+  _HomePageState createState() => new _HomePageState();
+}
 
 class _HomePageState extends State<HomePage> {
   Map<String, double> userLocation;
@@ -47,14 +42,6 @@ class _HomePageState extends State<HomePage> {
   PermissionStatus _status;
 
   // @override
-  void iniState() {
-    super.initState();
-    PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.locationWhenInUse)
-        .then(_updateStatus);
-    // Location
-  }
-
   @override
   Widget build(BuildContext context) {
     double thisWidth = MediaQuery.of(context).size.width;
@@ -106,12 +93,68 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  void _updateStatus(PermissionStatus status) {
-    if (status != _status) {
-      setState(() {
-        _status = status;
-      });
+  void iniState() {
+    super.initState();
+    PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.locationWhenInUse)
+        .then(_updateStatus); // Location
+  }
+
+  Future<Map<String, double>> _getLocation() async {
+    var currentLocation = <String, double>{};
+    try {
+      currentLocation = await location.getLocation();
+      userLocation = currentLocation;
+    } catch (e) {
+      currentLocation = null;
     }
+    return currentLocation;
+  }
+
+  _helpButton() {
+    PermissionHandler().requestPermissions(
+        [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
+    _getLocation().then((value) async {
+      userLocation = value;
+      var data = await Firestore.instance
+          .collection('help.current')
+          .document(currentUser)
+          .get();
+      var profileData = await Firestore.instance
+          .collection('profile')
+          .document(currentUser)
+          .get();
+      if (data.data == null) {
+        Firestore.instance
+            .collection('help.current')
+            .document(currentUser)
+            .setData({
+          'type': 'help',
+          'latitude': value['latitude'].toString(),
+          'longitude': value['longitude'].toString(),
+          'status': 'Help',
+          'helper': '',
+          'helper otw': '',
+          'user.name': profileData['name'],
+          'user.admin': profileData['admin'],
+          'user.course': profileData['course'],
+          'user.school': profileData['school'],
+          'user.gender': profileData['gender'],
+          'user.mobile': profileData['mobile'],
+          'user': currentUser,
+          'time': DateTime.now(),
+        }).catchError((onError) {});
+      } else {
+        Firestore.instance
+            .collection('help.current')
+            .document(currentUser)
+            .updateData({
+          'latitude': value['latitude'].toString(),
+          'longitude': value['longitude'].toString(),
+          'time': DateTime.now(),
+        }).catchError((onError) {});
+      }
+    });
   }
 
   void _onStatusRequest(Map<PermissionGroup, PermissionStatus> statuses) {
@@ -122,58 +165,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  _helpButton() {
-    PermissionHandler().requestPermissions(
-        [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
-    _getLocation().then((value) {
+  void _updateStatus(PermissionStatus status) {
+    if (status != _status) {
       setState(() {
-        var _documents = Firestore.instance
-            .collection('help.current')
-            .document(currentUser)
-            .get();
-        _documents.then((data) {
-          if (data.data == null) {
-            debugPrint(
-                '########################## ADDING ##########################');
-            Firestore.instance
-                .collection('help.current')
-                .document(currentUser)
-                .setData({
-              'type': 'help',
-              'latitude': userLocation['latitude'].toString(),
-              'longitude': userLocation['longitude'].toString(),
-              'status': 'Help',
-              'helper': '',
-              'helper status': '',
-              'user': currentUser,
-              'time': DateTime.now(),
-            }).catchError((onError) {});
-          } else {
-            debugPrint(
-                '########################## UPDATING ##########################');
-            Firestore.instance
-                .collection('help.current')
-                .document(currentUser)
-                .updateData({
-              'latitude': userLocation['latitude'].toString(),
-              'longitude': userLocation['longitude'].toString(),
-              'time': DateTime.now(),
-            }).catchError((onError) {});
-          }
-        });
-        userLocation = value;
-        print('UserLocation: ' + userLocation.toString());
+        _status = status;
       });
-    });
-  }
-
-  Future<Map<String, double>> _getLocation() async {
-    var currentLocation = <String, double>{};
-    try {
-      currentLocation = await location.getLocation();
-    } catch (e) {
-      currentLocation = null;
     }
-    return currentLocation;
   }
 }

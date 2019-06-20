@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -47,26 +46,6 @@ class _InboxPageState extends State<InboxPage> {
   }
 
   Widget buildListItem(BuildContext context, DocumentSnapshot document) {
-    TextEditingController _controllerName = new TextEditingController();
-    Future<dynamic> _getProfile(user) async {
-      DocumentSnapshot querySnapshot =
-          await Firestore.instance.collection("profile").document(user).get();
-      Map<String, dynamic> jsonString = querySnapshot.data;
-      final jsonRespone = json.encode(jsonString.toString());
-      return jsonRespone;
-    }
-
-    Firestore.instance
-        .collection('profile')
-        .document(document['user'].toString())
-        .get()
-        .then((data) {
-      setState(() async {
-        String _name = await data['name'];
-        _controllerName.text = _name;
-      });
-    });
-
     _openMap() async {
       final String _long = await document['longitude'];
       final String _lan = await document['latitude'];
@@ -93,18 +72,11 @@ class _InboxPageState extends State<InboxPage> {
           .document(document.documentID)
           .updateData({
         'status': 'Waiting',
-        'helper': '',
-        'helper status': current.data['name'],
+        'helper otw': current.data['name'],
       });
     }
 
     Future<void> attended() async {
-      var _data = await _getProfile(document['user'].toString());
-      int nameI = _data.indexOf('name');
-      int adminI = _data.indexOf('admin');
-      int courseI = _data.indexOf('course');
-      final String name = _data.substring(nameI + 6, adminI - 2);
-      final String admin = _data.substring(adminI + 7, courseI - 2);
       final DocumentSnapshot db = await Firestore.instance
           .collection('help.current')
           .document(document.documentID)
@@ -113,44 +85,32 @@ class _InboxPageState extends State<InboxPage> {
           .collection('profile')
           .document(currentUser)
           .get();
+      Navigator.of(context).pop(context);
       Firestore.instance.collection('help.attended').document().setData({
         'type': 'attended',
         'latitude': db.data['latitude'],
         'longitude': db.data['longitude'],
         'status': 'Attended',
-        'helper': db.data['helper'],
+        'helper': current['name'],
         'helper status': db.data['helper status'],
-        'user': current.data['name'],
-        'user.name': name,
-        'user.admin': admin,
+        'helper.name': current.data['name'],
+        'user': db.data['user'],
+        'user.name': db.data['user.name'],
+        'user.course': db.data['user.course'],
+        'user.school': db.data['user.school'],
+        'user.gender': db.data['user.gender'],
+        'user.mobile': db.data['user.mobile'],
+        'user.admin': db.data['user.admin'],
         'time': db.data['time'],
         'time attended': DateTime.now()
-      }).then((value) {
-        Firestore.instance
-            .collection('help.current')
-            .document(document.documentID)
-            .delete();
-      }).then((value) {
-        Navigator.of(context).pop(context);
       }).catchError((onError) {});
+      Firestore.instance
+          .collection('help.current')
+          .document(document.documentID)
+          .delete();
     }
 
     void _showDialog() async {
-      var _data = await _getProfile(document['user'].toString());
-      int genderI = _data.indexOf('gender');
-      int schoolI = _data.indexOf('school');
-      int mobileI = _data.indexOf('mobile');
-      int nameI = _data.indexOf('name');
-      int adminI = _data.indexOf('admin');
-      int courseI = _data.indexOf('course');
-      int endI = _data.indexOf('}');
-      final String gender = _data.substring(genderI + 8, schoolI - 2);
-      final String school = _data.substring(schoolI + 8, mobileI - 2);
-      final String mobile = _data.substring(mobileI + 8, nameI - 2);
-      final String name = _data.substring(nameI + 6, adminI - 2);
-      final String admin = _data.substring(adminI + 7, courseI - 2);
-      final String course = _data.substring(courseI + 8, endI);
-      // print(gender + school + mobile + name + admin + course + _data);
       Alert(
         style: AlertStyle(
           animationType: AnimationType.fromBottom,
@@ -173,38 +133,17 @@ class _InboxPageState extends State<InboxPage> {
               fontWeight: FontWeight.w900),
         ),
         context: context,
-        // type: AlertType.warning,
-        title: "$name\n$admin",
+        title: document['user.name'],
         buttons: [],
         content: Container(
           child: Column(
             children: <Widget>[
-              Row(children: <Widget>[
-                Expanded(
-                    child: Text('Sex: $gender',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'black_label',
-                            fontWeight: FontWeight.bold))),
-                Expanded(
-                    child: Text('Mobile: $mobile',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'black_label',
-                            fontWeight: FontWeight.bold))),
-              ]),
-              Text(DateFormat('K:mm:ss a').format(document['time']),
+              Text(DateFormat('kk:mm:ss a').format(document['time']),
                   style: TextStyle(
-                      // fontSize: 12,
-                      fontFamily: 'black_label',
-                      fontWeight: FontWeight.bold)),
+                      fontFamily: 'black_label', fontWeight: FontWeight.bold)),
               Text('Called for assistance',
                   style: TextStyle(
-                      // fontSize: 12,
-                      fontFamily: 'black_label',
-                      fontWeight: FontWeight.bold)),
+                      fontFamily: 'black_label', fontWeight: FontWeight.bold)),
               SizedBox(height: 10),
               DialogButton(
                   child: Text(
@@ -212,7 +151,9 @@ class _InboxPageState extends State<InboxPage> {
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                   onPressed: () {
-                    updateHelper();
+                    updateHelper().then((value) {
+                      Navigator.of(context).pop(context);
+                    });
                   }),
               SizedBox(height: 10),
               Row(children: <Widget>[
@@ -248,12 +189,8 @@ class _InboxPageState extends State<InboxPage> {
       title: Row(
         children: <Widget>[
           Expanded(
-              child: TextField(
-            controller: _controllerName,
-            enabled: false,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-            ),
+              child: Text(
+            document['user.name'],
             style: TextStyle(
                 fontSize: 15,
                 fontFamily: 'black_label',
@@ -265,7 +202,8 @@ class _InboxPageState extends State<InboxPage> {
               children: <Widget>[
                 Expanded(
                     child: Text(
-                  DateFormat('dd MMM yyyy K:mm:ss a').format(document['time']),
+                  DateFormat('dd MMM yyyy  kk:mm:ss a')
+                      .format(document['time']),
                   style: Theme.of(context).textTheme.body1,
                 )),
               ],

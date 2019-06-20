@@ -11,22 +11,20 @@
 //  flutter run             run ur program
 //  or u can press ctrl + f5 when using Visual Studio code
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-//  My Pages
+import 'package:sosnyp/pages/Profile.dart';
+import 'package:sosnyp/pages/css_test.dart';
 import 'package:sosnyp/pages/dashBoard.dart';
 import 'package:sosnyp/pages/home.dart';
-import 'package:sosnyp/pages/login.dart';
-import 'package:sosnyp/pages/updateprofile.dart';
-import 'package:sosnyp/pages/Profile.dart';
-import 'package:sosnyp/pages/setting.dart';
-import 'package:sosnyp/pages/css_test.dart';
 import 'package:sosnyp/pages/inbox.dart';
-import 'package:sosnyp/pages/googleMap.dart';
+import 'package:sosnyp/pages/login.dart';
+import 'package:sosnyp/pages/setting.dart';
+import 'package:sosnyp/pages/updateprofile.dart';
 
-// import 'pages/_Test( Locatoin ).dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -36,9 +34,6 @@ void main() {
         case '/Login':
           return MaterialPageRoute(builder: (context) => LoginPage());
           break;
-        // case '/Home':
-        //   return MaterialPageRoute(builder: (context) => HomePage());
-        //   break;
         case '/Home':
           return FadeRoute(page: HomePage());
           break;
@@ -60,14 +55,90 @@ void main() {
         case '/Inbox':
           return FadeRoute(page: InboxPage());
           break;
-        case '/GoogleMap':
-          return SlideLeftRoute(page: GoogleMapPage());
-          break;
       }
     },
   ));
 }
 
+String currentUser;
+
+final myLeading = Builder(
+  builder: (BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.menu),
+      tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+      onPressed: () {
+        Scaffold.of(context).openDrawer();
+      },
+    );
+  },
+);
+
+Widget loadingScreen() {
+  return new Scaffold(
+      body: new Center(
+          child: Stack(
+    children: <Widget>[
+      Container(
+          margin: EdgeInsets.only(bottom: 250),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.add,
+                  size: 50,
+                  color: Colors.red,
+                ),
+                Text(
+                  'SOS APP',
+                  textAlign: TextAlign.left,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontFamily: 'Black_label',
+                  ),
+                )
+              ])),
+      Container(
+        margin: EdgeInsets.only(top: 150),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          SizedBox(
+            height: 100,
+            width: 100,
+            child: CircularProgressIndicator(
+                strokeWidth: 10,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.red)),
+          ),
+        ]),
+      ),
+    ],
+  )));
+}
+
+Widget _handleWindowDisplay() {
+  return StreamBuilder(
+    stream: FirebaseAuth.instance.onAuthStateChanged,
+    builder: (BuildContext context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.none ||
+          snapshot.connectionState == ConnectionState.waiting) {
+        return loadingScreen();
+      } else if (snapshot.hasData) {
+        currentUser = snapshot.data.uid;
+        return HomePage();
+      } else {
+        return LoginPage();
+      }
+    },
+  );
+}
+
+// ###############################################################################
+// ################################### Widgets ###################################
+// ###############################################################################
+
+//  leading for AppBar
 class FadeRoute extends PageRouteBuilder {
   final Widget page;
   FadeRoute({this.page})
@@ -89,6 +160,15 @@ class FadeRoute extends PageRouteBuilder {
                 child: child,
               ),
         );
+}
+
+//Drawer
+class MyDrawer extends StatefulWidget {
+  final String title;
+  const MyDrawer({Key key, this.title}) : super(key: key);
+
+  @override
+  _MyDrawerState createState() => new _MyDrawerState();
 }
 
 class SlideLeftRoute extends PageRouteBuilder {
@@ -117,51 +197,7 @@ class SlideLeftRoute extends PageRouteBuilder {
         );
 }
 
-String currentUser;
-
-Widget _handleWindowDisplay() {
-  return StreamBuilder(
-    stream: FirebaseAuth.instance.onAuthStateChanged,
-    builder: (BuildContext context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.none ||
-          snapshot.connectionState == ConnectionState.waiting) {
-        return loadingScreen();
-      } else if (snapshot.hasData) {
-        currentUser = snapshot.data.uid;
-        return HomePage();
-      } else {
-        return LoginPage();
-      }
-    },
-  );
-}
-
-// ###############################################################################
-// ################################### Widgets ###################################
-// ###############################################################################
-
-//  leading for AppBar
-final myLeading = Builder(
-  builder: (BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.menu),
-      tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-      onPressed: () {
-        Scaffold.of(context).openDrawer();
-      },
-    );
-  },
-);
-
-//Drawer
-class MyDrawer extends StatefulWidget {
-  final String title;
-  const MyDrawer({Key key, this.title}) : super(key: key);
-
-  @override
-  _MyDrawerState createState() => new _MyDrawerState();
-}
-
+// LoadingScreen
 class _MyDrawerState extends State<MyDrawer>
     with SingleTickerProviderStateMixin {
   TextEditingController _controllerName = new TextEditingController();
@@ -214,7 +250,6 @@ class _MyDrawerState extends State<MyDrawer>
       _listTile(Icon(Icons.face), 'Profile', 'Profile'),
       _listTile(Icon(Icons.settings), 'Setting', 'Setting'),
       _listTile(Icon(Icons.access_alarms), 'TestButton', 'Testing'),
-      _listTile(Icon(Icons.map), 'Map', 'GoogleMap'),
       _listTilesAdmin(context),
       _line(),
       ListTile(
@@ -227,48 +262,4 @@ class _MyDrawerState extends State<MyDrawer>
           }),
     ])));
   }
-}
-
-// LoadingScreen
-Widget loadingScreen() {
-  return new Scaffold(
-      body: new Center(
-          child: Stack(
-    children: <Widget>[
-      Container(
-          margin: EdgeInsets.only(bottom: 250),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.add,
-                  size: 50,
-                  color: Colors.red,
-                ),
-                Text(
-                  'SOS APP',
-                  textAlign: TextAlign.left,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: TextStyle(
-                    fontSize: 50,
-                    fontFamily: 'Black_label',
-                  ),
-                )
-              ])),
-      Container(
-        margin: EdgeInsets.only(top: 150),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          SizedBox(
-            height: 100,
-            width: 100,
-            child: CircularProgressIndicator(
-                strokeWidth: 10,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.red)),
-          ),
-        ]),
-      ),
-    ],
-  )));
 }

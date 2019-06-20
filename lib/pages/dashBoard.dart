@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -42,23 +41,30 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     Firestore.instance.collection('help.current').snapshots(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData) return loadingScreen();
-                  return ListView.builder(
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) =>
-                        _buildListItem(context, snapshot.data.documents[index]),
-                  );
+                  if (snapshot.hasData == false) {
+                    return const Scaffold(body: Center(child: Text('no data')));
+                  } else if (snapshot.connectionState == ConnectionState.none ||
+                      snapshot.connectionState == ConnectionState.waiting) {
+                    return loadingScreen();
+                  } else
+                    return ListView.builder(
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index) => _buildListItem(
+                          context, snapshot.data.documents[index]),
+                    );
                 }),
             StreamBuilder(
                 stream:
                     Firestore.instance.collection('help.attended').snapshots(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) return loadingScreen();
-                  return ListView.builder(
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) =>
-                        _buildListItem(context, snapshot.data.documents[index]),
-                  );
+                  if (snapshot.connectionState == ConnectionState.none ||
+                      snapshot.connectionState == ConnectionState.waiting) {
+                    return loadingScreen();
+                  } else
+                    return ListView.builder(
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) => _buildListItem(
+                            context, snapshot.data.documents[index]));
                 }),
           ],
         ),
@@ -68,24 +74,6 @@ class _DashBoardPageState extends State<DashBoardPage> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    if (!document.exists) {
-      return loadingScreen();
-    }
-    TextEditingController _controllerName = new TextEditingController();
-    TextEditingController _controllerNameDialog = new TextEditingController();
-
-    Firestore.instance
-        .collection('profile')
-        .document(document['user'].toString())
-        .get()
-        .then((data) {
-      setState(() async {
-        String _name = await data['name'];
-        _controllerName.text = _name;
-        _controllerNameDialog.text = _name + ' Details';
-      });
-    });
-
     _openMap() async {
       final String _long = await document['longitude'];
       final String _lan = await document['latitude'];
@@ -102,38 +90,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
       }
     }
 
-    Future<dynamic> _getProfile(user) async {
-      DocumentSnapshot querySnapshot =
-          await Firestore.instance.collection("profile").document(user).get();
-      Map<String, dynamic> jsonString = querySnapshot.data;
-      final jsonRespone = json.encode(jsonString.toString());
-      return jsonRespone;
-    }
-
     void _showDialog() async {
-      // final DocumentSnapshot dbCurrent = await Firestore.instance
-      //     .collection('help.current')
-      //     .document(document.documentID)
-      //     .get();
-      // final DocumentSnapshot dbAttended = await Firestore.instance
-      //     .collection('help.attended')
-      //     .document(document.documentID)
-      //     .get();
-      var _data = await _getProfile(document['user'].toString());
-      int genderI = _data.indexOf('gender');
-      int schoolI = _data.indexOf('school');
-      int mobileI = _data.indexOf('mobile');
-      int nameI = _data.indexOf('name');
-      int adminI = _data.indexOf('admin');
-      int courseI = _data.indexOf('course');
-      int endI = _data.indexOf('}');
-      final String gender = _data.substring(genderI + 8, schoolI - 2);
-      final String school = _data.substring(schoolI + 8, mobileI - 2);
-      final String mobile = _data.substring(mobileI + 8, nameI - 2);
-      final String name = _data.substring(nameI + 6, adminI - 2);
-      final String admin = _data.substring(adminI + 7, courseI - 2);
-      final String course = _data.substring(courseI + 8, endI);
-      // print(gender + school + mobile + name + admin + course + _data);
       Widget _displayAttended() {
         if (document['type'] == 'attended') {
           return Column(children: <Widget>[
@@ -153,14 +110,67 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     fontSize: 12,
                     fontFamily: 'black_label',
                     fontWeight: FontWeight.bold)),
+            Text('Assisted by: ' + document['helper'],
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'black_label',
+                    fontWeight: FontWeight.bold)),
           ]);
         } else
           return SizedBox();
       }
 
-      _displayCurrent() {
+      Widget _displayCurrent() {
         if (document.data['type'] == 'help') {
-          return SizedBox();
+          return Column(children: <Widget>[
+            Text('Location',
+                style: TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'black_label',
+                    fontWeight: FontWeight.bold)),
+            Row(children: <Widget>[
+              Expanded(
+                  child: Center(
+                      child: Text(document['latitude'],
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontFamily: 'black_label')))),
+              Expanded(
+                  child: Center(
+                      child: Text(document['longitude'],
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 15, fontFamily: 'black_label')))),
+            ]),
+            Row(children: <Widget>[
+              Expanded(
+                  child: Center(
+                      child: Text('latitude',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontFamily: 'black_label',
+                              fontWeight: FontWeight.bold)))),
+              Expanded(
+                  child: Center(
+                      child: Text('longitude',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontFamily: 'black_label',
+                              fontWeight: FontWeight.bold)))),
+            ]),
+            Text('Last Requested Help',
+                style: TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'black_label',
+                    fontWeight: FontWeight.bold)),
+            Text(DateFormat('kk:mm:ss a').format(document['time']),
+                style: TextStyle(fontSize: 15, fontFamily: 'black_label')),
+          ]);
         } else
           return SizedBox();
       }
@@ -187,41 +197,52 @@ class _DashBoardPageState extends State<DashBoardPage> {
               fontWeight: FontWeight.w900),
         ),
         context: context,
-        // type: AlertType.warning,
-        title: "$name\n$admin",
-        desc: "School: $school \n$course",
-        buttons: [],
+        title: document['user.name'] + ' (' + document['user.admin'] + ')',
+        desc: document['user.course'] + ' (' + document['user.school'] + ')',
+        buttons: [
+          DialogButton(
+              child: Text(
+                'Location',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () => _openMap().whenComplete(() {
+                    Navigator.pop(context);
+                  }),
+              color: Colors.blue),
+        ],
         content: Container(
           child: Column(
             children: <Widget>[
               Row(children: <Widget>[
                 Expanded(
-                    child: Text('Sex: $gender',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'black_label',
-                            fontWeight: FontWeight.bold))),
+                    child: Row(children: <Widget>[
+                  Text('Sex: ',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: 'black_label',
+                          fontWeight: FontWeight.bold)),
+                  Text(document['user.gender'],
+                      textAlign: TextAlign.left,
+                      style:
+                          TextStyle(fontSize: 12, fontFamily: 'black_label')),
+                ])),
                 Expanded(
-                    child: Text('Mobile: $mobile',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'black_label',
-                            fontWeight: FontWeight.bold))),
+                    child: Row(children: <Widget>[
+                  Text('Mobile: ',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: 'black_label',
+                          fontWeight: FontWeight.bold)),
+                  Text(document['user.mobile'],
+                      textAlign: TextAlign.left,
+                      style:
+                          TextStyle(fontSize: 12, fontFamily: 'black_label')),
+                ])),
               ]),
               _displayAttended(),
               _displayCurrent(),
-              SizedBox(height: 10),
-              DialogButton(
-                  child: Text(
-                    'Location',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                  onPressed: () => _openMap().whenComplete(() {
-                        Navigator.pop(context);
-                      }),
-                  color: Colors.blue),
             ],
           ),
         ),
@@ -232,14 +253,12 @@ class _DashBoardPageState extends State<DashBoardPage> {
       title: Row(
         children: <Widget>[
           Expanded(
-              child: TextField(
-                  controller: _controllerName,
-                  enabled: false,
-                  decoration: InputDecoration(border: InputBorder.none),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'black_label',
-                      fontWeight: FontWeight.w900))),
+            child: Text(document['user.name'],
+                style: TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'black_label',
+                    fontWeight: FontWeight.w900)),
+          ),
           Container(
             width: 180,
             child: Row(
@@ -265,7 +284,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
         _showDialog();
       },
       onLongPress: () {
-        _showDialog();
+        _openMap();
       },
     );
   }

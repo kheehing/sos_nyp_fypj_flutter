@@ -2,36 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sosnyp/main.dart';
+
 import 'profileDefault.dart';
-
-class ProfilePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _ProfileState();
-}
-
-class _ProfileState extends State<ProfilePage> {
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: Text('Profile'),
-          leading: myLeading,
-        ),
-        drawer: new MyDrawer(),
-        body: _streamBuilder());
-  }
-}
-
-_streamBuilder() {
-  return StreamBuilder(
-      stream: Firestore.instance
-          .collection('profile')
-          .document(currentUser)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return loadingScreen();
-        return _buildListItem(context, snapshot.data);
-      });
-}
 
 Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
   if (data['name'] == null || data.data == null) {
@@ -213,5 +185,34 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
         ),
       ])
     ]);
+  }
+}
+
+_streamBuilder() {
+  return StreamBuilder(
+      stream: Firestore.instance
+          .collection('profile')
+          .document(currentUser)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return loadingScreen();
+        return _buildListItem(context, snapshot.data);
+      });
+}
+
+class ProfilePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<ProfilePage> {
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: new AppBar(
+          title: Text('Profile'),
+          leading: myLeading,
+        ),
+        drawer: new MyDrawer(),
+        body: _streamBuilder());
   }
 }

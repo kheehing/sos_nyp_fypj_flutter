@@ -30,6 +30,7 @@ dependencies:
 
   google_sign_in: ^3.2.4
 
+  liquid_pull_to_refresh: ^1.1.1
   url_launcher: any
   intl: any
   rxdart: any
