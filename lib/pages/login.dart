@@ -13,7 +13,6 @@ String validateEmail(String value) {
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
   RegExp regex = new RegExp(pattern);
   if (value.isEmpty) {
-    print('Empty Email');
     return "Email Can't be empty";
   } else if (!regex.hasMatch(value))
     return 'Enter Valid Email';
@@ -136,7 +135,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               validator: (value) {
                                 if (value.isEmpty) {
-                                  print('Empty Password');
                                   return "Password Can't be empty";
                                 }
                               })),
@@ -154,6 +152,36 @@ class _LoginPageState extends State<LoginPage> {
                                       decoration: TextDecoration.underline,
                                     )),
                               ))),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(0, 180, 0, 0),
+                          child: Align(
+                              alignment: Alignment.centerRight,
+                              child: FlatButton(
+                                padding: EdgeInsets.all(0),
+                                onPressed: () {
+                                  //function forgetpassword
+                                },
+                                child: Text('Forget Password',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    )),
+                              ))),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                              margin: EdgeInsets.fromLTRB(0, 230, 0, 0),
+                              child: FlatButton(
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/Register');
+                                },
+                                child: Text('Don\'t have an account ? Sign Up',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    )),
+                              ))),
                       Align(
                           alignment: Alignment.centerRight,
                           child: Container(
@@ -163,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                                   height: 50,
                                   child: RaisedButton(
                                     color: Colors.blueAccent,
-                                    child: Text('Log In',
+                                    child: Text('LogIn',
                                         style: TextStyle(color: Colors.white)),
                                     onPressed: _validateAndSave,
                                     shape: new RoundedRectangleBorder(

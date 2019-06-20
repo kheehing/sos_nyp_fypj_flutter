@@ -57,6 +57,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
   Widget build(BuildContext context) {
     return new DefaultTabController(
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
         drawer: new MyDrawer(),
         appBar: AppBar(
           title: Text('DashBoard'),

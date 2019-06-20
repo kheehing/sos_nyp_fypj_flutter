@@ -24,6 +24,7 @@ import 'package:sosnyp/pages/inbox.dart';
 import 'package:sosnyp/pages/login.dart';
 import 'package:sosnyp/pages/setting.dart';
 import 'package:sosnyp/pages/updateprofile.dart';
+import 'package:sosnyp/pages/register.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -54,6 +55,9 @@ void main() {
           break;
         case '/Inbox':
           return FadeRoute(page: InboxPage());
+          break;
+        case '/Register':
+          return FadeRoute(page: RegisterPage());
           break;
       }
     },
@@ -237,6 +241,7 @@ class _MyDrawerState extends State<MyDrawer>
               margin: EdgeInsets.symmetric(vertical: 5), child: Text('Admin')),
           _listTile(Icon(Icons.dashboard), 'DashBoard', 'Dashboard'),
           _listTile(Icon(Icons.inbox), 'Inbox', 'Inbox'),
+          _listTile(Icon(Icons.group_add), 'Register', 'Register'),
         ]);
       } else
         return SizedBox(height: 0);
@@ -249,7 +254,7 @@ class _MyDrawerState extends State<MyDrawer>
       _listTile(Icon(Icons.home), 'Home', 'Home'),
       _listTile(Icon(Icons.face), 'Profile', 'Profile'),
       _listTile(Icon(Icons.settings), 'Setting', 'Setting'),
-      _listTile(Icon(Icons.access_alarms), 'TestButton', 'Testing'),
+      _listTile(Icon(Icons.access_alarms), 'Test Page', 'Testing'),
       _listTilesAdmin(context),
       _line(),
       ListTile(

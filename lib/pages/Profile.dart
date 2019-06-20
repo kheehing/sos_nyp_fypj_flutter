@@ -6,7 +6,7 @@ import 'package:sosnyp/main.dart';
 import 'profileDefault.dart';
 
 Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-  if (data['name'] == null || data.data == null) {
+  if (data.data == null || data['name'] == null) {
     return ProfileEmptyPage();
   } else {
     final _gender = data['gender'].toString().toLowerCase();
