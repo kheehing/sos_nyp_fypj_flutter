@@ -44,6 +44,18 @@ class _HomePageState extends State<HomePage> {
   // @override
   @override
   Widget build(BuildContext context) {
+    StreamBuilder _getDB() {
+      return StreamBuilder(
+          stream: Firestore.instance
+              .collection('help.current')
+              .document(currentUser)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return loadingScreen();
+            return _buildItem(context, snapshot.data);
+          });
+    }
+
     double thisWidth = MediaQuery.of(context).size.width;
     return WillPopScope(
         onWillPop: () => _exitApp(context),
@@ -53,43 +65,51 @@ class _HomePageState extends State<HomePage> {
             leading: myLeading,
           ),
           drawer: new MyDrawer(),
-          body: Align(
-              alignment: Alignment(0, 1),
-              child: Container(
-                  height: thisWidth - 10,
-                  width: thisWidth,
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(thisWidth),
-                    boxShadow: [
-                      new BoxShadow(
-                        color: Colors.black45,
-                        blurRadius: 10,
-                      )
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(thisWidth),
-                    child: MaterialButton(
-                        onPressed: _helpButton,
-                        shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(thisWidth)),
-                        child: FittedBox(
-                          child: Text(
-                            'HELP',
-                            maxLines: 1,
-                            softWrap: false,
-                            overflow: TextOverflow.fade,
-                            style: TextStyle(
-                                fontSize: 99999,
-                                color: Colors.white,
-                                fontFamily: 'black_label',
-                                fontWeight: FontWeight.w600),
-                          ),
-                          fit: BoxFit.fitWidth,
-                        )),
-                  ))),
+          body: Stack(children: <Widget>[
+            _getDB(),
+            Align(
+                alignment: Alignment(0, 1),
+                child: Container(
+                    height: thisWidth - 10,
+                    width: thisWidth,
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(thisWidth),
+                      boxShadow: [
+                        new BoxShadow(
+                          color: Colors.black45,
+                          blurRadius: 10,
+                        )
+                      ],
+                    ),
+                    child: Material(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(thisWidth),
+                        child: GestureDetector(
+                          onLongPress: () {
+                            print('lol');
+                          },
+                          child: MaterialButton(
+                              onPressed: _helpButton,
+                              shape: new RoundedRectangleBorder(
+                                  borderRadius:
+                                      new BorderRadius.circular(thisWidth)),
+                              child: FittedBox(
+                                child: Text(
+                                  'HELP',
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  overflow: TextOverflow.fade,
+                                  style: TextStyle(
+                                      fontSize: 99999,
+                                      color: Colors.white,
+                                      fontFamily: 'black_label',
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                fit: BoxFit.fitWidth,
+                              )),
+                        )))),
+          ]),
         ));
   }
 
@@ -98,6 +118,117 @@ class _HomePageState extends State<HomePage> {
     PermissionHandler()
         .checkPermissionStatus(PermissionGroup.locationWhenInUse)
         .then(_updateStatus); // Location
+  }
+
+  Widget _buildItem(BuildContext context, DocumentSnapshot document) {
+    if (document.data == null) {
+      return Align(
+        alignment: Alignment(0, -1),
+        child: Container(
+          height: MediaQuery.of(context).size.width / 2,
+          width: MediaQuery.of(context).size.width,
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.green,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black45,
+                blurRadius: 10,
+              )
+            ],
+          ),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text('Current Status:\nNormal',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 99,
+                      color: Colors.white,
+                      // fontFamily: 'black_label',
+                    )),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    BoxDecoration _dashBoardDeco1() {
+      switch (document.data['status']) {
+        case 'Help':
+          return BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black45,
+                blurRadius: 10,
+              )
+            ],
+          );
+          break;
+        case 'Waiting':
+          return BoxDecoration(
+            color: Colors.orange,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black45,
+                blurRadius: 10,
+              )
+            ],
+          );
+          break;
+        default:
+          return BoxDecoration();
+      }
+    }
+
+    Text _dashBoardText() {
+      switch (document.data['status']) {
+        case 'Help':
+          return Text('Current Status:\nSeeking Help',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 99, color: Colors.white));
+          break;
+        case 'Waiting':
+          return Text('Current Status:\nStaff is on the Way',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 99, color: Colors.white));
+          break;
+        default:
+          return Text('');
+      }
+    }
+
+    return Align(
+      alignment: Alignment(0, -1),
+      child: Container(
+        height: MediaQuery.of(context).size.width / 2,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        decoration: _dashBoardDeco1(),
+        child: Container(
+          padding: EdgeInsets.all(10),
+          margin: EdgeInsets.all(10),
+          child: Center(
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: _dashBoardText(),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Future<Map<String, double>> _getLocation() async {

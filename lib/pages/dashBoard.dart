@@ -1,9 +1,13 @@
+import 'dart:async';
+// import 'dart:convert';
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+// import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sosnyp/main.dart';
@@ -15,7 +19,39 @@ class DashBoardPage extends StatefulWidget {
 }
 
 class _DashBoardPageState extends State<DashBoardPage> {
-  List current;
+  List<dynamic> dataList = [];
+  StreamController streamController;
+
+  @override
+  void initState() {
+    streamController = StreamController.broadcast();
+    setupData();
+    super.initState();
+  }
+
+  setupData() async {
+    Stream stream = await getData()
+      ..asBroadcastStream();
+    stream.listen((data) {
+      setState(() {
+        dataList.add(data[0]);
+        dataList.add(data[1]);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    streamController?.close();
+    streamController = null;
+  }
+
+  Future<Stream> getData() async {
+    Stream stream1 = Firestore.instance.collection('user.attended').snapshots();
+    Stream stream2 = Firestore.instance.collection('user.current').snapshots();
+    return StreamGroup.merge([stream1, stream2]).asBroadcastStream();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +72,14 @@ class _DashBoardPageState extends State<DashBoardPage> {
         body: TabBarView(
           children: [
             Center(child: Text('Statistics')),
+            // ListView.builder(
+            //   itemCount: dataList.length,
+            //   itemBuilder: (context, index) {
+            //     final item = dataList[index];
+            //     // if item is what type then what
+            //     Text('Hi');
+            //   },
+            // ),
             StreamBuilder(
                 stream:
                     Firestore.instance.collection('help.current').snapshots(),

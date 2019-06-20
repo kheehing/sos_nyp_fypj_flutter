@@ -171,7 +171,7 @@ class _InboxPageState extends State<InboxPage> {
                 Expanded(
                     child: DialogButton(
                         child: Text(
-                          'Help',
+                          'Helped',
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
                         onPressed: () {
