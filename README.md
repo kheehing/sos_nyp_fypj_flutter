@@ -8,16 +8,11 @@ To create a mobile application that provides assistance for special needs studen
 
 ## Accounts created for the app
 ### Admin
-#### UserName:
-admin@gmail.com
-#### Password:
-123456
+#### UserName:          Password:
+admin@gmail.com         123456
 ### User
-#### UserName:
-testing@gmail.com
-#### Password:
-123qwe
-
+#### UserName:          Password:
+testing@gmail.com       123qwe
 
 ## Getting Started With Flutter
 This project is a starting point for a Flutter application.
