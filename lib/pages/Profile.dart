@@ -1,12 +1,13 @@
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sosnyp/main.dart';
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'profileDefault.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -27,9 +28,9 @@ class _ProfileState extends State<ProfilePage> {
   }
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    // var image = await ImagePicker.pickImage(source: ImageSource.camera);
-
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    final StorageReference storageRef = FirebaseStorage.instance.ref().child(currentUser);
+    final StorageUploadTask task = storageRef.putFile(image);
     setState(() {
       _image = image;
     });
@@ -97,9 +98,14 @@ class _ProfileState extends State<ProfilePage> {
                             ]),
                           )
                         : FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Image.file(_image),
-                          ),
+                            fit: BoxFit.fill,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: Image.file(_image)
+                            )),
+                    //  Image.file(_image),
                   ))),
           Stack(
             children: <Widget>[

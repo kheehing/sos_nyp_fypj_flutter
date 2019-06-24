@@ -138,7 +138,9 @@ class _InboxPageState extends State<InboxPage> {
         content: Container(
           child: Column(
             children: <Widget>[
-              Text(DateFormat('kk:mm:ss a').format(document['time']),
+              Text(
+                  new DateFormat("hh:mm:ss a")
+                      .format(document['time'].toDate()),
                   style: TextStyle(
                       fontFamily: 'black_label', fontWeight: FontWeight.bold)),
               Text('Called for assistance',
@@ -202,8 +204,8 @@ class _InboxPageState extends State<InboxPage> {
               children: <Widget>[
                 Expanded(
                     child: Text(
-                  DateFormat('dd MMM yyyy  kk:mm:ss a')
-                      .format(document['time']),
+                  new DateFormat("dd MMM yyyy hh:mm:ss")
+                      .format(document['time'].toDate()),
                   style: Theme.of(context).textTheme.body1,
                 )),
               ],
