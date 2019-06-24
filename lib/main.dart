@@ -111,12 +111,11 @@ Widget loadingScreen() {
         child:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
           SizedBox(
-            height: 100,
-            width: 100,
-            child: CircularProgressIndicator(
-                strokeWidth: 10,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.red)),
-          ),
+              height: 100,
+              width: 100,
+              child: CircularProgressIndicator(
+                  strokeWidth: 10,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red))),
         ]),
       ),
     ],

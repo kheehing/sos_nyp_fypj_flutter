@@ -51,59 +51,77 @@ class _HomePageState extends State<HomePage> {
               .document(currentUser)
               .snapshots(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) return loadingScreen();
+            if (!snapshot.hasData)
+              return Align(
+                child: Container(
+                  padding: EdgeInsets.only(top: 50),
+                  child: SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 10,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.red))),
+                ),
+                alignment: Alignment(0, -1),
+              );
             return _buildItem(context, snapshot.data);
           });
     }
 
-    _helpButton() {
+    _helpButton() async {
       PermissionHandler().requestPermissions(
           [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
-      _getLocation().then((value) async {
-        var data = await Firestore.instance
+      var currentLocation = LocationData.fromMap(Map<String, double>());
+      var location = new Location();
+      try {
+        currentLocation = await location.getLocation();
+      } catch (e) {
+        currentLocation = null;
+      }
+      var data = await Firestore.instance
+          .collection('help.current')
+          .document(currentUser)
+          .get();
+      var profileData = await Firestore.instance
+          .collection('profile')
+          .document(currentUser)
+          .get();
+      if (!profileData.exists) {
+        // print('noData');
+        _homeScaffoldKey.currentState.showSnackBar(new SnackBar(
+          content: new Text("Update your profile first"),
+        ));
+      } else if (data.data == null) {
+        Firestore.instance
             .collection('help.current')
             .document(currentUser)
-            .get();
-        var profileData = await Firestore.instance
-            .collection('profile')
+            .setData({
+          'type': 'help',
+          'latitude': currentLocation.latitude.toString(),
+          'longitude': currentLocation.longitude.toString(),
+          'status': 'Help',
+          'helper': '',
+          'helper otw': '',
+          'user.name': profileData['name'],
+          'user.admin': profileData['admin'],
+          'user.course': profileData['course'],
+          'user.school': profileData['school'],
+          'user.gender': profileData['gender'],
+          'user.mobile': profileData['mobile'],
+          'user': currentUser,
+          'time': DateTime.now(),
+        }).catchError((onError) {});
+      } else {
+        Firestore.instance
+            .collection('help.current')
             .document(currentUser)
-            .get();
-        if (!profileData.exists) {
-          // print('noData');
-          _homeScaffoldKey.currentState.showSnackBar(new SnackBar(
-            content: new Text("Update your profile first"),
-          ));
-        } else if (data.data == null) {
-          Firestore.instance
-              .collection('help.current')
-              .document(currentUser)
-              .setData({
-            'type': 'help',
-            'latitude': value['latitude'].toString(),
-            'longitude': value['longitude'].toString(),
-            'status': 'Help',
-            'helper': '',
-            'helper otw': '',
-            'user.name': profileData['name'],
-            'user.admin': profileData['admin'],
-            'user.course': profileData['course'],
-            'user.school': profileData['school'],
-            'user.gender': profileData['gender'],
-            'user.mobile': profileData['mobile'],
-            'user': currentUser,
-            'time': DateTime.now(),
-          }).catchError((onError) {});
-        } else {
-          Firestore.instance
-              .collection('help.current')
-              .document(currentUser)
-              .updateData({
-            'latitude': value['latitude'].toString(),
-            'longitude': value['longitude'].toString(),
-            'time': DateTime.now(),
-          }).catchError((onError) {});
-        }
-      });
+            .updateData({
+          'latitude': currentLocation.latitude.toString(),
+          'longitude': currentLocation.longitude.toString(),
+          'time': DateTime.now(),
+        }).catchError((onError) {});
+      }
     }
 
     double thisWidth = MediaQuery.of(context).size.width;
@@ -280,17 +298,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  Future _getLocation() async {
-    var currentLocation = LocationData;
-    var location = new Location();
-    try {
-      currentLocation = location.getLocation() as Type;
-    } catch (e) {
-      currentLocation = null;
-    }
-    return currentLocation;
   }
 
   void _onStatusRequest(Map<PermissionGroup, PermissionStatus> statuses) {
