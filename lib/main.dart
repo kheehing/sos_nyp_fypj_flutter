@@ -11,9 +11,9 @@
 //  flutter run             run ur program
 //  or u can press ctrl + f5 when using Visual Studio code
 
-// import 'dart:async';
+import 'dart:async';
 
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sosnyp/pages/Profile.dart';
@@ -22,9 +22,9 @@ import 'package:sosnyp/pages/dashBoard.dart';
 import 'package:sosnyp/pages/home.dart';
 import 'package:sosnyp/pages/inbox.dart';
 import 'package:sosnyp/pages/login.dart';
-import 'package:sosnyp/pages/register.dart';
 import 'package:sosnyp/pages/setting.dart';
 import 'package:sosnyp/pages/updateprofile.dart';
+import 'package:sosnyp/pages/register.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -59,8 +59,6 @@ void main() {
         case '/Register':
           return FadeRoute(page: RegisterPage());
           break;
-        default:
-          return FadeRoute(page: HomePage());
       }
     },
   ));
@@ -162,9 +160,9 @@ class FadeRoute extends PageRouteBuilder {
             Widget child,
           ) =>
               FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+                opacity: animation,
+                child: child,
+              ),
         );
 }
 
@@ -194,26 +192,28 @@ class SlideLeftRoute extends PageRouteBuilder {
             Widget child,
           ) =>
               SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          ),
+                position: Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
         );
 }
 
 // LoadingScreen
 class _MyDrawerState extends State<MyDrawer>
     with SingleTickerProviderStateMixin {
+  TextEditingController _controllerName = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    // Future<DocumentSnapshot> _documents =
-    //     Firestore.instance.collection('profile').document(currentUser).get();
-    // _documents.then((db) async {
-    //   final _name = await db.data['name'];
-    //   _controllerName.text = 'User: ' + _name;
-    // });
+    Future<DocumentSnapshot> _documents =
+        Firestore.instance.collection('profile').document(currentUser).get();
+    _documents.then((db) async {
+      final _name = await db.data['name'];
+      _controllerName.text = 'User: ' + _name;
+    });
 
     Container _line() {
       return Container(

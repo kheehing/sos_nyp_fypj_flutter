@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sosnyp/main.dart';
 
 class RegisterPage extends StatefulWidget {
   final String title;
@@ -16,24 +17,15 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
 // login validate
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        title: Text('Register'),
-      ),
-      body: _form(),
-    );
-  }
-
-  String validateCfmPass(String value) {
-    if (value.isEmpty) {
-      return "Password Can't be empty";
-    } else if (value != _controllerPass.text)
-      return 'Enter the same password';
-    else
-      return null;
+  void _validateAndSave() {
+    if (_formKey.currentState.validate()) {
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _controllerEmail.text, password: _controllerPass.text)
+          .catchError((e) {
+        debugPrint(e);
+      });
+    }
   }
 
   String validateEmail(String value) {
@@ -46,6 +38,26 @@ class _RegisterPageState extends State<RegisterPage> {
       return 'Enter a Valid Email';
     else
       return null;
+  }
+
+  String validateCfmPass(String value) {
+    if (value.isEmpty) {
+      return "Password Can't be empty";
+    } else if (value != _controllerPass.text)
+      return 'Enter the same password';
+    else
+      return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      appBar: AppBar(
+        title: Text('Register'),
+      ),
+      body: _form(),
+    );
   }
 
   Form _form() {
@@ -73,17 +85,11 @@ class _RegisterPageState extends State<RegisterPage> {
             Container(
               margin: EdgeInsets.only(top: 95),
               child: TextFormField(
-                  keyboardType: TextInputType.text,
                   controller: _controllerPass,
-                  obscureText: false,
-                  autofocus: false,
-                  autocorrect: false,
-                  initialValue: null,
                   validator: (value) {
                     if (value.isEmpty) {
                       return "Password Can't be empty";
-                    } else
-                      return null;
+                    }
                   }),
             ),
             Container(
@@ -93,13 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
             Container(
               margin: EdgeInsets.only(top: 175),
               child: TextFormField(
-                  keyboardType: TextInputType.text,
-                  controller: _controllerCfmPass,
-                  obscureText: false,
-                  autofocus: false,
-                  autocorrect: false,
-                  initialValue: null,
-                  validator: validateCfmPass),
+                  controller: _controllerCfmPass, validator: validateCfmPass),
             ),
             Container(
                 alignment: Alignment(0.9, -0.1),
@@ -112,20 +112,5 @@ class _RegisterPageState extends State<RegisterPage> {
                 ))
           ]),
         ));
-  }
-
-  void _validateAndSave() {
-    if (_formKey.currentState.validate()) {
-      FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: _controllerEmail.text, password: _controllerPass.text)
-          .whenComplete(() {
-        FirebaseAuth.instance.signOut().then((value) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-        });
-      }).catchError((e) {
-        debugPrint(e);
-      });
-    }
   }
 }

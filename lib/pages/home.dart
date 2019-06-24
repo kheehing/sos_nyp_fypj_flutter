@@ -13,17 +13,17 @@ Future<bool> _exitApp(BuildContext context) {
   return showDialog(
         context: context,
         builder: (_) => new AlertDialog(
-            title: new Text('Exit this application?'),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('No'),
-                onPressed: () => Navigator.pop(context, false),
-              ),
-              new FlatButton(
-                child: new Text('Yes'),
-                onPressed: () => Navigator.pop(context, true),
-              ),
-            ]),
+                title: new Text('Exit this application?'),
+                actions: <Widget>[
+                  new FlatButton(
+                    child: new Text('No'),
+                    onPressed: () => Navigator.pop(context, false),
+                  ),
+                  new FlatButton(
+                    child: new Text('Yes'),
+                    onPressed: () => Navigator.pop(context, true),
+                  ),
+                ]),
       ) ??
       false;
 }
@@ -37,13 +37,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Map<String, double> userLocation;
+  var location = new Location();
   PermissionStatus _status;
 
   // @override
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _homeScaffoldKey =
-        new GlobalKey<ScaffoldState>();
     StreamBuilder _getDB() {
       return StreamBuilder(
           stream: Firestore.instance
@@ -56,61 +56,10 @@ class _HomePageState extends State<HomePage> {
           });
     }
 
-    _helpButton() {
-      PermissionHandler().requestPermissions(
-          [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
-      _getLocation().then((value) async {
-        var data = await Firestore.instance
-            .collection('help.current')
-            .document(currentUser)
-            .get();
-        var profileData = await Firestore.instance
-            .collection('profile')
-            .document(currentUser)
-            .get();
-        if (!profileData.exists) {
-          // print('noData');
-          _homeScaffoldKey.currentState.showSnackBar(new SnackBar(
-            content: new Text("Update your profile first"),
-          ));
-        } else if (data.data == null) {
-          Firestore.instance
-              .collection('help.current')
-              .document(currentUser)
-              .setData({
-            'type': 'help',
-            'latitude': value['latitude'].toString(),
-            'longitude': value['longitude'].toString(),
-            'status': 'Help',
-            'helper': '',
-            'helper otw': '',
-            'user.name': profileData['name'],
-            'user.admin': profileData['admin'],
-            'user.course': profileData['course'],
-            'user.school': profileData['school'],
-            'user.gender': profileData['gender'],
-            'user.mobile': profileData['mobile'],
-            'user': currentUser,
-            'time': DateTime.now(),
-          }).catchError((onError) {});
-        } else {
-          Firestore.instance
-              .collection('help.current')
-              .document(currentUser)
-              .updateData({
-            'latitude': value['latitude'].toString(),
-            'longitude': value['longitude'].toString(),
-            'time': DateTime.now(),
-          }).catchError((onError) {});
-        }
-      });
-    }
-
     double thisWidth = MediaQuery.of(context).size.width;
     return WillPopScope(
         onWillPop: () => _exitApp(context),
         child: Scaffold(
-          key: _homeScaffoldKey,
           appBar: AppBar(
             title: Text('Home'),
             leading: myLeading,
@@ -282,15 +231,61 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future _getLocation() async {
-    var currentLocation = LocationData;
-    var location = new Location();
+  Future<Map<String, double>> _getLocation() async {
+    var currentLocation = <String, double>{};
     try {
-      currentLocation = location.getLocation() as Type;
+      currentLocation = await location.getLocation();
+      userLocation = currentLocation;
     } catch (e) {
       currentLocation = null;
     }
     return currentLocation;
+  }
+
+  _helpButton() {
+    PermissionHandler().requestPermissions(
+        [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
+    _getLocation().then((value) async {
+      userLocation = value;
+      var data = await Firestore.instance
+          .collection('help.current')
+          .document(currentUser)
+          .get();
+      var profileData = await Firestore.instance
+          .collection('profile')
+          .document(currentUser)
+          .get();
+      if (data.data == null) {
+        Firestore.instance
+            .collection('help.current')
+            .document(currentUser)
+            .setData({
+          'type': 'help',
+          'latitude': value['latitude'].toString(),
+          'longitude': value['longitude'].toString(),
+          'status': 'Help',
+          'helper': '',
+          'helper otw': '',
+          'user.name': profileData['name'],
+          'user.admin': profileData['admin'],
+          'user.course': profileData['course'],
+          'user.school': profileData['school'],
+          'user.gender': profileData['gender'],
+          'user.mobile': profileData['mobile'],
+          'user': currentUser,
+          'time': DateTime.now(),
+        }).catchError((onError) {});
+      } else {
+        Firestore.instance
+            .collection('help.current')
+            .document(currentUser)
+            .updateData({
+          'latitude': value['latitude'].toString(),
+          'longitude': value['longitude'].toString(),
+          'time': DateTime.now(),
+        }).catchError((onError) {});
+      }
+    });
   }
 
   void _onStatusRequest(Map<PermissionGroup, PermissionStatus> statuses) {

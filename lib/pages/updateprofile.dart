@@ -138,7 +138,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                         child: TextFormField(
                                             controller: _controllerAdmin,
                                             validator: _validateAdmin,
-                                            maxLength: 7,
                                             keyboardType: TextInputType.text,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(

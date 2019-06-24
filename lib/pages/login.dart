@@ -136,8 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                               validator: (value) {
                                 if (value.isEmpty) {
                                   return "Password Can't be empty";
-                                } else
-                                  return null;
+                                }
                               })),
                       Container(
                           margin: EdgeInsets.fromLTRB(0, 117, 0, 0),
