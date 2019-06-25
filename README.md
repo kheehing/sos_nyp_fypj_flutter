@@ -38,9 +38,15 @@ A few resources to get you started if this is your first Flutter project:
 - I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor browser when finding the packages update.
 
 ### [Flutter Documentation](https://flutter.dev/docs)
+- [Get Started](https://flutter.dev/docs/get-started/install) (installing)
+- [Widgets Catalog](https://flutter.dev/docs/development/ui/widgets)
+- [API Docs](https://api.flutter.dev/)
+- [Cookbook](https://flutter.dev/docs/cookbook)
+- [Samples](https://github.com/flutter/samples/blob/master/INDEX.md)
+- [Videos](https://www.youtube.com/flutterdev)
 
 ### [Android Developers](https://developer.android.com/)
-
+I use this site to seach for dependecies on both Build.gradle.
 ## Dependencies (pubspec.yaml)
 
 - cloud_firestore: 0.12.5+2
