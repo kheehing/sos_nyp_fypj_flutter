@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sosnyp/main.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'profileDefault.dart';
+import 'package:sosnyp/pages/profileDefault.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -17,6 +17,12 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfileState extends State<ProfilePage> {
   File _image;
+  @override
+  void initState() {
+    super.initState();
+    downloadFile();
+  }
+
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
@@ -27,10 +33,27 @@ class _ProfileState extends State<ProfilePage> {
         body: _streamBuilder());
   }
 
+  Future<Null> downloadFile() async {
+    final StorageReference ref =
+        FirebaseStorage.instance.ref().child(currentUser);
+    final imageUrl = await ref.getDownloadURL();
+    Image image = Image.network(imageUrl.toString());
+    setState(() {
+      _image = image as File;
+    });
+  }
+
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
-    final StorageReference storageRef = FirebaseStorage.instance.ref().child(currentUser);
-    final StorageUploadTask task = storageRef.putFile(image);
+    //FireStore
+    String fileName = currentUser.toString();
+    StorageReference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child(fileName);
+    final StorageUploadTask uploadTask =
+        firebaseStorageRef.putFile(File(image.path));
+    final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
+    final String url = (await taskSnapshot.ref.getDownloadURL());
+    print('URL Is $url');
     setState(() {
       _image = image;
     });
@@ -97,15 +120,14 @@ class _ProfileState extends State<ProfilePage> {
                               ),
                             ]),
                           )
-                        : FittedBox(
-                            fit: BoxFit.fill,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Image.file(_image)
-                            )),
-                    //  Image.file(_image),
+                        : Container(
+                            margin: EdgeInsets.all(2),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(200),
+                                child: Image.file(
+                                  _image,
+                                  fit: BoxFit.fill,
+                                ))),
                   ))),
           Stack(
             children: <Widget>[

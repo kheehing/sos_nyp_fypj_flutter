@@ -141,7 +141,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
           return Column(children: <Widget>[
             Text(
                 'Called Time: ' +
-                    DateFormat('K:mm:ss a').format(document['time']),
+                    DateFormat('K:mm:ss a').format(document['time'].toDate()),
                 textAlign: TextAlign.left,
                 style: TextStyle(
                     fontSize: 12,
@@ -149,7 +149,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     fontWeight: FontWeight.bold)),
             Text(
                 'Assisted Time: ' +
-                    DateFormat('K:mm:ss a').format(document['time attended']),
+                    DateFormat('K:mm:ss a').format(document['time attended'].toDate()),
                 textAlign: TextAlign.left,
                 style: TextStyle(
                     fontSize: 12,
@@ -213,7 +213,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     fontSize: 15,
                     fontFamily: 'black_label',
                     fontWeight: FontWeight.bold)),
-            Text(DateFormat('kk:mm:ss a').format(document['time']),
+            Text(DateFormat('kk:mm:ss a').format(document['time'].toDate()),
                 style: TextStyle(fontSize: 15, fontFamily: 'black_label')),
           ]);
         } else
