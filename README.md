@@ -67,37 +67,37 @@ classpath 'com.google.gms:google-services:4.2.0'
 ## Build.gradle (android/app)
 
 ...
-android {
-compileSdkVersion 28
-lintOptions {
-disable 'InvalidPackage'
-}
-defaultConfig {
-// TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-applicationId "com.example.sosnyp"
-minSdkVersion 16
-targetSdkVersion 28
-multiDexEnabled true
-versionCode flutterVersionCode.toInteger()
-versionName flutterVersionName
-testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-}
-buildTypes {
-release {
-// TODO: Add your own signing config for the release build.
-// Signing with the debug keys for now, so `flutter run --release` works.
-signingConfig signingConfigs.debug
-}
-}
-}
-flutter {
-source '../..'
-}
-dependencies {
-testImplementation 'junit:junit:4.12'
-implementation 'com.google.firebase:firebase-auth:18.0.0'
-implementation "com.google.firebase:firebase-core:17.0.0"
-}
+android {<br />
+compileSdkVersion 28<br />
+lintOptions {<br />
+disable 'InvalidPackage'<br />
+}<br />
+defaultConfig {<br />
+// TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).<br />
+applicationId "com.example.sosnyp"<br />
+minSdkVersion 16<br />
+targetSdkVersion 28<br />
+multiDexEnabled true<br />
+versionCode flutterVersionCode.toInteger()<br />
+versionName flutterVersionName<br />
+testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"<br />
+}<br />
+buildTypes {<br />
+release {<br />
+// TODO: Add your own signing config for the release build.<br />
+// Signing with the debug keys for now, so `flutter run --release` works.<br />
+signingConfig signingConfigs.debug<br />
+}<br />
+}<br />
+}<br />
+flutter {<br />
+source '../..'<br />
+}<br />
+dependencies {<br />
+testImplementation 'junit:junit:4.12'<br />
+implementation 'com.google.firebase:firebase-auth:18.0.0'<br />
+implementation "com.google.firebase:firebase-core:17.0.0"<br />
+}<br />
 apply plugin: 'com.google.gms.google-services'
 
 - Under 'defaultConfig' multiDexEnabled has to be enabled or the app will crash (idk why)
