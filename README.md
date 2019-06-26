@@ -32,7 +32,7 @@ A few resources to get you started if this is your first Flutter project:
   For help getting started with Flutter, view our
   [online documentation](https://flutter.dev/docs), which offers tutorials,
   samples, guidance on mobile development, and a full API reference.
-
+  
 ### [Flutter Packages](https://pub.dev/flutter)
 I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor browser when finding the packages update.
 
@@ -44,21 +44,22 @@ I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor b
 - [Samples](https://github.com/flutter/samples/blob/master/INDEX.md)
 - [Videos](https://www.youtube.com/flutterdev)
 
-### [Android Developers](https://developer.android.com/)
-I use this site to seach for dependecies on both Build.gradle.
-## Dependencies (pubspec.yaml)
+## Running / Installing 
 
-- cloud_firestore: 0.12.5+2
-- firebase_auth: 0.11.1+7
-- firebase_storage: 3.0.2
-- intl: 0.15.8
-- rflutter_alert: 1.0.2
-- url_launcher: 5.0.3
-- location: ^2.3.5
-- provider: ^3.0.0
-- permission_handler: 3.1.0
-- cached_network_image: ^0.8.0
-- image_picker: 0.6.0+10
+### Visual Studio Code 
+- Ctrl + F5 (Run app without breakpoints)
+
+### Android Studio 
+- the green play button on the top right.
+
+### Command Prompt (CMD) 
+- Enter cd <app dir> (Replace <app dir> with your application’s directory.)
+- Run 'flutter run' (Run the app)
+  
+#### Installing
+- Run 'flutter build appbundle' (Build an app bundle)
+- Run 'flutter build apk --split-per-abi' (build 2 APK files)
+- Run 'flutter install' (Install an APK on a device)
 
 ## Build.gradle (android)
 
@@ -82,6 +83,23 @@ apply plugin: 'com.google.gms.google-services'<br />
 - Under 'defaultConfig' multiDexEnabled has to be enabled or the app will crash (idk why)
 - At the end need to apply plugin: 'com.google.gms.google-services'
 - more or less this page need not have to change anything other than adding some dependencies.
+
+## Dependencies (pubspec.yaml)
+
+- cloud_firestore: 0.12.5+2
+- firebase_auth: 0.11.1+7
+- firebase_storage: 3.0.2
+- intl: 0.15.8
+- rflutter_alert: 1.0.2
+- url_launcher: 5.0.3
+- location: ^2.3.5
+- provider: ^3.0.0
+- permission_handler: 3.1.0
+- cached_network_image: ^0.8.0
+- image_picker: 0.6.0+10
+
+### [Android Developers](https://developer.android.com/)
+I use this site to seach for dependecies on both Build.gradle.
 
 ## Permissions (AndroidManifest.xml / info.plist)
 
