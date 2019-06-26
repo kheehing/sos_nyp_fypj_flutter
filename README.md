@@ -32,20 +32,7 @@ A few resources to get you started if this is your first Flutter project:
   For help getting started with Flutter, view our
   [online documentation](https://flutter.dev/docs), which offers tutorials,
   samples, guidance on mobile development, and a full API reference.
-
-## Running / Installing 
-### Visual Studio Code 
-- Ctrl + F5 (Run app without breakpoints)
-### Android Studio 
-- the green play button on the top right
-### Command Prompt (CMD) 
-- Enter cd <app dir> (Replace <app dir> with your application’s directory.)
-- Run 'flutter run' (Run the app)
-#### Installing
-- Run 'flutter build appbundle' (Build an app bundle)
-- Run 'flutter build apk --split-per-abi' (build 2 APK files)
-- Run 'flutter install' (Install an APK on a device)
-
+  
 ### [Flutter Packages](https://pub.dev/flutter)
 
 - I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor browser when finding the packages update.
@@ -58,8 +45,26 @@ A few resources to get you started if this is your first Flutter project:
 - [Samples](https://github.com/flutter/samples/blob/master/INDEX.md)
 - [Videos](https://www.youtube.com/flutterdev)
 
+## Running / Installing 
+
+### Visual Studio Code 
+- Ctrl + F5 (Run app without breakpoints)
+
+### Android Studio 
+- the green play button on the top right.
+
+### Command Prompt (CMD) 
+- Enter cd <app dir> (Replace <app dir> with your application’s directory.)
+- Run 'flutter run' (Run the app)
+  
+#### Installing
+- Run 'flutter build appbundle' (Build an app bundle)
+- Run 'flutter build apk --split-per-abi' (build 2 APK files)
+- Run 'flutter install' (Install an APK on a device)
+
 ### [Android Developers](https://developer.android.com/)
 I use this site to seach for dependecies on both Build.gradle.
+
 ## Dependencies (pubspec.yaml)
 
 - cloud_firestore: 0.12.5+2
