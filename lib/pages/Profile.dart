@@ -16,7 +16,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfileState extends State<ProfilePage> {
-  File _image;
+  Image _image;
+  // File _image;
   @override
   void initState() {
     super.initState();
@@ -39,7 +40,7 @@ class _ProfileState extends State<ProfilePage> {
     final imageUrl = await ref.getDownloadURL();
     Image image = Image.network(imageUrl.toString());
     setState(() {
-      _image = image as File;
+      _image = image;
     });
   }
 
@@ -52,11 +53,7 @@ class _ProfileState extends State<ProfilePage> {
     final StorageUploadTask uploadTask =
         firebaseStorageRef.putFile(File(image.path));
     final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
-    final String url = (await taskSnapshot.ref.getDownloadURL());
-    print('URL Is $url');
-    setState(() {
-      _image = image;
-    });
+    downloadFile();
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
@@ -124,10 +121,7 @@ class _ProfileState extends State<ProfilePage> {
                             margin: EdgeInsets.all(2),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(200),
-                                child: Image.file(
-                                  _image,
-                                  fit: BoxFit.fill,
-                                ))),
+                                child: _image)),
                   ))),
           Stack(
             children: <Widget>[

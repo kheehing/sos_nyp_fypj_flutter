@@ -34,8 +34,7 @@ A few resources to get you started if this is your first Flutter project:
   samples, guidance on mobile development, and a full API reference.
 
 ### [Flutter Packages](https://pub.dev/flutter)
-
-- I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor browser when finding the packages update.
+I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor browser when finding the packages update.
 
 ### [Flutter Documentation](https://flutter.dev/docs)
 - [Get Started](https://flutter.dev/docs/get-started/install) (installing)
