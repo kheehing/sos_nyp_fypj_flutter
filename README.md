@@ -44,7 +44,7 @@ I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor b
 - [Samples](https://github.com/flutter/samples/blob/master/INDEX.md)
 - [Videos](https://www.youtube.com/flutterdev)
 
-## Running / Installing 
+## Running / Installing Application
 
 ### Visual Studio Code 
 - Ctrl + F5 (Run app without breakpoints)
