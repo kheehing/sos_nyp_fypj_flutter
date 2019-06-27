@@ -1,5 +1,5 @@
-import 'dart:async';
-
+// import 'dart:async';
+import 'package:sosnyp/functions/zoom_scaffold.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,25 +8,26 @@ import 'package:flutter/widgets.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sosnyp/main.dart';
+import 'package:sosnyp/pages/menu.dart';
 
-Future<bool> _exitApp(BuildContext context) {
-  return showDialog(
-        context: context,
-        builder: (_) => new AlertDialog(
-            title: new Text('Exit this application?'),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('No'),
-                onPressed: () => Navigator.pop(context, false),
-              ),
-              new FlatButton(
-                child: new Text('Yes'),
-                onPressed: () => Navigator.pop(context, true),
-              ),
-            ]),
-      ) ??
-      false;
-}
+// Future<bool> _exitApp(BuildContext context) {
+//   return showDialog(
+//         context: context,
+//         builder: (_) => new AlertDialog(
+//             title: new Text('Exit this application?'),
+//             actions: <Widget>[
+//               new FlatButton(
+//                 child: new Text('No'),
+//                 onPressed: () => Navigator.pop(context, false),
+//               ),
+//               new FlatButton(
+//                 child: new Text('Yes'),
+//                 onPressed: () => Navigator.pop(context, true),
+//               ),
+//             ]),
+//       ) ??
+//       false;
+// }
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -124,62 +125,27 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    double thisWidth = MediaQuery.of(context).size.width;
-    return WillPopScope(
-        onWillPop: () => _exitApp(context),
-        child: Scaffold(
-          key: _homeScaffoldKey,
-          appBar: AppBar(
-            title: Text('Home'),
-            leading: myLeading,
-          ),
-          drawer: new MyDrawer(),
-          body: Stack(children: <Widget>[
-            _getDB(),
-            Align(
-                alignment: Alignment(0, 1),
-                child: Container(
-                    height: thisWidth - 10,
-                    width: thisWidth,
-                    margin: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(thisWidth),
-                      boxShadow: [
-                        new BoxShadow(
-                          color: Colors.black45,
-                          blurRadius: 10,
-                        )
-                      ],
-                    ),
-                    child: Material(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(thisWidth),
-                        child: GestureDetector(
-                          onLongPress: () {
-                            print('lol');
-                          },
-                          child: MaterialButton(
-                              onPressed: _helpButton,
-                              shape: new RoundedRectangleBorder(
-                                  borderRadius:
-                                      new BorderRadius.circular(thisWidth)),
-                              child: FittedBox(
-                                child: Text(
-                                  'HELP',
-                                  maxLines: 1,
-                                  softWrap: false,
-                                  overflow: TextOverflow.fade,
-                                  style: TextStyle(
-                                      fontSize: 99999,
-                                      color: Colors.white,
-                                      fontFamily: 'black_label',
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                fit: BoxFit.fitWidth,
-                              )),
-                        )))),
-          ]),
-        ));
+    return new ZoomScaffold(
+      contentkey: _homeScaffoldKey,
+      title: 'Home',
+      menuScreen: MenuScreen(),
+      contentScreen: Layout(
+          contentBuilder: (cc) => Container(
+              color: Colors.grey[200],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  _getDB(),
+                  RaisedButton(
+                      onPressed: () {
+                        _helpButton();
+                      },
+                      child: Icon(
+                        Icons.help,
+                      ))
+                ],
+              ))),
+    );
   }
 
   void iniState() {

@@ -11,9 +11,6 @@
 //  flutter run             run ur program
 //  or u can press ctrl + f5 when using Visual Studio code
 
-// import 'dart:async';
-
-// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sosnyp/pages/Profile.dart';

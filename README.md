@@ -107,5 +107,3 @@ I use this site to seach for dependecies on both Build.gradle.
 - Ios uses [info.plist](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/AboutInformationPropertyListFiles.html) (ios/runner/info.plist)
 
 refer to the links, google or some other youtube videos on which permissions you need from the device.
-
-testing

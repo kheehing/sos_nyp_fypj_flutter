@@ -7,7 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sosnyp/functions/zoom_scaffold.dart';
 import 'package:sosnyp/main.dart';
+import 'package:sosnyp/pages/menu.dart';
 import 'package:sosnyp/pages/profileDefault.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -25,13 +27,23 @@ class _ProfileState extends State<ProfilePage> {
   }
 
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: Text('Profile'),
-          leading: myLeading,
-        ),
-        drawer: new MyDrawer(),
-        body: _streamBuilder());
+    return new ZoomScaffold(
+      menuScreen: MenuScreen(),
+      title: 'Profile',
+      contentScreen: Layout(
+          contentBuilder: (cc) => Container(
+              color: Colors.grey[200],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[_streamBuilder()],
+              ))),
+      // appBar: new AppBar(
+      //   title: Text('Profile'),
+      //   leading: myLeading,
+      // ),
+      // drawer: new MyDrawer(),
+      // body: _streamBuilder());
+    );
   }
 
   Future<Null> downloadFile() async {
@@ -53,6 +65,7 @@ class _ProfileState extends State<ProfilePage> {
     final StorageUploadTask uploadTask =
         firebaseStorageRef.putFile(File(image.path));
     final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
+    print(taskSnapshot);
     downloadFile();
   }
 
