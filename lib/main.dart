@@ -41,7 +41,7 @@ void main() {
         case '/UpdateProfile':
           return SlideLeftRoute(page: UpdateProfilePage());
           break;
-        case '/Dashboard':
+        case '/DashBoard':
           return FadeRoute(page: DashBoardPage());
           break;
         case '/Setting':
@@ -235,7 +235,7 @@ class _MyDrawerState extends State<MyDrawer>
           _line(),
           Container(
               margin: EdgeInsets.symmetric(vertical: 5), child: Text('Admin')),
-          _listTile(Icon(Icons.dashboard), 'DashBoard', 'Dashboard'),
+          _listTile(Icon(Icons.dashboard), 'DashBoard', 'DashBoard'),
           _listTile(Icon(Icons.inbox), 'Inbox', 'Inbox'),
           _listTile(Icon(Icons.group_add), 'Register', 'Register'),
         ]);

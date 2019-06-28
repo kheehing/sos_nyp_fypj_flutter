@@ -1,20 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sosnyp/functions/circular_image.dart';
 import 'package:flutter/material.dart';
+import 'package:sosnyp/functions/zoom_scaffold.dart';
 import 'package:sosnyp/main.dart';
+// import 'package:sosnyp/main.dart';
 
 class MenuScreen extends StatelessWidget {
   final String imageUrl =
       "https://celebritypets.net/wp-content/uploads/2016/12/Adriana-Lima.jpg";
 
-  final List options = [
+  final List<MenuItem> options = [
     MenuItem(Icons.home, 'Home'),
     MenuItem(Icons.face, 'Profile'),
     MenuItem(Icons.text_fields, 'Testing'),
-    if(currentUser == ""){
-    MenuItem(Icons.face, 'Profile'),
-    }
-    // MenuItem(Icons.settings, 'Setting'),
-    // MenuItem(Icons.format_list_bulleted, 'Orders'),
+  ];
+  final List<MenuItem> adminOptions = [
+    MenuItem(Icons.dashboard, 'DashBoard'),
+    MenuItem(Icons.face, 'Inbox'),
+    MenuItem(Icons.group_add, 'Register'),
   ];
 
   @override
@@ -69,6 +72,31 @@ class MenuScreen extends StatelessWidget {
               );
             }).toList(),
           ),
+          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2") Spacer(),
+          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
+            Column(
+              children: adminOptions.map((item) {
+                return ListTile(
+                  onTap: () {
+                    // menuController.close();
+                    Navigator.popAndPushNamed(
+                        context, '/' + item.title.toString());
+                  },
+                  leading: Icon(
+                    item.icon,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  title: Text(
+                    item.title,
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                );
+              }).toList(),
+            ),
           Spacer(),
           ListTile(
             onTap: () {},
@@ -82,12 +110,17 @@ class MenuScreen extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(
-              Icons.headset_mic,
+              Icons.power_settings_new,
               color: Colors.white,
               size: 20,
             ),
-            title: Text('Support',
+            title: Text('LogOut',
                 style: TextStyle(fontSize: 14, color: Colors.white)),
+            onTap: () {
+              FirebaseAuth.instance.signOut().then((value) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              });
+            },
           ),
         ],
       ),

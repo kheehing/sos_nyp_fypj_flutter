@@ -125,26 +125,29 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
+    thisHomePage() {
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _getDB(),
+          RaisedButton(
+              onPressed: () {
+                _helpButton();
+              },
+              child: Icon(
+                Icons.help,
+              ))
+        ],
+      );
+    }
+
     return new ZoomScaffold(
       contentkey: _homeScaffoldKey,
       title: 'Home',
       menuScreen: MenuScreen(),
       contentScreen: Layout(
-          contentBuilder: (cc) => Container(
-              color: Colors.grey[200],
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _getDB(),
-                  RaisedButton(
-                      onPressed: () {
-                        _helpButton();
-                      },
-                      child: Icon(
-                        Icons.help,
-                      ))
-                ],
-              ))),
+          contentBuilder: (cc) =>
+              Container(color: Colors.grey[200], child: thisHomePage())),
     );
   }
 

@@ -43,6 +43,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
   createContentDisplay() {
     return zoomAndSlideContent(new Container(
       child: new Scaffold(
+        resizeToAvoidBottomPadding: false,
         key: widget.contentkey,
         backgroundColor: Colors.transparent,
         appBar: new AppBar(
@@ -56,6 +57,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
               onPressed: () {
                 menuController.toggle();
               }),
+          // // right side of the appbar
           // actions: <Widget>[
           //   IconButton(
           //     onPressed: () {
