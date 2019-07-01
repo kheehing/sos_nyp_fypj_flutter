@@ -20,7 +20,7 @@ admin@gmail.com 123456
 
 #### UserName & Password:
 
-testing@gmail.com 123qwe
+test@gmail.com 123qwe
 
 ## Getting Started With Flutter
 
