@@ -45,91 +45,87 @@ class _ProfileState extends State<ProfilePage> {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1350, allowFontScaling: true);
+    _firestoreUpload(image) async {
+      final StorageUploadTask uploadTask = FirebaseStorage.instance
+          .ref()
+          .child(currentUser)
+          .putFile(File(image.path));
+      final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
+      print(taskSnapshot);
+    }
+
+    Future downloadFile() async {
+      final StorageReference ref =
+          FirebaseStorage.instance.ref().child(currentUser);
+      final imageUrl = await ref.getDownloadURL();
+      setState(() {
+        currentUserImageUrl = imageUrl;
+      });
+    }
+
+    Future _imageCamera() async {
+      File image = await ImagePicker.pickImage(source: ImageSource.camera);
+      await _firestoreUpload(image);
+      await downloadFile();
+    }
+
+    Future _imageGallery() async {
+      File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+      await _firestoreUpload(image);
+      await downloadFile();
+    }
+
+    void _profileImageSelection(BuildContext context) {
+      showRoundedModalBottomSheet(
+          radius: ScreenUtil.getInstance().setHeight(50),
+          context: context,
+          builder: (builder) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.only(topLeft: const Radius.circular(10)),
+              ),
+              child: Container(
+                  height: ScreenUtil.getInstance().setHeight(120),
+                  child: new Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: GestureDetector(
+                            onTap: () {
+                              _imageCamera();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle, color: viking),
+                              height: ScreenUtil.getInstance().setHeight(90),
+                              child: Icon(
+                                Icons.photo_camera,
+                                color: Colors.white,
+                              ),
+                            )),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                            onTap: () {
+                              _imageGallery();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle, color: viking),
+                              height: ScreenUtil.getInstance().setHeight(90),
+                              child: Icon(
+                                Icons.photo_library,
+                                color: Colors.white,
+                              ),
+                            )),
+                      ),
+                    ],
+                  )),
+            );
+          });
+    }
+
     if (data.data == null || data['name'] == null) {
-      return Center(
-        child: Text('No data'),
-      );
-    } else {
-      _firestoreUpload(image) async {
-        final StorageUploadTask uploadTask = FirebaseStorage.instance
-            .ref()
-            .child(currentUser)
-            .putFile(File(image.path));
-        final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
-        print(taskSnapshot);
-      }
-
-      Future downloadFile() async {
-        final StorageReference ref =
-            FirebaseStorage.instance.ref().child(currentUser);
-        final imageUrl = await ref.getDownloadURL();
-        setState(() {
-          currentUserImageUrl = imageUrl;
-        });
-      }
-
-      Future _imageCamera() async {
-        File image = await ImagePicker.pickImage(source: ImageSource.camera);
-        await _firestoreUpload(image);
-        await downloadFile();
-      }
-
-      Future _imageGallery() async {
-        File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-        await _firestoreUpload(image);
-        await downloadFile();
-      }
-
-      void _profileImageSelection(BuildContext context) {
-        showRoundedModalBottomSheet(
-            radius: ScreenUtil.getInstance().setHeight(50),
-            context: context,
-            builder: (builder) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius:
-                      BorderRadius.only(topLeft: const Radius.circular(10)),
-                ),
-                child: Container(
-                    height: ScreenUtil.getInstance().setHeight(120),
-                    child: new Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: GestureDetector(
-                              onTap: () {
-                                _imageCamera();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle, color: viking),
-                                height: ScreenUtil.getInstance().setHeight(90),
-                                child: Icon(
-                                  Icons.photo_camera,
-                                  color: Colors.white,
-                                ),
-                              )),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                              onTap: () {
-                                _imageGallery();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle, color: viking),
-                                height: ScreenUtil.getInstance().setHeight(90),
-                                child: Icon(
-                                  Icons.photo_library,
-                                  color: Colors.white,
-                                ),
-                              )),
-                        ),
-                      ],
-                    )),
-              );
-            });
-      }
-
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -141,22 +137,173 @@ class _ProfileState extends State<ProfilePage> {
               child: currentUserImageUrl == null
                   ? FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Stack(children: <Widget>[
-                        Icon(
-                          Icons.account_circle,
-                          size: 300,
-                          color: Colors.white,
-                        ),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(200, 200, 0, 0),
-                          child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.grey.shade800,
-                            size: 100,
-                          ),
-                        ),
-                      ]),
-                    )
+                      child: Icon(
+                        Icons.account_circle,
+                        size: ScreenUtil.getInstance().setHeight(500),
+                        color: Colors.white,
+                      ))
+                  : CircularImage(NetworkImage(currentUserImageUrl)),
+            ),
+            Container(
+                margin: EdgeInsets.only(
+                    top: ScreenUtil.getInstance().setHeight(300),
+                    left: ScreenUtil.getInstance().setWidth(300)),
+                height: ScreenUtil.getInstance().setHeight(100),
+                width: ScreenUtil.getInstance().setHeight(100),
+                decoration:
+                    BoxDecoration(color: viking, shape: BoxShape.circle),
+                child: GestureDetector(
+                    onTap: () {
+                      _profileImageSelection(context);
+                    },
+                    child: Icon(Icons.add,
+                        color: vikingWhite,
+                        size: ScreenUtil.getInstance().setHeight(60)))),
+          ]),
+          SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            Container(
+                height: ScreenUtil.getInstance().setHeight(100),
+                width: ScreenUtil.getInstance().setWidth(600),
+                child: AutoSizeText('Name',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: vikingDark,
+                      fontSize: ScreenUtil.getInstance().setHeight(270),
+                    )))
+          ]),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            Container(
+                height: ScreenUtil.getInstance().setHeight(40),
+                width: ScreenUtil.getInstance().setWidth(500),
+                child: AutoSizeText('Admin',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: vikingDark,
+                      fontSize: ScreenUtil.getInstance().setHeight(270),
+                    )))
+          ]),
+          SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+          Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                      ScreenUtil.getInstance().setHeight(40))),
+              child: Column(children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: AutoSizeText(
+                      'Course',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    Expanded(
+                        child: AutoSizeText(
+                      '-',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
+                  ],
+                ),
+                SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: AutoSizeText(
+                      'School',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    Expanded(
+                        child: AutoSizeText(
+                      '-',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
+                  ],
+                ),
+                SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: AutoSizeText(
+                      'Mobile',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    Expanded(
+                        child: AutoSizeText(
+                      '-',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
+                  ],
+                ),
+                SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: AutoSizeText(
+                      'Gender',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    Expanded(
+                        child: AutoSizeText(
+                      '-',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
+                  ],
+                ),
+              ])),
+        ],
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(height: ScreenUtil.getInstance().setHeight(50)),
+          Stack(children: <Widget>[
+            Container(
+              height: ScreenUtil.getInstance().setWidth(420),
+              width: ScreenUtil.getInstance().setWidth(420),
+              child: currentUserImageUrl == null
+                  ? FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Icon(
+                        Icons.account_circle,
+                        size: ScreenUtil.getInstance().setHeight(500),
+                        color: Colors.white,
+                      ))
                   : CircularImage(NetworkImage(currentUserImageUrl)),
             ),
             Container(

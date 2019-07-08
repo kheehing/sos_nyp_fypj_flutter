@@ -223,7 +223,11 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: currentUserImageUrl == null
-                        ? CircularProgressIndicator()
+                        ? Icon(
+                            Icons.account_circle,
+                            color: vikingDark,
+                            size: ScreenUtil.getInstance().setSp(80),
+                          )
                         : CircularImage(NetworkImage(currentUserImageUrl)),
                   ),
                   Expanded(
