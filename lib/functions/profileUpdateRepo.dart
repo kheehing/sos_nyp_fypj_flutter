@@ -1,4 +1,4 @@
-import 'updateprofile_model.dart';
+import 'package:sosnyp/functions/profileUpdateModel.dart';
 
 class Repository {
   List<Map> getAll() => _schoolCourse;

@@ -1,275 +1,312 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rounded_modal/rounded_modal.dart';
+import 'package:sosnyp/functions/circular_image.dart';
+import 'package:sosnyp/functions/rootPage.dart';
+import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:sosnyp/main.dart';
-import 'package:sosnyp/pages/profileDefault.dart';
+import 'package:sosnyp/theme.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ProfileState();
+
+  popupMenu(context) {
+    return PopupMenuButton<int>(
+      onSelected: (value) {
+        Navigator.of(context).pushNamed('/UpdateProfile');
+      },
+      itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 1,
+              child:
+                  Text("Update Profile", style: TextStyle(color: vikingDarker)),
+            ),
+          ],
+    );
+  }
 }
 
 class _ProfileState extends State<ProfilePage> {
-  Image _image;
-  // File _image;
-  @override
-  void initState() {
-    super.initState();
-    downloadFile();
-  }
-
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: Text('Profile'),
-          leading: myLeading,
-        ),
-        drawer: new MyDrawer(),
-        body: _streamBuilder());
-  }
-
-  Future<Null> downloadFile() async {
-    final StorageReference ref =
-        FirebaseStorage.instance.ref().child(currentUser);
-    final imageUrl = await ref.getDownloadURL();
-    Image image = Image.network(imageUrl.toString());
-    setState(() {
-      _image = image;
-    });
-  }
-
-  Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
-    //FireStore
-    String fileName = currentUser.toString();
-    StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child(fileName);
-    final StorageUploadTask uploadTask =
-        firebaseStorageRef.putFile(File(image.path));
-    final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
-    downloadFile();
+    return _streamBuilder();
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
+    ScreenUtil.instance =
+        ScreenUtil(width: 750, height: 1350, allowFontScaling: true);
     if (data.data == null || data['name'] == null) {
-      return ProfileEmptyPage();
+      return Center(
+        child: Text('No data'),
+      );
     } else {
-      final _gender = data['gender'].toString().toLowerCase();
-      _gendercolor(String value) {
-        var color = Colors.grey.shade300;
-        if (value.toLowerCase() == 'male') {
-          color = Colors.blue.shade200;
-        } else if (value.toLowerCase() == 'female') {
-          color = Colors.pink.shade200;
-        }
-        return color;
+      _firestoreUpload(image) async {
+        final StorageUploadTask uploadTask = FirebaseStorage.instance
+            .ref()
+            .child(currentUser)
+            .putFile(File(image.path));
+        final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
+        print(taskSnapshot);
       }
 
-      return Stack(children: <Widget>[
-        Align(
-            alignment: Alignment(1, -0.2),
-            child: Icon(
-              Icons.face,
-              size: 600,
-              color: _gendercolor(_gender),
-            )),
-        Column(children: <Widget>[
-          Container(
-              height: 100,
-              width: 100,
-              decoration: BoxDecoration(
-                  color: Colors.grey, borderRadius: BorderRadius.circular(100)),
-              // alignment: Alignment.topLeft,
-              margin: EdgeInsets.fromLTRB(
-                  0, 50, MediaQuery.of(context).size.width / 1.7, 0),
-              child: GestureDetector(
-                  onTap: () {
-                    getImage();
-                    print('object');
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey.shade500,
-                        borderRadius: BorderRadius.circular(100)),
-                    child: _image == null
-                        ? FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Stack(children: <Widget>[
-                              Icon(
-                                // Icons.add_a_photo,
-                                Icons.account_circle,
-                                size: 300,
-                                color: Colors.white,
-                              ),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(200, 200, 0, 0),
-                                child: Icon(
-                                  Icons.add_a_photo,
-                                  color: Colors.grey.shade800,
-                                  size: 100,
-                                ),
-                              ),
-                            ]),
-                          )
-                        : Container(
-                            margin: EdgeInsets.all(2),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(200),
-                                child: _image)),
-                  ))),
-          Stack(
-            children: <Widget>[
-              Container(),
-              Container(),
-            ],
-          ),
-          Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Text(data['name'],
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  style: TextStyle(
-                    fontSize: 17.5,
-                    fontFamily: 'black_label',
-                    fontWeight: FontWeight.bold,
-                  ))),
-          Container(
-            alignment: Alignment.centerLeft,
-            margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            child: Text(
-              data['admin'],
-              maxLines: 1,
-              softWrap: false,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  fontSize: 15,
-                  fontFamily: 'black_label',
-                  fontWeight: FontWeight.w900),
-            ),
-          ),
-          Stack(
-            children: <Widget>[
-              new Container(
-                padding: EdgeInsets.symmetric(vertical: 85),
-                margin: new EdgeInsets.fromLTRB(30, 15, 30, 50),
-                decoration: new BoxDecoration(
-                    border: new Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      new BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 15,
-                      )
-                    ]),
-                foregroundDecoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
+      Future downloadFile() async {
+        final StorageReference ref =
+            FirebaseStorage.instance.ref().child(currentUser);
+        final imageUrl = await ref.getDownloadURL();
+        setState(() {
+          currentUserImageUrl = imageUrl;
+        });
+      }
+
+      Future _imageCamera() async {
+        File image = await ImagePicker.pickImage(source: ImageSource.camera);
+        await _firestoreUpload(image);
+        await downloadFile();
+      }
+
+      Future _imageGallery() async {
+        File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+        await _firestoreUpload(image);
+        await downloadFile();
+      }
+
+      void _profileImageSelection(BuildContext context) {
+        showRoundedModalBottomSheet(
+            radius: ScreenUtil.getInstance().setHeight(50),
+            context: context,
+            builder: (builder) {
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius:
+                      BorderRadius.only(topLeft: const Radius.circular(10)),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                margin: new EdgeInsets.fromLTRB(30, 15, 30, 50),
-                child: Column(
-                  children: <Widget>[
-                    Stack(
+                child: Container(
+                    height: ScreenUtil.getInstance().setHeight(120),
+                    child: new Row(
                       children: <Widget>[
-                        Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            padding: EdgeInsets.all(10),
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                    padding: EdgeInsets.only(right: 20),
-                                    child: Text(
-                                      'Mobile',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontFamily: 'black_label',
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600),
-                                    )),
-                                Expanded(
-                                    child: Text(data['mobile'],
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontFamily: 'black_label',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500))),
-                              ],
-                            )),
-                        Container(
-                            margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                            padding: EdgeInsets.all(10),
-                            child: Row(children: <Widget>[
-                              Container(
-                                  padding: EdgeInsets.only(right: 20),
-                                  child: Text('School',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontFamily: 'black_label',
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600))),
-                              Expanded(
-                                  child: Text(data['school'],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontFamily: 'black_label',
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500))),
-                            ])),
-                        Container(
-                            margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                            padding: EdgeInsets.all(10),
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                    padding: EdgeInsets.only(right: 20),
-                                    child: Text(
-                                      'Course',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontFamily: 'black_label',
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600),
-                                    )),
-                                Expanded(
-                                    child: Text(data['course'],
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            fontFamily: 'black_label',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500))),
-                              ],
-                            )),
-                      ],
-                    ),
-                    Container(
-                        margin: EdgeInsets.only(top: 30),
-                        child: RaisedButton(
-                          color: Colors.blueAccent,
-                          child: Text('Update Profile',
-                              style: TextStyle(
-                                color: Colors.white,
+                        Expanded(
+                          child: GestureDetector(
+                              onTap: () {
+                                _imageCamera();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle, color: viking),
+                                height: ScreenUtil.getInstance().setHeight(90),
+                                child: Icon(
+                                  Icons.photo_camera,
+                                  color: Colors.white,
+                                ),
                               )),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/UpdateProfile');
-                          },
-                        ))
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                              onTap: () {
+                                _imageGallery();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle, color: viking),
+                                height: ScreenUtil.getInstance().setHeight(90),
+                                child: Icon(
+                                  Icons.photo_library,
+                                  color: Colors.white,
+                                ),
+                              )),
+                        ),
+                      ],
+                    )),
+              );
+            });
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(height: ScreenUtil.getInstance().setHeight(50)),
+          Stack(children: <Widget>[
+            Container(
+              height: ScreenUtil.getInstance().setWidth(420),
+              width: ScreenUtil.getInstance().setWidth(420),
+              child: currentUserImageUrl == null
+                  ? FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Stack(children: <Widget>[
+                        Icon(
+                          Icons.account_circle,
+                          size: 300,
+                          color: Colors.white,
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(200, 200, 0, 0),
+                          child: Icon(
+                            Icons.add_a_photo,
+                            color: Colors.grey.shade800,
+                            size: 100,
+                          ),
+                        ),
+                      ]),
+                    )
+                  : CircularImage(NetworkImage(currentUserImageUrl)),
+            ),
+            Container(
+                margin: EdgeInsets.only(
+                    top: ScreenUtil.getInstance().setHeight(300),
+                    left: ScreenUtil.getInstance().setWidth(300)),
+                height: ScreenUtil.getInstance().setHeight(100),
+                width: ScreenUtil.getInstance().setHeight(100),
+                decoration:
+                    BoxDecoration(color: viking, shape: BoxShape.circle),
+                child: GestureDetector(
+                    onTap: () {
+                      _profileImageSelection(context);
+                    },
+                    child: Icon(Icons.add,
+                        color: vikingWhite,
+                        size: ScreenUtil.getInstance().setHeight(60)))),
+          ]),
+          SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            Container(
+                height: ScreenUtil.getInstance().setHeight(100),
+                width: ScreenUtil.getInstance().setWidth(600),
+                child: AutoSizeText(data['name'],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: vikingDark,
+                      fontSize: ScreenUtil.getInstance().setHeight(270),
+                    )))
+          ]),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            Container(
+                height: ScreenUtil.getInstance().setHeight(40),
+                width: ScreenUtil.getInstance().setWidth(500),
+                child: AutoSizeText(data['admin'],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: vikingDark,
+                      fontSize: ScreenUtil.getInstance().setHeight(270),
+                    )))
+          ]),
+          SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+          Container(
+              // padding: EdgeInsets.symmetric(
+              //     vertical: ScreenUtil.getInstance().setHeight(10)),
+              // margin: EdgeInsets.symmetric(
+              //     horizontal: ScreenUtil.getInstance().setWidth(10)),
+              decoration: BoxDecoration(
+                  // color: viking,
+                  borderRadius: BorderRadius.circular(
+                      ScreenUtil.getInstance().setHeight(40))),
+              child: Column(children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: AutoSizeText(
+                      'Course',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    Expanded(
+                        child: AutoSizeText(
+                      data['course'],
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
                   ],
                 ),
-              ),
-            ],
-          ),
-        ])
-      ]);
+                SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: AutoSizeText(
+                      'School',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    Expanded(
+                        child: AutoSizeText(
+                      data['school'],
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
+                  ],
+                ),
+                SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: AutoSizeText(
+                      'Mobile',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    Expanded(
+                        child: AutoSizeText(
+                      data['mobile'],
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
+                  ],
+                ),
+                SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: AutoSizeText(
+                      'Gender',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    Expanded(
+                        child: AutoSizeText(
+                      data['gender'],
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: vikingDark,
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
+                  ],
+                ),
+              ])),
+        ],
+      );
     }
   }
 
@@ -280,7 +317,7 @@ class _ProfileState extends State<ProfilePage> {
             .document(currentUser)
             .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return loadingScreen();
+          if (!snapshot.hasData) return SplashScreen();
           return _buildListItem(context, snapshot.data);
         });
   }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:sosnyp/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -20,29 +21,20 @@ class _InboxPageState extends State<InboxPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-        title: Text('Inbox'),
-        leading: myLeading,
-      ),
-      drawer: new MyDrawer(),
-      body: StreamBuilder<QuerySnapshot>(
-          stream: helpCurrent,
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            if (!snapshot.hasData) {
-              return loadingScreen();
-            }
-            return ListView.builder(
-                // itemExtent: 80,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) =>
-                    buildListItem(context, snapshot.data.documents[index]));
-          }),
-    );
+    return StreamBuilder<QuerySnapshot>(
+        stream: helpCurrent,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData) {
+            return SplashScreen();
+          }
+          return ListView.builder(
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) =>
+                  buildListItem(context, snapshot.data.documents[index]));
+        });
   }
 
   Widget buildListItem(BuildContext context, DocumentSnapshot document) {
@@ -71,7 +63,8 @@ class _InboxPageState extends State<InboxPage> {
           .collection('help.current')
           .document(document.documentID)
           .updateData({
-        'status': 'Waiting',
+        'statusPrevious': 'OTW',
+        'status': 'OTW',
         'helper otw': current.data['name'],
       });
     }
@@ -90,7 +83,7 @@ class _InboxPageState extends State<InboxPage> {
         'type': 'attended',
         'latitude': db.data['latitude'],
         'longitude': db.data['longitude'],
-        'status': 'Attended',
+        'status': 'attended',
         'helper': current['name'],
         'helper status': db.data['helper status'],
         'helper.name': current.data['name'],

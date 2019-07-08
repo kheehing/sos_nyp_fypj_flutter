@@ -1,5 +1,4 @@
 import 'dart:async';
-// import 'dart:convert';
 import 'dart:io';
 
 import 'package:async/async.dart';
@@ -7,10 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-// import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:sosnyp/main.dart';
+import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DashBoardPage extends StatefulWidget {
@@ -18,26 +16,76 @@ class DashBoardPage extends StatefulWidget {
   _DashBoardPageState createState() => new _DashBoardPageState();
 }
 
-class _DashBoardPageState extends State<DashBoardPage> {
+class _DashBoardPageState extends State<DashBoardPage>
+    with SingleTickerProviderStateMixin {
   List<dynamic> dataList = [];
   StreamController streamController;
+  TabController _tabController;
 
   @override
-  void initState() {
-    streamController = StreamController.broadcast();
-    setupData();
-    super.initState();
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.grey[200],
+      child: dashBoard(),
+    );
   }
 
-  setupData() async {
-    Stream stream = await getData()
-      ..asBroadcastStream();
-    stream.listen((data) {
-      setState(() {
-        dataList.add(data[0]);
-        dataList.add(data[1]);
-      });
-    });
+  dashBoard() {
+    return Stack(
+      children: <Widget>[
+        Container(
+            margin: EdgeInsets.only(top: 50),
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                Center(child: Text('Statistics')),
+                StreamBuilder(
+                    stream: Firestore.instance
+                        .collection('help.current')
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData == false) {
+                        return SplashScreen();
+                      } else if (snapshot.connectionState ==
+                              ConnectionState.none ||
+                          snapshot.connectionState == ConnectionState.waiting) {
+                        return SplashScreen();
+                      } else
+                        return ListView.builder(
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) => _buildListItem(
+                              context, snapshot.data.documents[index]),
+                        );
+                    }),
+                StreamBuilder(
+                    stream: Firestore.instance
+                        .collection('help.attended')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.none ||
+                          snapshot.connectionState == ConnectionState.waiting) {
+                        return SplashScreen();
+                      } else
+                        return ListView.builder(
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) => _buildListItem(
+                                context, snapshot.data.documents[index]));
+                    }),
+              ],
+            )),
+        TabBar(
+          labelColor: Colors.black,
+          indicatorColor: Colors.black,
+          tabs: <Widget>[
+            Tab(icon: Icon(Icons.insert_chart)),
+            Tab(icon: Icon(Icons.live_help)),
+            Tab(icon: Icon(Icons.help)),
+          ],
+          controller: _tabController,
+        ),
+      ],
+    );
   }
 
   @override
@@ -54,68 +102,22 @@ class _DashBoardPageState extends State<DashBoardPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return new DefaultTabController(
-      child: Scaffold(
-        resizeToAvoidBottomPadding: false,
-        drawer: new MyDrawer(),
-        appBar: AppBar(
-          title: Text('DashBoard'),
-          leading: myLeading,
-          bottom: TabBar(
-            tabs: [
-              Tab(child: Text('Statistics')),
-              Tab(child: Text('Current')),
-              Tab(child: Text('Attended')),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            Center(child: Text('Statistics')),
-            // ListView.builder(
-            //   itemCount: dataList.length,
-            //   itemBuilder: (context, index) {
-            //     final item = dataList[index];
-            //     // if item is what type then what
-            //     Text('Hi');
-            //   },
-            // ),
-            StreamBuilder(
-                stream:
-                    Firestore.instance.collection('help.current').snapshots(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  if (snapshot.hasData == false) {
-                    return const Scaffold(body: Center(child: Text('no data')));
-                  } else if (snapshot.connectionState == ConnectionState.none ||
-                      snapshot.connectionState == ConnectionState.waiting) {
-                    return loadingScreen();
-                  } else
-                    return ListView.builder(
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (context, index) => _buildListItem(
-                          context, snapshot.data.documents[index]),
-                    );
-                }),
-            StreamBuilder(
-                stream:
-                    Firestore.instance.collection('help.attended').snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.none ||
-                      snapshot.connectionState == ConnectionState.waiting) {
-                    return loadingScreen();
-                  } else
-                    return ListView.builder(
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) => _buildListItem(
-                            context, snapshot.data.documents[index]));
-                }),
-          ],
-        ),
-      ),
-      length: 3,
-    );
+  void initState() {
+    streamController = StreamController.broadcast();
+    setupData();
+    _tabController = new TabController(length: 3, vsync: this);
+    super.initState();
+  }
+
+  setupData() async {
+    Stream stream = await getData()
+      ..asBroadcastStream();
+    stream.listen((data) {
+      setState(() {
+        dataList.add(data[0]);
+        dataList.add(data[1]);
+      });
+    });
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
@@ -149,7 +151,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     fontWeight: FontWeight.bold)),
             Text(
                 'Assisted Time: ' +
-                    DateFormat('K:mm:ss a').format(document['time attended'].toDate()),
+                    DateFormat('K:mm:ss a')
+                        .format(document['time attended'].toDate()),
                 textAlign: TextAlign.left,
                 style: TextStyle(
                     fontSize: 12,

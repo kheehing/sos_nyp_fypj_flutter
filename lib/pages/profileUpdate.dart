@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:sosnyp/main.dart';
-import 'updateprofile_repo.dart';
+import 'package:sosnyp/functions/profileUpdateRepo.dart';
+import 'package:sosnyp/theme.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   final String title;
@@ -103,8 +105,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             textAlign: TextAlign.left,
                                             maxLines: 1,
                                             style: TextStyle(
-                                                fontFamily: 'black_label',
                                                 fontSize: 15,
+                                                color: vikingDark,
+                                                fontFamily: 'black_label',
                                                 fontWeight: FontWeight.w600),
                                           )),
                                       Expanded(
@@ -116,6 +119,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                               style: TextStyle(
                                                   fontFamily: 'black_label',
                                                   fontSize: 15,
+                                                  color: vikingDark,
                                                   fontWeight:
                                                       FontWeight.w500))),
                                     ])),
@@ -132,6 +136,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             style: TextStyle(
                                                 fontFamily: 'black_label',
                                                 fontSize: 15,
+                                                color: vikingDark,
                                                 fontWeight: FontWeight.w600),
                                           )),
                                       Expanded(
@@ -144,6 +149,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             style: TextStyle(
                                                 fontFamily: 'black_label',
                                                 fontSize: 15,
+                                                color: vikingDark,
                                                 fontWeight: FontWeight.w500),
                                             decoration: InputDecoration()),
                                       ),
@@ -161,6 +167,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             style: TextStyle(
                                                 fontFamily: 'black_label',
                                                 fontSize: 15,
+                                                color: vikingDark,
                                                 fontWeight: FontWeight.w600),
                                           )),
                                       Expanded(
@@ -173,6 +180,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                               style: TextStyle(
                                                   fontFamily: 'black_label',
                                                   fontSize: 15,
+                                                  color: vikingDark,
                                                   fontWeight:
                                                       FontWeight.w500))),
                                     ])),
@@ -188,6 +196,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                               style: TextStyle(
                                                   fontFamily: 'black_label',
                                                   fontSize: 15,
+                                                  color: vikingDark,
                                                   fontWeight:
                                                       FontWeight.w600))),
                                       Expanded(
@@ -197,7 +206,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                               .map((String dropDownStringItem) {
                                             return DropdownMenuItem<String>(
                                               value: dropDownStringItem,
-                                              child: Text(dropDownStringItem),
+                                              child: Text(
+                                                dropDownStringItem,
+                                                style: TextStyle(
+                                                    color: vikingDark),
+                                              ),
                                             );
                                           }).toList(),
                                           onChanged: (value) =>
@@ -219,6 +232,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             style: TextStyle(
                                                 fontFamily: 'black_label',
                                                 fontSize: 15,
+                                                color: vikingDark,
                                                 fontWeight: FontWeight.w600),
                                           )),
                                       Expanded(
@@ -228,10 +242,13 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                               .map((String dropDownStringItem) {
                                             return DropdownMenuItem<String>(
                                               value: dropDownStringItem,
-                                              child: Text(dropDownStringItem),
+                                              child: Text(
+                                                dropDownStringItem,
+                                                style: TextStyle(
+                                                    color: vikingDark),
+                                              ),
                                             );
                                           }).toList(),
-                                          // onChanged: (value) => print(value),
                                           onChanged: (value) =>
                                               _onSelectedCourse(value),
                                           value: _selectedCourse,
@@ -251,6 +268,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             style: TextStyle(
                                                 fontFamily: 'black_label',
                                                 fontSize: 15,
+                                                color: vikingDark,
                                                 fontWeight: FontWeight.w600),
                                           )),
                                       Expanded(
@@ -261,10 +279,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             .map((String dropDownStringItem) {
                                           return DropdownMenuItem<String>(
                                             value: dropDownStringItem,
-                                            child: Text(dropDownStringItem),
+                                            child: Text(dropDownStringItem,style: TextStyle(color: vikingDark,)),
                                           );
                                         }).toList(),
-                                        // onChanged: (value) => print(value),
                                         onChanged: (value) {
                                           _selectedGender = value;
                                           setState(
@@ -279,7 +296,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                 margin: EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 10),
                                 child: RaisedButton(
-                                    color: Colors.blueAccent,
+                                    color: vikingDarker,
                                     child: Text('Update',
                                         style: TextStyle(
                                           color: Colors.white,

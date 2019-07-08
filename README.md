@@ -56,10 +56,10 @@ I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor b
 - Enter cd <app dir> (Replace <app dir> with your application’s directory.)
 - Run 'flutter run' (Run the app)
   
-#### Installing
+#### Installing on ur devices
 - Run 'flutter build appbundle' (Build an app bundle)
 - Run 'flutter build apk --split-per-abi' (build 2 APK files)
-- Run 'flutter install' (Install an APK on a device)
+- Run 'flutterr install' (Install an APK on a device)
 
 ## Build.gradle (android)
 
