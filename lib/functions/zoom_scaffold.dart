@@ -1,20 +1,156 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sosnyp/functions/circular_image.dart';
+import 'package:sosnyp/functions/rootPage.dart';
+import 'package:sosnyp/functions/rootPage.dart' as prefix0;
+import 'package:sosnyp/main.dart';
+import 'package:sosnyp/theme.dart';
+
+typedef Widget ZoomScaffoldBuilder(
+    BuildContext context, MenuController menuController);
+
+class Layout {
+  final WidgetBuilder contentBuilder;
+
+  Layout({
+    this.contentBuilder,
+  });
+}
+
+class MenuController extends ChangeNotifier {
+  final TickerProvider vsync;
+  final AnimationController _animationController;
+  MenuState state = MenuState.closed;
+
+  MenuController({
+    this.vsync,
+  }) : _animationController = new AnimationController(vsync: vsync) {
+    _animationController
+      ..duration = const Duration(milliseconds: 250)
+      ..addListener(() {
+        notifyListeners();
+      })
+      ..addStatusListener((AnimationStatus status) {
+        switch (status) {
+          case AnimationStatus.forward:
+            state = MenuState.opening;
+            break;
+          case AnimationStatus.reverse:
+            state = MenuState.closing;
+            break;
+          case AnimationStatus.completed:
+            state = MenuState.open;
+            break;
+          case AnimationStatus.dismissed:
+            state = MenuState.closed;
+            break;
+        }
+        notifyListeners();
+      });
+  }
+
+  get percentOpen {
+    return _animationController.value;
+  }
+
+  close() {
+    _animationController.reverse();
+  }
+
+  @override
+  dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  open() {
+    _animationController.forward();
+  }
+
+  toggle() {
+    if (state == MenuState.open) {
+      close();
+    } else if (state == MenuState.closed) {
+      open();
+    }
+  }
+}
+
+class MenuItem {
+  String title;
+  IconData icon;
+
+  MenuItem(this.icon, this.title);
+}
+
+enum MenuState {
+  closed,
+  opening,
+  open,
+  closing,
+}
 
 class ZoomScaffold extends StatefulWidget {
-  final Widget menuScreen;
   final Layout contentScreen;
-  final String title;
   final Key contentkey;
 
   ZoomScaffold({
-    this.menuScreen,
     this.contentScreen,
-    this.title,
     this.contentkey,
   });
 
   @override
   _ZoomScaffoldState createState() => new _ZoomScaffoldState();
+}
+
+class ZoomScaffoldMenuController extends StatefulWidget {
+  final ZoomScaffoldBuilder builder;
+
+  ZoomScaffoldMenuController({
+    this.builder,
+  });
+
+  @override
+  ZoomScaffoldMenuControllerState createState() {
+    return new ZoomScaffoldMenuControllerState();
+  }
+}
+
+class ZoomScaffoldMenuControllerState
+    extends State<ZoomScaffoldMenuController> {
+  MenuController menuController;
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, getMenuController(context));
+  }
+
+  @override
+  void dispose() {
+    menuController.removeListener(_onMenuControllerChange);
+    super.dispose();
+  }
+
+  getMenuController(BuildContext context) {
+    final scaffoldState =
+        context.ancestorStateOfType(new TypeMatcher<_ZoomScaffoldState>())
+            as _ZoomScaffoldState;
+    return scaffoldState.menuController;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    menuController = getMenuController(context);
+    menuController.addListener(_onMenuControllerChange);
+  }
+
+  _onMenuControllerChange() {
+    setState(() {});
+  }
 }
 
 class _ZoomScaffoldState extends State<ZoomScaffold>
@@ -26,12 +162,199 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
   Curve slideInCurve = new Interval(0.0, 1.0, curve: Curves.easeOut);
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    getName();
+    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
+    ScreenUtil.instance =
+        ScreenUtil(width: 750, height: 1350, allowFontScaling: true);
 
-    menuController = new MenuController(
-      vsync: this,
-    )..addListener(() => setState(() {}));
+    return Stack(
+      children: [
+        Container(
+          child: Scaffold(
+            body: menu(context, menuController),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            if (menuController.state == MenuState.open) {
+              menuController.toggle();
+            }
+          },
+          child: createContentDisplay(),
+        ),
+      ],
+    );
+  }
+
+  getName() async {
+    var profileData = await Firestore.instance
+        .collection('profile')
+        .document(currentUser)
+        .get();
+    if (!profileData.exists) {
+    } else {
+      currentUserName = profileData.data['name'].toString();
+    }
+  }
+
+  menu(BuildContext context, menuController) {
+    final List<MenuItem> options = [
+      MenuItem(Icons.home, 'Home'),
+      MenuItem(Icons.face, 'Profile'),
+    ];
+    final List<MenuItem> adminOptions = [
+      MenuItem(Icons.dashboard, 'DashBoard'),
+      MenuItem(Icons.face, 'Inbox'),
+    ];
+    return Container(
+      padding: EdgeInsets.only(
+          top: 62,
+          left: 32,
+          bottom: 8,
+          right: MediaQuery.of(context).size.width / 2.9),
+      color: vikingWhite,
+      child: Column(
+        children: <Widget>[
+          Container(
+              height: 50,
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: currentUserImageUrl == null
+                        ? CircularProgressIndicator()
+                        : CircularImage(NetworkImage(currentUserImageUrl)),
+                  ),
+                  Expanded(
+                      child: AutoSizeText(
+                    currentUserName == null ? '' : currentUserName,
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: ScreenUtil.getInstance().setSp(80),
+                    ),
+                  )),
+                ],
+              )),
+          Spacer(),
+          Column(
+            children: options.map((item) {
+              return ListTile(
+                onTap: () {
+                  menuController.toggle();
+                  RootPage().changeScreen(item.title, menuController);
+                },
+                leading: Icon(
+                  item.icon,
+                  color: vikingDarker,
+                  size: 20,
+                ),
+                title: Text(item.title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: vikingDarker,
+                    )),
+              );
+            }).toList(),
+          ),
+          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2") Spacer(),
+          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
+            Column(
+              children: adminOptions.map((item) {
+                return ListTile(
+                  onTap: () {
+                    menuController.toggle();
+                    RootPage().changeScreen(item.title, menuController);
+                  },
+                  leading: Icon(
+                    item.icon,
+                    color: vikingDarker,
+                    size: 20,
+                  ),
+                  title: Text(
+                    item.title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: vikingDarker,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          Spacer(),
+          ListTile(
+            onTap: () {
+              //setting
+            },
+            leading: Icon(
+              Icons.settings,
+              color: vikingDarker,
+              size: 20,
+            ),
+            title: Text('Settings',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: vikingDarker,
+                )),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.power_settings_new,
+              color: vikingDarker,
+              size: 20,
+            ),
+            title: Text('LogOut',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: vikingDarker,
+                )),
+            onTap: () {
+              FirebaseAuth.instance.signOut().then((value) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              }).then((_) {
+                currentUser = null;
+                currentUserName = null;
+                prefix0.currentUserImageUrl = null;
+                RootPage().changeScreen('Home', menuController);
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  createContentDisplay() {
+    return zoomAndSlideContent(new Container(
+      child: new Scaffold(
+        resizeToAvoidBottomPadding: false,
+        key: widget.contentkey,
+        appBar: new AppBar(
+          elevation: 0.0,
+          leading: new IconButton(
+              icon: new Icon(
+                Icons.menu,
+                color: vikingWhite,
+              ),
+              onPressed: () {
+                menuController.toggle();
+              }),
+          // right side of the appbar
+          actions: <Widget>[
+            y == null ? Container() : y,
+          ],
+
+          title: Text(
+            title == null ? "SOS NYP" : title,
+            // widget.title.toString(),
+            style: TextStyle(color: vikingWhite),
+          ),
+        ),
+        body: widget.contentScreen.contentBuilder(context),
+      ),
+    ));
   }
 
   @override
@@ -40,43 +363,12 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
     super.dispose();
   }
 
-  createContentDisplay() {
-    return zoomAndSlideContent(new Container(
-      child: new Scaffold(
-        resizeToAvoidBottomPadding: false,
-        key: widget.contentkey,
-        backgroundColor: Colors.transparent,
-        appBar: new AppBar(
-          backgroundColor: Colors.grey[200],
-          elevation: 0.0,
-          leading: new IconButton(
-              icon: new Icon(
-                Icons.menu,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                menuController.toggle();
-              }),
-          // // right side of the appbar
-          // actions: <Widget>[
-          //   IconButton(
-          //     onPressed: () {
-          //       menuController.toggle();
-          //     },
-          //     icon: Icon(
-          //       Icons.access_time,
-          //       color: Colors.grey,
-          //     ),
-          //   ),
-          // ],
-          title: Text(
-            widget.title.toString(),
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-        body: widget.contentScreen.contentBuilder(context),
-      ),
-    ));
+  @override
+  void initState() {
+    super.initState();
+    menuController = new MenuController(
+      vsync: this,
+    )..addListener(() => setState(() {}));
   }
 
   zoomAndSlideContent(Widget content) {
@@ -125,150 +417,4 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          child: Scaffold(
-            body: widget.menuScreen,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            if (menuController.state == MenuState.open) {
-              menuController.toggle();
-            }
-          },
-          child: createContentDisplay(),
-        ),
-      ],
-    );
-  }
-}
-
-class ZoomScaffoldMenuController extends StatefulWidget {
-  final ZoomScaffoldBuilder builder;
-
-  ZoomScaffoldMenuController({
-    this.builder,
-  });
-
-  @override
-  ZoomScaffoldMenuControllerState createState() {
-    return new ZoomScaffoldMenuControllerState();
-  }
-}
-
-class ZoomScaffoldMenuControllerState
-    extends State<ZoomScaffoldMenuController> {
-  MenuController menuController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    menuController = getMenuController(context);
-    menuController.addListener(_onMenuControllerChange);
-  }
-
-  @override
-  void dispose() {
-    menuController.removeListener(_onMenuControllerChange);
-    super.dispose();
-  }
-
-  getMenuController(BuildContext context) {
-    final scaffoldState =
-        context.ancestorStateOfType(new TypeMatcher<_ZoomScaffoldState>())
-            as _ZoomScaffoldState;
-    return scaffoldState.menuController;
-  }
-
-  _onMenuControllerChange() {
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.builder(context, getMenuController(context));
-  }
-}
-
-typedef Widget ZoomScaffoldBuilder(
-    BuildContext context, MenuController menuController);
-
-class Layout {
-  final WidgetBuilder contentBuilder;
-
-  Layout({
-    this.contentBuilder,
-  });
-}
-
-class MenuController extends ChangeNotifier {
-  final TickerProvider vsync;
-  final AnimationController _animationController;
-  MenuState state = MenuState.closed;
-
-  MenuController({
-    this.vsync,
-  }) : _animationController = new AnimationController(vsync: vsync) {
-    _animationController
-      ..duration = const Duration(milliseconds: 250)
-      ..addListener(() {
-        notifyListeners();
-      })
-      ..addStatusListener((AnimationStatus status) {
-        switch (status) {
-          case AnimationStatus.forward:
-            state = MenuState.opening;
-            break;
-          case AnimationStatus.reverse:
-            state = MenuState.closing;
-            break;
-          case AnimationStatus.completed:
-            state = MenuState.open;
-            break;
-          case AnimationStatus.dismissed:
-            state = MenuState.closed;
-            break;
-        }
-        notifyListeners();
-      });
-  }
-
-  @override
-  dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  get percentOpen {
-    return _animationController.value;
-  }
-
-  open() {
-    _animationController.forward();
-  }
-
-  close() {
-    _animationController.reverse();
-  }
-
-  toggle() {
-    if (state == MenuState.open) {
-      close();
-    } else if (state == MenuState.closed) {
-      open();
-    }
-  }
-}
-
-enum MenuState {
-  closed,
-  opening,
-  open,
-  closing,
 }

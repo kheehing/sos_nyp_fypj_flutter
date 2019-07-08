@@ -1,0 +1,576 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:sosnyp/main.dart';
+import 'package:sosnyp/theme.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+final Tween<BorderRadius> _bevelRadius = new BorderRadiusTween(
+    begin: const BorderRadius.only(
+      topRight: Radius.circular(28.0),
+      bottomRight: Radius.circular(28.0),
+    ),
+    end: const BorderRadius.only(
+      topRight: Radius.circular(28.0),
+      bottomRight: Radius.circular(28.0),
+    ));
+
+PermissionStatus _status;
+
+button(context) {
+  return GestureDetector(
+      onTap: () {
+        helpButton(context);
+      },
+      child: Container(
+          height: ScreenUtil.getInstance().setHeight(100),
+          width: ScreenUtil.getInstance().setWidth(700),
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3),
+                    offset: Offset(5.0, 8.0),
+                    blurRadius: 5.0),
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3),
+                    offset: Offset(5.0, 5.0),
+                    blurRadius: 5.0)
+              ],
+              color: vikingError,
+              borderRadius: BorderRadius.circular(
+                  ScreenUtil.getInstance().setHeight(10))),
+          margin: EdgeInsets.symmetric(
+              horizontal: ScreenUtil.getInstance().setWidth(25)),
+          child: Center(
+            child: Text(
+              'Help',
+              style: TextStyle(color: vikingWhite),
+            ),
+          )));
+}
+
+detailsButton(context) {
+  return GestureDetector(
+      onTap: () {
+        detailsButtonOnClick();
+      },
+      child: Container(
+          height: ScreenUtil.getInstance().setHeight(100),
+          width: ScreenUtil.getInstance().setWidth(700),
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3),
+                    offset: Offset(3.0, 5.0),
+                    blurRadius: 3.0),
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3),
+                    offset: Offset(3.0, 3.0),
+                    blurRadius: 3.0)
+              ],
+              color: viking,
+              borderRadius: BorderRadius.circular(
+                  ScreenUtil.getInstance().setHeight(10))),
+          margin: EdgeInsets.symmetric(
+              horizontal: ScreenUtil.getInstance().setWidth(25)),
+          child: Center(
+            child: Text(
+              'Provide More Details',
+              style: TextStyle(color: vikingDarker),
+            ),
+          )));
+}
+
+detailsButtonOnClick() async {
+  var data = await Firestore.instance
+      .collection('help.current')
+      .document(currentUser)
+      .get();
+  if (data.data == null) {
+  } else if (data.data['statusPrevious'] == null) {
+  } else {
+    Firestore.instance
+        .collection('help.current')
+        .document(currentUser)
+        .updateData({
+      'status': 'details',
+      'time': DateTime.now(),
+    }).catchError((onError) {
+      print(onError);
+    });
+  }
+}
+
+detailsButtonUpdate(context) {
+  return GestureDetector(
+      onTap: () {
+        detailsButtonOnClick();
+      },
+      child: Container(
+          height: ScreenUtil.getInstance().setHeight(100),
+          width: ScreenUtil.getInstance().setWidth(700),
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3),
+                    offset: Offset(3.0, 5.0),
+                    blurRadius: 3.0),
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3),
+                    offset: Offset(3.0, 3.0),
+                    blurRadius: 3.0)
+              ],
+              color: viking,
+              borderRadius: BorderRadius.circular(
+                  ScreenUtil.getInstance().setHeight(10))),
+          margin: EdgeInsets.symmetric(
+              horizontal: ScreenUtil.getInstance().setWidth(25)),
+          child: Center(
+            child: Text(
+              'Update Details',
+              style: TextStyle(color: vikingDarker),
+            ),
+          )));
+}
+
+detailsForm() {
+  return Text(
+      'Block: (DropDown [allBlocks + notSure])\nFloor: (DropDown [allFloors if(Block.isSelected) + notSure])\nRemarks: (MultiLine Textbox())\nButton(Update)');
+}
+
+helpButton(context) async {
+  void _onStatusRequest(Map<PermissionGroup, PermissionStatus> statuses) {
+    final status = statuses[PermissionGroup.locationWhenInUse];
+    _updateStatus(status);
+    if (status != PermissionStatus.granted) {
+      PermissionHandler().openAppSettings();
+    }
+  }
+
+  PermissionHandler().requestPermissions(
+      [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
+  var currentLocation = LocationData.fromMap(Map<String, double>());
+  var location = new Location();
+  try {
+    currentLocation = await location.getLocation();
+  } catch (e) {
+    currentLocation = null;
+  }
+  var data = await Firestore.instance
+      .collection('help.current')
+      .document(currentUser)
+      .get();
+  var profileData = await Firestore.instance
+      .collection('profile')
+      .document(currentUser)
+      .get();
+  if (!profileData.exists) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: Text('Update your profile first'),
+    ));
+  } else if (data.data == null) {
+    Firestore.instance
+        .collection('help.current')
+        .document(currentUser)
+        .setData({
+      'latitude': currentLocation.latitude.toString(),
+      'longitude': currentLocation.longitude.toString(),
+      'status': 'request',
+      'statusPrevious': 'request',
+      'helper': '',
+      'helper otw': '',
+      'user.name': profileData['name'],
+      'user.admin': profileData['admin'],
+      'user.course': profileData['course'],
+      'user.school': profileData['school'],
+      'user.gender': profileData['gender'],
+      'user.mobile': profileData['mobile'],
+      'user': currentUser,
+      'time': DateTime.now(),
+    }).catchError((onError) {});
+  } else {
+    Firestore.instance
+        .collection('help.current')
+        .document(currentUser)
+        .updateData({
+      'latitude': currentLocation.latitude.toString(),
+      'longitude': currentLocation.longitude.toString(),
+      'time': DateTime.now(),
+    }).catchError((onError) {});
+  }
+}
+
+homePageContentDetails(context) {
+  return Container(
+      height: ScreenUtil.getInstance().setHeight(950),
+      child: Column(children: <Widget>[
+        Spacer(),
+        Container(
+            child: Center(
+                // Make a Form
+                child: detailsForm())),
+        Spacer(),
+        // Temp just for Presemtation
+        GestureDetector(
+            onTap: () {
+              zfakeDetailSubmitButtonOnclick();
+            },
+            child: Container(
+                height: ScreenUtil.getInstance().setHeight(100),
+                width: ScreenUtil.getInstance().setWidth(700),
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black26.withOpacity(.3),
+                          blurRadius: 1.0),
+                      BoxShadow(
+                          color: Colors.black26.withOpacity(.3),
+                          offset: Offset(5.0, 8.0),
+                          blurRadius: 5.0),
+                      BoxShadow(
+                          color: Colors.black26.withOpacity(.3),
+                          offset: Offset(5.0, 5.0),
+                          blurRadius: 5.0)
+                    ],
+                    color: viking,
+                    borderRadius: BorderRadius.circular(
+                        ScreenUtil.getInstance().setHeight(10))),
+                margin: EdgeInsets.symmetric(
+                    horizontal: ScreenUtil.getInstance().setWidth(25)),
+                child: Center(
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(color: vikingDarker),
+                  ),
+                ))),
+      ]));
+}
+
+homePageContentNormal() {
+  return Container(
+    height: ScreenUtil.getInstance().setHeight(950),
+    child: Column(children: <Widget>[
+      Spacer(),
+      Container(
+          width: ScreenUtil.getInstance().setWidth(500),
+          child: AutoSizeText(
+            'If you need help, tap on the Help button located at the bottom of the screen',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(50)),
+            maxLines: 2,
+          )),
+      SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+      Container(
+          height: ScreenUtil.getInstance().setHeight(50),
+          width: ScreenUtil.getInstance().setWidth(550),
+          child: AutoSizeText(
+            'For futher assistance you may',
+            maxLines: 1,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
+          )),
+      Container(
+          height: ScreenUtil.getInstance().setHeight(50),
+          width: ScreenUtil.getInstance().setWidth(500),
+          child: Row(children: <Widget>[
+            AutoSizeText(
+              'call the ',
+              maxLines: 1,
+              style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
+            ),
+            Expanded(
+              child: GestureDetector(
+                  onTap: () => launch("tel://+65123456789"),
+                  child: AutoSizeText("emergency hotline",
+                      maxLines: 1,
+                      style: TextStyle(
+                          color: Color(0xFF5d74e3),
+                          decoration: TextDecoration.underline,
+                          fontSize: ScreenUtil.getInstance().setSp(50)))),
+            ),
+          ])),
+      Spacer(),
+    ]),
+  );
+}
+
+homePageContentRequest(context) {
+  return Container(
+      height: ScreenUtil.getInstance().setHeight(950),
+      child: Column(children: <Widget>[
+        Spacer(),
+        Container(
+          width: ScreenUtil.getInstance().setWidth(500),
+          child: AutoSizeText(
+            'Your Request is currently being Process.\nYou may want to add more details of your current location\nthis will help our staff to find you faster',
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Spacer(),
+        detailsButton(context),
+      ]));
+}
+
+statusBarDetails() {
+  return Container(
+      height: ScreenUtil.getInstance().setHeight(100),
+      child: Stack(fit: StackFit.passthrough, children: <Widget>[
+        Container(
+            decoration: BoxDecoration(
+          color: vikingDark,
+        )),
+        Container(
+            width: ScreenUtil.getInstance().setWidth(525),
+            height: ScreenUtil.getInstance().setHeight(100),
+            child: Container(
+                child: Center(
+                    child: AutoSizeText(
+              'Add More Details',
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: vikingWhite,
+                  fontSize: ScreenUtil.getInstance().setSp(50)),
+            ))),
+            decoration: ShapeDecoration(
+                color: vikingDarker,
+                shape: BeveledRectangleBorder(
+                    borderRadius: _bevelRadius.lerp(1)))),
+      ]));
+}
+
+statusBarNormal() {
+  return Container(
+    height: ScreenUtil.getInstance().setHeight(100),
+    color: vikingDark,
+    child: Center(
+        child: // Icon / Text
+            Icon(
+      Icons.tag_faces,
+      color: vikingWhite,
+      size: ScreenUtil.getInstance().setSp(100),
+    )
+        //   AutoSizeText(
+        // 'Status: Normal',
+        // style: TextStyle(
+        //   color: vikingWhite,
+        //   fontSize: ScreenUtil.getInstance().setSp(100),
+        // ))
+        ),
+  );
+}
+
+statusBarOTW() {
+  return Container(
+      height: ScreenUtil.getInstance().setHeight(100),
+      child: Stack(fit: StackFit.passthrough, children: <Widget>[
+        Container(
+          width: ScreenUtil.getInstance().setWidth(750),
+          color: vikingDark,
+        ),
+        Container(
+            width: ScreenUtil.getInstance().setWidth(750),
+            height: ScreenUtil.getInstance().setHeight(100),
+            child: Container(
+                child: Center(
+                    child: AutoSizeText(
+              'Help Is On The Way',
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: vikingWhite,
+                  fontSize: ScreenUtil.getInstance().setSp(70)),
+            ))),
+            decoration: BoxDecoration(color: vikingDarker)),
+      ]));
+}
+
+statusBarRequest() {
+  return Container(
+      height: ScreenUtil.getInstance().setHeight(100),
+      child: Stack(fit: StackFit.passthrough, children: <Widget>[
+        Container(
+            width: ScreenUtil.getInstance().setWidth(750),
+            height: ScreenUtil.getInstance().setHeight(100),
+            decoration: BoxDecoration(color: vikingDark)),
+        Container(
+            width: ScreenUtil.getInstance().setWidth(275),
+            height: ScreenUtil.getInstance().setHeight(100),
+            child: Container(
+                margin: EdgeInsets.only(
+                    right: ScreenUtil.getInstance().setWidth(50)),
+                child: Center(
+                    child: AutoSizeText(
+                  'Requesting Help',
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: vikingWhite,
+                      fontSize: ScreenUtil.getInstance().setSp(100)),
+                ))),
+            decoration: ShapeDecoration(
+                color: vikingDarker,
+                shape: BeveledRectangleBorder(
+                    borderRadius: _bevelRadius.lerp(1)))),
+      ]));
+}
+
+statusBarWaiting() {
+  return Container(
+      height: ScreenUtil.getInstance().setHeight(100),
+      child: Stack(fit: StackFit.passthrough, children: <Widget>[
+        Container(
+          width: ScreenUtil.getInstance().setWidth(750),
+          color: vikingDark,
+        ),
+        Container(
+            width: ScreenUtil.getInstance().setWidth(750),
+            height: ScreenUtil.getInstance().setHeight(100),
+            child: Container(
+                child: Center(
+                    child: AutoSizeText(
+              'Awaiting Help',
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: vikingWhite,
+                  fontSize: ScreenUtil.getInstance().setSp(70)),
+            ))),
+            decoration: ShapeDecoration(
+                color: vikingDarker,
+                shape: BeveledRectangleBorder(
+                    borderRadius: _bevelRadius.lerp(1)))),
+      ]));
+}
+
+statusDetails(context) {
+  return Column(children: <Widget>[
+    statusBarDetails(),
+    homePageContentDetails(context),
+  ]);
+}
+
+statusNormal() {
+  return Column(children: <Widget>[
+    statusBarNormal(),
+    homePageContentNormal(),
+  ]);
+}
+
+statusOTW(context) {
+  return Column(children: <Widget>[
+    statusBarOTW(),
+    Spacer(),
+    Text('OTW'),
+    Spacer(),
+    detailsButtonUpdate(context)
+  ]);
+}
+
+statusOTWDetails(context) {
+  return Column(children: <Widget>[
+    statusBarOTW(),
+    Spacer(),
+    detailsForm(),
+    Spacer(),
+    zfakeSubmitButton(context),
+  ]);
+}
+
+statusRequest(context) {
+  return Column(children: <Widget>[
+    statusBarRequest(),
+    homePageContentRequest(context),
+  ]);
+}
+
+statusWaiting(context) {
+  return Column(children: <Widget>[
+    statusBarWaiting(),
+    Spacer(),
+    Text('Please wait\nnotifying staff...'),
+    Spacer(),
+    detailsButton(context),
+  ]);
+}
+
+zfakeDetailSubmitButtonOnclick() async {
+  var data = await Firestore.instance
+      .collection('help.current')
+      .document(currentUser)
+      .get();
+  if (data.data == null) {
+  } else if (data.data['statusPrevious'] == "OTW" &&
+      data.data['status'] == "details") {
+    Firestore.instance
+        .collection('help.current')
+        .document(currentUser)
+        .updateData({
+      'status': 'OTW',
+      'time': DateTime.now(),
+    }).catchError((onError) {});
+  } else {
+    Firestore.instance
+        .collection('help.current')
+        .document(currentUser)
+        .updateData({
+      'status': 'waiting',
+      'statusPrevious': 'waiting',
+      'time': DateTime.now(),
+    }).catchError((onError) {});
+  }
+}
+
+zfakeSubmitButton(context) {
+  return GestureDetector(
+      onTap: () {
+        zfakeDetailSubmitButtonOnclick();
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Updated'),
+        ));
+      },
+      child: Container(
+          height: ScreenUtil.getInstance().setHeight(100),
+          width: ScreenUtil.getInstance().setWidth(700),
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3),
+                    offset: Offset(5.0, 8.0),
+                    blurRadius: 5.0),
+                BoxShadow(
+                    color: Colors.black26.withOpacity(.3),
+                    offset: Offset(5.0, 5.0),
+                    blurRadius: 5.0)
+              ],
+              color: viking,
+              borderRadius: BorderRadius.circular(
+                  ScreenUtil.getInstance().setHeight(10))),
+          margin: EdgeInsets.symmetric(
+              horizontal: ScreenUtil.getInstance().setWidth(25)),
+          child: Center(
+            child: Text(
+              'Submit',
+              style: TextStyle(color: vikingDarker),
+            ),
+          )));
+}
+
+void _updateStatus(PermissionStatus status) {
+  if (status != _status) {
+    _status = status;
+  }
+}
