@@ -290,14 +290,15 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
           Spacer(),
           ListTile(
             onTap: () {
-              //setting
+              // Navigate to About
+              print('about');
             },
             leading: Icon(
-              Icons.settings,
+              Icons.help_outline,
               color: vikingDarker,
               size: 20,
             ),
-            title: Text('Settings',
+            title: Text('About',
                 style: TextStyle(
                   fontSize: 14,
                   color: vikingDarker,
