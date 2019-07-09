@@ -4,6 +4,7 @@ import 'package:sosnyp/functions/zoom_scaffold.dart';
 import 'package:sosnyp/main.dart';
 import 'package:sosnyp/pages/dashboard.dart';
 import 'package:sosnyp/pages/home.dart';
+import 'package:sosnyp/pages/about.dart';
 import 'package:sosnyp/pages/inbox.dart';
 import 'package:sosnyp/pages/profile.dart';
 
@@ -31,6 +32,10 @@ class RootPage extends StatefulWidget {
         x = InboxPage();
         y = null;
         break;
+      case 'About':
+        x = AboutPage();
+        y = null;
+        break;
       default:
     }
   }
@@ -48,8 +53,7 @@ class _RootPage extends State<RootPage> {
     return new ZoomScaffold(
         contentkey: scaffoldKey,
         contentScreen: Layout(
-          contentBuilder: (cc) =>
-              x == null ? HomePage() : x,
+          contentBuilder: (cc) => x == null ? HomePage() : x,
         ));
   }
 

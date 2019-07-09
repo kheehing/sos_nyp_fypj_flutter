@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: <Widget>[
         Container(
-            height: ScreenUtil.getInstance().setHeight(1050),
+            height: ScreenUtil.getInstance().setHeight(825),
             child: StreamBuilder(
               stream: Firestore.instance
                   .collection('help.current')
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
                   return statusNormal();
                 } else if (snapshot.data['statusPrevious'] == "OTW" &&
                     snapshot.data['status'] == "details") {
-                      return statusOTWDetails(context);
+                  return statusOTWDetails(context);
                 } else {
                   switch (snapshot.data['status']) {
                     case "normal":
@@ -62,9 +62,8 @@ class _HomePageState extends State<HomePage> {
                 }
               },
             )),
-        Spacer(),
         button(context),
-        SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
+        Spacer(),
       ],
     );
   }

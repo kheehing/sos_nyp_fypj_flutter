@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sosnyp/functions/theme.dart';
 
 String validateEmail(String value) {
   Pattern pattern =
@@ -157,7 +158,7 @@ class _LoginFormCardState extends State<LoginFormCard> {
                           decoration: BoxDecoration(
                               gradient: LinearGradient(colors: [
                                 Color(0xffeeeeee),
-                                Color(0xff4eb4b7),
+                                tRoyalBlue,
                               ]),
                               borderRadius: BorderRadius.circular(6.0),
                               boxShadow: [
@@ -342,7 +343,7 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
                         decoration: BoxDecoration(
                             gradient: LinearGradient(colors: [
                               Color(0xffeeeeee),
-                              Color(0xff4eb4b7),
+                              tRoyalBlue,
                             ]),
                             borderRadius: BorderRadius.circular(6.0),
                             boxShadow: [

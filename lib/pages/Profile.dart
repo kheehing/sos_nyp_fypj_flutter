@@ -14,7 +14,7 @@ import 'package:sosnyp/functions/circular_image.dart';
 import 'package:sosnyp/functions/rootPage.dart';
 import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:sosnyp/main.dart';
-import 'package:sosnyp/theme.dart';
+import 'package:sosnyp/functions/theme.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -28,8 +28,7 @@ class ProfilePage extends StatefulWidget {
       itemBuilder: (context) => [
             PopupMenuItem(
               value: 1,
-              child:
-                  Text("Update Profile", style: TextStyle(color: vikingDarker)),
+              child: Text("Update Profile"),
             ),
           ],
     );
@@ -96,7 +95,9 @@ class _ProfileState extends State<ProfilePage> {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: viking),
+                                shape: BoxShape.circle,
+                                color: tCelestialBlue,
+                              ),
                               height: ScreenUtil.getInstance().setHeight(90),
                               child: Icon(
                                 Icons.photo_camera,
@@ -111,7 +112,9 @@ class _ProfileState extends State<ProfilePage> {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: viking),
+                                shape: BoxShape.circle,
+                                color: tCelestialBlue,
+                              ),
                               height: ScreenUtil.getInstance().setHeight(90),
                               child: Icon(
                                 Icons.photo_library,
@@ -140,7 +143,6 @@ class _ProfileState extends State<ProfilePage> {
                       child: Icon(
                         Icons.account_circle,
                         size: ScreenUtil.getInstance().setHeight(500),
-                        color: Colors.white,
                       ))
                   : CircularImage(NetworkImage(currentUserImageUrl)),
             ),
@@ -150,14 +152,15 @@ class _ProfileState extends State<ProfilePage> {
                     left: ScreenUtil.getInstance().setWidth(300)),
                 height: ScreenUtil.getInstance().setHeight(100),
                 width: ScreenUtil.getInstance().setHeight(100),
-                decoration:
-                    BoxDecoration(color: viking, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: tCelestialBlue,
+                  shape: BoxShape.circle,
+                ),
                 child: GestureDetector(
                     onTap: () {
                       _profileImageSelection(context);
                     },
                     child: Icon(Icons.add,
-                        color: vikingWhite,
                         size: ScreenUtil.getInstance().setHeight(60)))),
           ]),
           SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
@@ -168,7 +171,6 @@ class _ProfileState extends State<ProfilePage> {
                 child: AutoSizeText('Name',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: vikingDark,
                       fontSize: ScreenUtil.getInstance().setHeight(270),
                     )))
           ]),
@@ -179,7 +181,6 @@ class _ProfileState extends State<ProfilePage> {
                 child: AutoSizeText('Admin',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: vikingDark,
                       fontSize: ScreenUtil.getInstance().setHeight(270),
                     )))
           ]),
@@ -197,7 +198,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     Expanded(
@@ -206,7 +206,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     SizedBox(width: ScreenUtil.getInstance().setWidth(50))
@@ -221,7 +220,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     Expanded(
@@ -230,7 +228,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     SizedBox(width: ScreenUtil.getInstance().setWidth(50))
@@ -245,7 +242,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     Expanded(
@@ -254,7 +250,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     SizedBox(width: ScreenUtil.getInstance().setWidth(50))
@@ -269,7 +264,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     Expanded(
@@ -278,7 +272,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     SizedBox(width: ScreenUtil.getInstance().setWidth(50))
@@ -302,7 +295,6 @@ class _ProfileState extends State<ProfilePage> {
                       child: Icon(
                         Icons.account_circle,
                         size: ScreenUtil.getInstance().setHeight(500),
-                        color: Colors.white,
                       ))
                   : CircularImage(NetworkImage(currentUserImageUrl)),
             ),
@@ -312,14 +304,15 @@ class _ProfileState extends State<ProfilePage> {
                     left: ScreenUtil.getInstance().setWidth(300)),
                 height: ScreenUtil.getInstance().setHeight(100),
                 width: ScreenUtil.getInstance().setHeight(100),
-                decoration:
-                    BoxDecoration(color: viking, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: tCelestialBlue,
+                  shape: BoxShape.circle,
+                ),
                 child: GestureDetector(
                     onTap: () {
                       _profileImageSelection(context);
                     },
                     child: Icon(Icons.add,
-                        color: vikingWhite,
                         size: ScreenUtil.getInstance().setHeight(60)))),
           ]),
           SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
@@ -330,7 +323,6 @@ class _ProfileState extends State<ProfilePage> {
                 child: AutoSizeText(data['name'],
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: vikingDark,
                       fontSize: ScreenUtil.getInstance().setHeight(270),
                     )))
           ]),
@@ -341,18 +333,12 @@ class _ProfileState extends State<ProfilePage> {
                 child: AutoSizeText(data['admin'],
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: vikingDark,
                       fontSize: ScreenUtil.getInstance().setHeight(270),
                     )))
           ]),
           SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
           Container(
-              // padding: EdgeInsets.symmetric(
-              //     vertical: ScreenUtil.getInstance().setHeight(10)),
-              // margin: EdgeInsets.symmetric(
-              //     horizontal: ScreenUtil.getInstance().setWidth(10)),
               decoration: BoxDecoration(
-                  // color: viking,
                   borderRadius: BorderRadius.circular(
                       ScreenUtil.getInstance().setHeight(40))),
               child: Column(children: <Widget>[
@@ -364,7 +350,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     Expanded(
@@ -373,7 +358,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     SizedBox(width: ScreenUtil.getInstance().setWidth(50))
@@ -388,7 +372,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     Expanded(
@@ -397,7 +380,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     SizedBox(width: ScreenUtil.getInstance().setWidth(50))
@@ -412,7 +394,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     Expanded(
@@ -421,7 +402,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     SizedBox(width: ScreenUtil.getInstance().setWidth(50))
@@ -436,7 +416,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     Expanded(
@@ -445,7 +424,6 @@ class _ProfileState extends State<ProfilePage> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: vikingDark,
                           fontSize: ScreenUtil.getInstance().setHeight(40)),
                     )),
                     SizedBox(width: ScreenUtil.getInstance().setWidth(50))

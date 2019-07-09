@@ -25,7 +25,6 @@ class _DashBoardPageState extends State<DashBoardPage>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[200],
       child: dashBoard(),
     );
   }

@@ -7,7 +7,6 @@ import 'package:sosnyp/functions/circular_image.dart';
 import 'package:sosnyp/functions/rootPage.dart';
 import 'package:sosnyp/functions/rootPage.dart' as prefix0;
 import 'package:sosnyp/main.dart';
-import 'package:sosnyp/theme.dart';
 
 typedef Widget ZoomScaffoldBuilder(
     BuildContext context, MenuController menuController);
@@ -187,6 +186,37 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
     );
   }
 
+  createContentDisplay() {
+    return zoomAndSlideContent(new Container(
+      child: new Scaffold(
+        resizeToAvoidBottomPadding: false,
+        key: widget.contentkey,
+        appBar: new AppBar(
+            elevation: 0.0,
+            leading: new IconButton(
+                icon: new Icon(
+                  Icons.menu,
+                ),
+                onPressed: () {
+                  menuController.toggle();
+                }),
+            actions: <Widget>[
+              y == null ? Container() : y,
+            ],
+            title: Container(
+              child: Text(title == null ? "SOS NYP" : title),
+            )),
+        body: widget.contentScreen.contentBuilder(context),
+      ),
+    ));
+  }
+
+  @override
+  void dispose() {
+    menuController.dispose();
+    super.dispose();
+  }
+
   getName() async {
     var profileData = await Firestore.instance
         .collection('profile')
@@ -196,6 +226,14 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
     } else {
       currentUserName = profileData.data['name'].toString();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    menuController = new MenuController(
+      vsync: this,
+    )..addListener(() => setState(() {}));
   }
 
   menu(BuildContext context, menuController) {
@@ -213,7 +251,6 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
           left: 32,
           bottom: 8,
           right: MediaQuery.of(context).size.width / 2.9),
-      color: vikingWhite,
       child: Column(
         children: <Widget>[
           Container(
@@ -225,7 +262,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                     child: currentUserImageUrl == null
                         ? Icon(
                             Icons.account_circle,
-                            color: vikingDark,
+                            // color: vikingDark,
                             size: ScreenUtil.getInstance().setSp(80),
                           )
                         : CircularImage(NetworkImage(currentUserImageUrl)),
@@ -250,14 +287,12 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                 },
                 leading: Icon(
                   item.icon,
-                  color: vikingDarker,
                   size: 20,
                 ),
                 title: Text(item.title,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: vikingDarker,
                     )),
               );
             }).toList(),
@@ -273,7 +308,6 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                   },
                   leading: Icon(
                     item.icon,
-                    color: vikingDarker,
                     size: 20,
                   ),
                   title: Text(
@@ -281,7 +315,6 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: vikingDarker,
                     ),
                   ),
                 );
@@ -290,30 +323,26 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
           Spacer(),
           ListTile(
             onTap: () {
-              // Navigate to About
-              print('about');
+              menuController.toggle();
+              RootPage().changeScreen('About', menuController);
             },
             leading: Icon(
               Icons.help_outline,
-              color: vikingDarker,
               size: 20,
             ),
             title: Text('About',
                 style: TextStyle(
                   fontSize: 14,
-                  color: vikingDarker,
                 )),
           ),
           ListTile(
             leading: Icon(
               Icons.power_settings_new,
-              color: vikingDarker,
               size: 20,
             ),
             title: Text('LogOut',
                 style: TextStyle(
                   fontSize: 14,
-                  color: vikingDarker,
                 )),
             onTap: () {
               FirebaseAuth.instance.signOut().then((value) {
@@ -329,51 +358,6 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
         ],
       ),
     );
-  }
-
-  createContentDisplay() {
-    return zoomAndSlideContent(new Container(
-      child: new Scaffold(
-        resizeToAvoidBottomPadding: false,
-        key: widget.contentkey,
-        appBar: new AppBar(
-          elevation: 0.0,
-          leading: new IconButton(
-              icon: new Icon(
-                Icons.menu,
-                color: vikingWhite,
-              ),
-              onPressed: () {
-                menuController.toggle();
-              }),
-          // right side of the appbar
-          actions: <Widget>[
-            y == null ? Container() : y,
-          ],
-
-          title: Text(
-            title == null ? "SOS NYP" : title,
-            // widget.title.toString(),
-            style: TextStyle(color: vikingWhite),
-          ),
-        ),
-        body: widget.contentScreen.contentBuilder(context),
-      ),
-    ));
-  }
-
-  @override
-  void dispose() {
-    menuController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    menuController = new MenuController(
-      vsync: this,
-    )..addListener(() => setState(() {}));
   }
 
   zoomAndSlideContent(Widget content) {

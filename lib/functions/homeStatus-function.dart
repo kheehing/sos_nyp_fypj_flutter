@@ -6,8 +6,8 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sosnyp/functions/theme.dart';
 import 'package:sosnyp/main.dart';
-import 'package:sosnyp/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final Tween<BorderRadius> _bevelRadius = new BorderRadiusTween(
@@ -19,75 +19,77 @@ final Tween<BorderRadius> _bevelRadius = new BorderRadiusTween(
       topRight: Radius.circular(28.0),
       bottomRight: Radius.circular(28.0),
     ));
-
+String helpButtonTitle;
 PermissionStatus _status;
 
 button(context) {
-  return GestureDetector(
-      onTap: () {
-        helpButton(context);
-      },
-      child: Container(
-          height: ScreenUtil.getInstance().setHeight(100),
-          width: ScreenUtil.getInstance().setWidth(700),
-          decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
-                BoxShadow(
-                    color: Colors.black26.withOpacity(.3),
-                    offset: Offset(5.0, 8.0),
-                    blurRadius: 5.0),
-                BoxShadow(
-                    color: Colors.black26.withOpacity(.3),
-                    offset: Offset(5.0, 5.0),
-                    blurRadius: 5.0)
-              ],
-              color: vikingError,
-              borderRadius: BorderRadius.circular(
-                  ScreenUtil.getInstance().setHeight(10))),
-          margin: EdgeInsets.symmetric(
-              horizontal: ScreenUtil.getInstance().setWidth(25)),
+  return InkWell(
+    child: Container(
+      height: ScreenUtil.getInstance().setHeight(100),
+      width: ScreenUtil.getInstance().setWidth(700),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6.0),
+        color: tCelestialBlue,
+        boxShadow: [
+          BoxShadow(color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+          BoxShadow(
+              color: Colors.black26.withOpacity(.3),
+              offset: Offset(5.0, 8.0),
+              blurRadius: 5.0),
+          BoxShadow(
+              color: Colors.black26.withOpacity(.3),
+              offset: Offset(5.0, 5.0),
+              blurRadius: 5.0)
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            helpButton(context);
+          },
           child: Center(
-            child: Text(
-              'Help',
-              style: TextStyle(color: vikingWhite),
-            ),
-          )));
+            child: Text(helpButtonTitle == null ? 'Help' : helpButtonTitle),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 detailsButton(context) {
-  return GestureDetector(
-      onTap: () {
-        detailsButtonOnClick();
-      },
-      child: Container(
-          height: ScreenUtil.getInstance().setHeight(100),
-          width: ScreenUtil.getInstance().setWidth(700),
-          decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
-                BoxShadow(
-                    color: Colors.black26.withOpacity(.3),
-                    offset: Offset(3.0, 5.0),
-                    blurRadius: 3.0),
-                BoxShadow(
-                    color: Colors.black26.withOpacity(.3),
-                    offset: Offset(3.0, 3.0),
-                    blurRadius: 3.0)
-              ],
-              color: viking,
-              borderRadius: BorderRadius.circular(
-                  ScreenUtil.getInstance().setHeight(10))),
-          margin: EdgeInsets.symmetric(
-              horizontal: ScreenUtil.getInstance().setWidth(25)),
+  return InkWell(
+    child: Container(
+      height: ScreenUtil.getInstance().setHeight(100),
+      width: ScreenUtil.getInstance().setWidth(700),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6.0),
+        color: tCelestialBlue,
+        boxShadow: [
+          BoxShadow(color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+          BoxShadow(
+              color: Colors.black26.withOpacity(.3),
+              offset: Offset(5.0, 8.0),
+              blurRadius: 5.0),
+          BoxShadow(
+              color: Colors.black26.withOpacity(.3),
+              offset: Offset(5.0, 5.0),
+              blurRadius: 5.0)
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            detailsButtonOnClick();
+          },
           child: Center(
-            child: Text(
-              'Provide More Details',
-              style: TextStyle(color: vikingDarker),
-            ),
-          )));
+            child: Text("Provide More Details"),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 detailsButtonOnClick() async {
@@ -131,7 +133,7 @@ detailsButtonUpdate(context) {
                     offset: Offset(3.0, 3.0),
                     blurRadius: 3.0)
               ],
-              color: viking,
+              color: tCelestialBlue,
               borderRadius: BorderRadius.circular(
                   ScreenUtil.getInstance().setHeight(10))),
           margin: EdgeInsets.symmetric(
@@ -139,7 +141,6 @@ detailsButtonUpdate(context) {
           child: Center(
             child: Text(
               'Update Details',
-              style: TextStyle(color: vikingDarker),
             ),
           )));
 }
@@ -213,7 +214,7 @@ helpButton(context) async {
 
 homePageContentDetails(context) {
   return Container(
-      height: ScreenUtil.getInstance().setHeight(950),
+      height: ScreenUtil.getInstance().setHeight(700),
       child: Column(children: <Widget>[
         Spacer(),
         Container(
@@ -243,7 +244,7 @@ homePageContentDetails(context) {
                           offset: Offset(5.0, 5.0),
                           blurRadius: 5.0)
                     ],
-                    color: viking,
+                    color: tCelestialBlue,
                     borderRadius: BorderRadius.circular(
                         ScreenUtil.getInstance().setHeight(10))),
                 margin: EdgeInsets.symmetric(
@@ -251,7 +252,6 @@ homePageContentDetails(context) {
                 child: Center(
                   child: Text(
                     'Submit',
-                    style: TextStyle(color: vikingDarker),
                   ),
                 ))),
       ]));
@@ -259,55 +259,33 @@ homePageContentDetails(context) {
 
 homePageContentNormal() {
   return Container(
-    height: ScreenUtil.getInstance().setHeight(950),
+    // color: Colors.pink,
+    height: ScreenUtil.getInstance().setHeight(700),
     child: Column(children: <Widget>[
       Spacer(),
       Container(
-          width: ScreenUtil.getInstance().setWidth(500),
           child: AutoSizeText(
-            'If you need help, tap on the Help button located at the bottom of the screen',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(50)),
-            maxLines: 2,
-          )),
-      SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+        'If you need help, tap on the \'Help\' button. For futher assistance you may call the ',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
+      )),
       Container(
-          height: ScreenUtil.getInstance().setHeight(50),
-          width: ScreenUtil.getInstance().setWidth(550),
-          child: AutoSizeText(
-            'For futher assistance you may',
-            maxLines: 1,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
-          )),
-      Container(
-          height: ScreenUtil.getInstance().setHeight(50),
-          width: ScreenUtil.getInstance().setWidth(500),
-          child: Row(children: <Widget>[
-            AutoSizeText(
-              'call the ',
-              maxLines: 1,
-              style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
-            ),
-            Expanded(
-              child: GestureDetector(
-                  onTap: () => launch("tel://+65123456789"),
-                  child: AutoSizeText("emergency hotline",
-                      maxLines: 1,
-                      style: TextStyle(
-                          color: Color(0xFF5d74e3),
-                          decoration: TextDecoration.underline,
-                          fontSize: ScreenUtil.getInstance().setSp(50)))),
-            ),
-          ])),
-      Spacer(),
+        child: GestureDetector(
+            onTap: () => launch("tel://+65123456789"),
+            child: AutoSizeText("emergency hotline",
+                maxLines: 1,
+                style: TextStyle(
+                    color: Color(0xFF5d74e3),
+                    decoration: TextDecoration.underline,
+                    fontSize: ScreenUtil.getInstance().setSp(50)))),
+      ),
     ]),
   );
 }
 
 homePageContentRequest(context) {
   return Container(
-      height: ScreenUtil.getInstance().setHeight(950),
+      height: ScreenUtil.getInstance().setHeight(700),
       child: Column(children: <Widget>[
         Spacer(),
         Container(
@@ -326,10 +304,7 @@ statusBarDetails() {
   return Container(
       height: ScreenUtil.getInstance().setHeight(100),
       child: Stack(fit: StackFit.passthrough, children: <Widget>[
-        Container(
-            decoration: BoxDecoration(
-          color: vikingDark,
-        )),
+        Container(decoration: BoxDecoration(color: tCelestialBlue)),
         Container(
             width: ScreenUtil.getInstance().setWidth(525),
             height: ScreenUtil.getInstance().setHeight(100),
@@ -340,11 +315,10 @@ statusBarDetails() {
               maxLines: 1,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: vikingWhite,
-                  fontSize: ScreenUtil.getInstance().setSp(50)),
+                  color: tWhite, fontSize: ScreenUtil.getInstance().setSp(50)),
             ))),
             decoration: ShapeDecoration(
-                color: vikingDarker,
+                color: tRoyalBlue,
                 shape: BeveledRectangleBorder(
                     borderRadius: _bevelRadius.lerp(1)))),
       ]));
@@ -353,21 +327,13 @@ statusBarDetails() {
 statusBarNormal() {
   return Container(
     height: ScreenUtil.getInstance().setHeight(100),
-    color: vikingDark,
+    color: tCelestialBlue,
     child: Center(
-        child: // Icon / Text
-            Icon(
-      Icons.tag_faces,
-      color: vikingWhite,
-      size: ScreenUtil.getInstance().setSp(100),
-    )
-        //   AutoSizeText(
-        // 'Status: Normal',
-        // style: TextStyle(
-        //   color: vikingWhite,
-        //   fontSize: ScreenUtil.getInstance().setSp(100),
-        // ))
-        ),
+        child: AutoSizeText('Normal',
+            style: TextStyle(
+              color: tWhite,
+              fontSize: ScreenUtil.getInstance().setSp(100),
+            ))),
   );
 }
 
@@ -376,9 +342,8 @@ statusBarOTW() {
       height: ScreenUtil.getInstance().setHeight(100),
       child: Stack(fit: StackFit.passthrough, children: <Widget>[
         Container(
-          width: ScreenUtil.getInstance().setWidth(750),
-          color: vikingDark,
-        ),
+            width: ScreenUtil.getInstance().setWidth(750),
+            color: tCelestialBlue),
         Container(
             width: ScreenUtil.getInstance().setWidth(750),
             height: ScreenUtil.getInstance().setHeight(100),
@@ -389,10 +354,11 @@ statusBarOTW() {
               maxLines: 1,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: vikingWhite,
-                  fontSize: ScreenUtil.getInstance().setSp(70)),
+                  color: tWhite, fontSize: ScreenUtil.getInstance().setSp(70)),
             ))),
-            decoration: BoxDecoration(color: vikingDarker)),
+            decoration: BoxDecoration(
+              color: tRoyalBlue,
+            )),
       ]));
 }
 
@@ -403,7 +369,7 @@ statusBarRequest() {
         Container(
             width: ScreenUtil.getInstance().setWidth(750),
             height: ScreenUtil.getInstance().setHeight(100),
-            decoration: BoxDecoration(color: vikingDark)),
+            decoration: BoxDecoration(color: tCelestialBlue)),
         Container(
             width: ScreenUtil.getInstance().setWidth(275),
             height: ScreenUtil.getInstance().setHeight(100),
@@ -416,11 +382,11 @@ statusBarRequest() {
                   maxLines: 1,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: vikingWhite,
+                      color: tWhite,
                       fontSize: ScreenUtil.getInstance().setSp(100)),
                 ))),
             decoration: ShapeDecoration(
-                color: vikingDarker,
+                color: tRoyalBlue,
                 shape: BeveledRectangleBorder(
                     borderRadius: _bevelRadius.lerp(1)))),
       ]));
@@ -432,7 +398,7 @@ statusBarWaiting() {
       child: Stack(fit: StackFit.passthrough, children: <Widget>[
         Container(
           width: ScreenUtil.getInstance().setWidth(750),
-          color: vikingDark,
+          color: tCelestialBlue,
         ),
         Container(
             width: ScreenUtil.getInstance().setWidth(750),
@@ -444,17 +410,19 @@ statusBarWaiting() {
               maxLines: 1,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: vikingWhite,
-                  fontSize: ScreenUtil.getInstance().setSp(70)),
+                color: tWhite,
+                fontSize: ScreenUtil.getInstance().setSp(70),
+              ),
             ))),
             decoration: ShapeDecoration(
-                color: vikingDarker,
+                color: tRoyalBlue,
                 shape: BeveledRectangleBorder(
                     borderRadius: _bevelRadius.lerp(1)))),
       ]));
 }
 
 statusDetails(context) {
+  helpButtonTitle = "Update Location";
   return Column(children: <Widget>[
     statusBarDetails(),
     homePageContentDetails(context),
@@ -462,6 +430,8 @@ statusDetails(context) {
 }
 
 statusNormal() {
+  helpButtonTitle = "";
+
   return Column(children: <Widget>[
     statusBarNormal(),
     homePageContentNormal(),
@@ -469,26 +439,33 @@ statusNormal() {
 }
 
 statusOTW(context) {
+  helpButtonTitle = "Update Location";
+
   return Column(children: <Widget>[
     statusBarOTW(),
     Spacer(),
     Text('OTW'),
     Spacer(),
-    detailsButtonUpdate(context)
+    detailsButtonUpdate(context),
+    SizedBox(height: ScreenUtil.getInstance().setHeight(25))
   ]);
 }
 
 statusOTWDetails(context) {
+  helpButtonTitle = "Update Location";
   return Column(children: <Widget>[
     statusBarOTW(),
     Spacer(),
     detailsForm(),
     Spacer(),
     zfakeSubmitButton(context),
+    SizedBox(height: ScreenUtil.getInstance().setHeight(25))
   ]);
 }
 
 statusRequest(context) {
+  helpButtonTitle = "Update Location";
+
   return Column(children: <Widget>[
     statusBarRequest(),
     homePageContentRequest(context),
@@ -496,12 +473,14 @@ statusRequest(context) {
 }
 
 statusWaiting(context) {
+  helpButtonTitle = "Update Location";
   return Column(children: <Widget>[
     statusBarWaiting(),
     Spacer(),
     Text('Please wait\nnotifying staff...'),
     Spacer(),
     detailsButton(context),
+    SizedBox(height: ScreenUtil.getInstance().setHeight(25))
   ]);
 }
 
@@ -556,16 +535,13 @@ zfakeSubmitButton(context) {
                     offset: Offset(5.0, 5.0),
                     blurRadius: 5.0)
               ],
-              color: viking,
+              color: tCelestialBlue,
               borderRadius: BorderRadius.circular(
                   ScreenUtil.getInstance().setHeight(10))),
           margin: EdgeInsets.symmetric(
               horizontal: ScreenUtil.getInstance().setWidth(25)),
           child: Center(
-            child: Text(
-              'Submit',
-              style: TextStyle(color: vikingDarker),
-            ),
+            child: Text('Submit'),
           )));
 }
 

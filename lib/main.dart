@@ -4,13 +4,16 @@ import 'package:sosnyp/functions/rootPage.dart';
 import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:sosnyp/pages/login.dart';
 import 'package:sosnyp/pages/profileUpdate.dart';
-import 'package:sosnyp/theme.dart';
+import 'package:sosnyp/functions/theme.dart';
+
+// import 'package:sosnyp/testing/testing.dart';
+// void main() => runApp(MyApp());
 
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: _handleWindowDisplay(),
-    theme: vikingTheme(),
+    theme: t,
     onGenerateRoute: (RouteSettings setting) {
       switch (setting.name) {
         case '/UpdateProfile':
