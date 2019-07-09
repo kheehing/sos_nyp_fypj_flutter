@@ -188,6 +188,7 @@ helpButton(context) async {
       'latitude': currentLocation.latitude.toString(),
       'longitude': currentLocation.longitude.toString(),
       'status': 'request',
+      'type': 'help',
       'statusPrevious': 'request',
       'helper': '',
       'helper otw': '',
@@ -221,8 +222,7 @@ homePageContentDetails(context) {
             child: Center(
                 // Make a Form
                 child: detailsForm())),
-        Spacer(),
-        // Temp just for Presemtation
+        Spacer(), // Temp just for Presemtation
         GestureDetector(
             onTap: () {
               zfakeDetailSubmitButtonOnclick();

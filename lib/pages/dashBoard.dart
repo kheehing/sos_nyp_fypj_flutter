@@ -6,10 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class DashBoardPage extends StatefulWidget {
   @override
@@ -301,27 +303,43 @@ class _DashBoardPageState extends State<DashBoardPage>
         children: <Widget>[
           Expanded(
             child: Text(document['user.name'],
+                maxLines: 1,
                 style: TextStyle(
                     fontSize: 15,
                     fontFamily: 'black_label',
                     fontWeight: FontWeight.w900)),
           ),
           Container(
-            width: 180,
+            width: 250,
             child: Row(
               children: <Widget>[
-                Expanded(
-                  child: Text(
-                    document['latitude'].toString(),
-                    style: Theme.of(context).textTheme.body1,
-                  ),
+                Spacer(),
+                Icon(
+                  Icons.call,
                 ),
-                Expanded(
-                  child: Text(
-                    document['longitude'].toString(),
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                )
+                AutoSizeText(
+                    new DateFormat("hh:mm a").format(document['time'].toDate()),
+                    maxLines: 1,
+                    textAlign: TextAlign.end,
+                    style: TextStyle(
+                        fontSize: ScreenUtil.getInstance().setSp(20),
+                        fontFamily: 'black_label',
+                        fontWeight: FontWeight.bold)),
+                SizedBox(width: ScreenUtil.getInstance().setWidth(15)),
+                document['time attended'] == null
+                    ? Container()
+                    : Icon(Icons.call_end),
+                document['time attended'] == null
+                    ? Container()
+                    : Expanded(
+                        child: AutoSizeText(
+                            DateFormat("hh:mm a")
+                                .format(document['time attended'].toDate()),
+                            maxLines: 1,
+                            style: TextStyle(
+                                fontSize: ScreenUtil.getInstance().setSp(20),
+                                fontFamily: 'black_label',
+                                fontWeight: FontWeight.bold))),
               ],
             ),
           ),
