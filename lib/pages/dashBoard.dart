@@ -26,6 +26,9 @@ class _DashBoardPageState extends State<DashBoardPage>
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
+    ScreenUtil.instance =
+        ScreenUtil(width: 750, height: 1350, allowFontScaling: true);
     return Container(
       child: dashBoard(),
     );
@@ -141,85 +144,96 @@ class _DashBoardPageState extends State<DashBoardPage>
     void _showDialog() async {
       Widget _displayAttended() {
         if (document['type'] == 'attended') {
-          return Column(children: <Widget>[
-            Text(
-                'Called Time: ' +
-                    DateFormat('K:mm:ss a').format(document['time'].toDate()),
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'black_label',
-                    fontWeight: FontWeight.bold)),
-            Text(
-                'Assisted Time: ' +
-                    DateFormat('K:mm:ss a')
-                        .format(document['time attended'].toDate()),
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'black_label',
-                    fontWeight: FontWeight.bold)),
-            Text('Assisted by: ' + document['helper'],
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'black_label',
-                    fontWeight: FontWeight.bold)),
-          ]);
+          return Container(
+              height: ScreenUtil.getInstance().setHeight(250),
+              child: Column(children: <Widget>[
+                Spacer(),
+                Text(
+                    'Request: ' +
+                        DateFormat('K:mm:ss a')
+                            .format(document['time'].toDate()),
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontFamily: 'black_label',
+                      fontWeight: FontWeight.bold,
+                    )),
+                SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
+                Text(
+                    'Assisted: ' +
+                        DateFormat('K:mm:ss a')
+                            .format(document['time attended'].toDate()),
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontFamily: 'black_label',
+                      fontWeight: FontWeight.bold,
+                    )),
+                SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
+                Text('Assistant: ' + document['helper'],
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontFamily: 'black_label',
+                      fontWeight: FontWeight.bold,
+                    )),
+                Spacer(),
+              ]));
         } else
           return SizedBox();
       }
 
       Widget _displayCurrent() {
         if (document.data['type'] == 'help') {
-          return Column(children: <Widget>[
-            Text('Location',
-                style: TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'black_label',
-                    fontWeight: FontWeight.bold)),
-            Row(children: <Widget>[
-              Expanded(
-                  child: Center(
-                      child: Text(document['latitude'],
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.black,
-                              fontFamily: 'black_label')))),
-              Expanded(
-                  child: Center(
-                      child: Text(document['longitude'],
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontSize: 15, fontFamily: 'black_label')))),
-            ]),
-            Row(children: <Widget>[
-              Expanded(
-                  child: Center(
-                      child: Text('latitude',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontFamily: 'black_label',
-                              fontWeight: FontWeight.bold)))),
-              Expanded(
-                  child: Center(
-                      child: Text('longitude',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontFamily: 'black_label',
-                              fontWeight: FontWeight.bold)))),
-            ]),
-            Text('Last Requested Help',
-                style: TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'black_label',
-                    fontWeight: FontWeight.bold)),
-            Text(DateFormat('kk:mm:ss a').format(document['time'].toDate()),
-                style: TextStyle(fontSize: 15, fontFamily: 'black_label')),
-          ]);
+          return Container(
+              height: ScreenUtil.getInstance().setHeight(250),
+              child: Column(children: <Widget>[
+                Spacer(),
+                Text('Location',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontFamily: 'black_label',
+                    )),
+                Row(children: <Widget>[
+                  Expanded(
+                      child: Center(
+                          child: Text(
+                    document['latitude'],
+                    textAlign: TextAlign.left,
+                  ))),
+                  Expanded(
+                      child: Center(
+                          child: Text(
+                    document['longitude'],
+                    textAlign: TextAlign.left,
+                  ))),
+                ]),
+                Row(children: <Widget>[
+                  Expanded(
+                      child: Center(
+                          child: Text('latitude',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: ScreenUtil.getInstance().setSp(25),
+                                fontFamily: 'black_label',
+                              )))),
+                  Expanded(
+                      child: Center(
+                          child: Text('longitude',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: ScreenUtil.getInstance().setSp(25),
+                                fontFamily: 'black_label',
+                              )))),
+                ]),
+                SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
+                Text('Last Requested Help',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontFamily: 'black_label',
+                    )),
+                Text(
+                  DateFormat('kk:mm:ss a').format(document['time'].toDate()),
+                ),
+                Spacer(),
+              ]));
         } else
           return SizedBox();
       }
@@ -252,7 +266,9 @@ class _DashBoardPageState extends State<DashBoardPage>
           DialogButton(
               child: Text(
                 'Location',
-                style: TextStyle(color: Colors.white, fontSize: 20),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: ScreenUtil.getInstance().setSp(50)),
               ),
               onPressed: () => _openMap().whenComplete(() {
                     Navigator.pop(context);
@@ -262,32 +278,33 @@ class _DashBoardPageState extends State<DashBoardPage>
         content: Container(
           child: Column(
             children: <Widget>[
+              SizedBox(height: ScreenUtil.getInstance().setHeight(10)),
               Row(children: <Widget>[
                 Expanded(
                     child: Row(children: <Widget>[
                   Text('Sex: ',
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                          fontSize: 12,
-                          fontFamily: 'black_label',
-                          fontWeight: FontWeight.bold)),
-                  Text(document['user.gender'],
-                      textAlign: TextAlign.left,
-                      style:
-                          TextStyle(fontSize: 12, fontFamily: 'black_label')),
+                        fontSize: 12,
+                        fontFamily: 'black_label',
+                      )),
+                  Text(
+                    document['user.gender'],
+                    textAlign: TextAlign.left,
+                  ),
                 ])),
                 Expanded(
                     child: Row(children: <Widget>[
                   Text('Mobile: ',
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                          fontSize: 12,
-                          fontFamily: 'black_label',
-                          fontWeight: FontWeight.bold)),
-                  Text(document['user.mobile'],
-                      textAlign: TextAlign.left,
-                      style:
-                          TextStyle(fontSize: 12, fontFamily: 'black_label')),
+                        fontSize: 12,
+                        fontFamily: 'black_label',
+                      )),
+                  Text(
+                    document['user.mobile'],
+                    textAlign: TextAlign.left,
+                  ),
                 ])),
               ]),
               _displayAttended(),
@@ -310,7 +327,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                     fontWeight: FontWeight.w900)),
           ),
           Container(
-            width: 250,
+            width: 260,
             child: Row(
               children: <Widget>[
                 Spacer(),
@@ -323,6 +340,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                     textAlign: TextAlign.end,
                     style: TextStyle(
                         fontSize: ScreenUtil.getInstance().setSp(20),
+                        letterSpacing: ScreenUtil.getInstance().setSp(0.1),
                         fontFamily: 'black_label',
                         fontWeight: FontWeight.bold)),
                 SizedBox(width: ScreenUtil.getInstance().setWidth(15)),
@@ -336,7 +354,10 @@ class _DashBoardPageState extends State<DashBoardPage>
                             DateFormat("hh:mm a")
                                 .format(document['time attended'].toDate()),
                             maxLines: 1,
+                            textAlign: TextAlign.end,
                             style: TextStyle(
+                                letterSpacing:
+                                    ScreenUtil.getInstance().setSp(0.1),
                                 fontSize: ScreenUtil.getInstance().setSp(20),
                                 fontFamily: 'black_label',
                                 fontWeight: FontWeight.bold))),

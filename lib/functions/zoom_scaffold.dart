@@ -202,6 +202,9 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                 }),
             actions: <Widget>[
               y == null ? Container() : y,
+              y == null
+                  ? Container()
+                  : SizedBox(width: ScreenUtil.getInstance().setWidth(25))
             ],
             title: Container(
               child: Text(title == null ? "SOS NYP" : title),
@@ -245,6 +248,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
       MenuItem(Icons.dashboard, 'DashBoard'),
       MenuItem(Icons.face, 'Inbox'),
     ];
+
     return Container(
       padding: EdgeInsets.only(
           top: 62,
@@ -262,7 +266,6 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                     child: currentUserImageUrl == null
                         ? Icon(
                             Icons.account_circle,
-                            // color: vikingDark,
                             size: ScreenUtil.getInstance().setSp(80),
                           )
                         : CircularImage(NetworkImage(currentUserImageUrl)),
@@ -278,6 +281,12 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                 ],
               )),
           Spacer(),
+          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
+            SizedBox(
+                height: ScreenUtil.getInstance().setHeight(50),
+                child: Center(
+                  child: Text('User Functions'),
+                )),
           Column(
             children: options.map((item) {
               return ListTile(
@@ -297,7 +306,12 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
               );
             }).toList(),
           ),
-          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2") Spacer(),
+          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
+            SizedBox(
+                height: ScreenUtil.getInstance().setHeight(100),
+                child: Center(
+                  child: Text('Admin Functions'),
+                )),
           if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
             Column(
               children: adminOptions.map((item) {

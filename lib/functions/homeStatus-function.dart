@@ -10,51 +10,52 @@ import 'package:sosnyp/functions/theme.dart';
 import 'package:sosnyp/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final Tween<BorderRadius> _bevelRadius = new BorderRadiusTween(
-    begin: const BorderRadius.only(
-      topRight: Radius.circular(28.0),
-      bottomRight: Radius.circular(28.0),
-    ),
-    end: const BorderRadius.only(
-      topRight: Radius.circular(28.0),
-      bottomRight: Radius.circular(28.0),
-    ));
-String helpButtonTitle;
+// final Tween<BorderRadius> _bevelRadius = new BorderRadiusTween(
+//     begin: const BorderRadius.only(
+//       topRight: Radius.circular(28.0),
+//       bottomRight: Radius.circular(28.0),
+//     ),
+//     end: const BorderRadius.only(
+//       topRight: Radius.circular(28.0),
+//       bottomRight: Radius.circular(28.0),
+//     ));
 PermissionStatus _status;
 
-button(context) {
-  return InkWell(
-    child: Container(
-      height: ScreenUtil.getInstance().setHeight(100),
-      width: ScreenUtil.getInstance().setWidth(700),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6.0),
-        color: tCelestialBlue,
-        boxShadow: [
-          BoxShadow(color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
-          BoxShadow(
-              color: Colors.black26.withOpacity(.3),
-              offset: Offset(5.0, 8.0),
-              blurRadius: 5.0),
-          BoxShadow(
-              color: Colors.black26.withOpacity(.3),
-              offset: Offset(5.0, 5.0),
-              blurRadius: 5.0)
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            helpButton(context);
-          },
-          child: Center(
-            child: Text(helpButtonTitle == null ? 'Help' : helpButtonTitle),
-          ),
+button(context, String buttonTitle) {
+  Key test = GlobalKey(debugLabel: 'AnimatedContainer Key');
+  return GestureDetector(
+      child: AnimatedContainer(
+    key: test,
+    duration: Duration(milliseconds: 300),
+    height: ScreenUtil.getInstance().setHeight(100),
+    width: ScreenUtil.getInstance().setWidth(700),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(6.0),
+      color: tCelestialBlue,
+      boxShadow: [
+        BoxShadow(color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+        BoxShadow(
+            color: Colors.black26.withOpacity(.3),
+            offset: Offset(5.0, 8.0),
+            blurRadius: 5.0),
+        BoxShadow(
+            color: Colors.black26.withOpacity(.3),
+            offset: Offset(5.0, 5.0),
+            blurRadius: 5.0)
+      ],
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          helpButton(context);
+        },
+        child: Center(
+          child: Text(buttonTitle == null ? 'Help' : buttonTitle),
         ),
       ),
     ),
-  );
+  ));
 }
 
 detailsButton(context) {
@@ -217,12 +218,11 @@ homePageContentDetails(context) {
   return Container(
       height: ScreenUtil.getInstance().setHeight(700),
       child: Column(children: <Widget>[
-        Spacer(),
         Container(
             child: Center(
                 // Make a Form
-                child: detailsForm())),
-        Spacer(), // Temp just for Presemtation
+                child: Container())),
+        // Temp just for Presemtation
         GestureDetector(
             onTap: () {
               zfakeDetailSubmitButtonOnclick();
@@ -300,34 +300,10 @@ homePageContentRequest(context) {
       ]));
 }
 
-statusBarDetails() {
-  return Container(
-      height: ScreenUtil.getInstance().setHeight(100),
-      child: Stack(fit: StackFit.passthrough, children: <Widget>[
-        Container(decoration: BoxDecoration(color: tCelestialBlue)),
-        Container(
-            width: ScreenUtil.getInstance().setWidth(525),
-            height: ScreenUtil.getInstance().setHeight(100),
-            child: Container(
-                child: Center(
-                    child: AutoSizeText(
-              'Add More Details',
-              maxLines: 1,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: tWhite, fontSize: ScreenUtil.getInstance().setSp(50)),
-            ))),
-            decoration: ShapeDecoration(
-                color: tRoyalBlue,
-                shape: BeveledRectangleBorder(
-                    borderRadius: _bevelRadius.lerp(1)))),
-      ]));
-}
-
 statusBarNormal() {
   return Container(
     height: ScreenUtil.getInstance().setHeight(100),
-    color: tCelestialBlue,
+    color: tCelestialBlue2,
     child: Center(
         child: AutoSizeText('Normal',
             style: TextStyle(
@@ -343,7 +319,7 @@ statusBarOTW() {
       child: Stack(fit: StackFit.passthrough, children: <Widget>[
         Container(
             width: ScreenUtil.getInstance().setWidth(750),
-            color: tCelestialBlue),
+            color: tCelestialBlue2),
         Container(
             width: ScreenUtil.getInstance().setWidth(750),
             height: ScreenUtil.getInstance().setHeight(100),
@@ -360,128 +336,6 @@ statusBarOTW() {
               color: tRoyalBlue,
             )),
       ]));
-}
-
-statusBarRequest() {
-  return Container(
-      height: ScreenUtil.getInstance().setHeight(100),
-      child: Stack(fit: StackFit.passthrough, children: <Widget>[
-        Container(
-            width: ScreenUtil.getInstance().setWidth(750),
-            height: ScreenUtil.getInstance().setHeight(100),
-            decoration: BoxDecoration(color: tCelestialBlue)),
-        Container(
-            width: ScreenUtil.getInstance().setWidth(275),
-            height: ScreenUtil.getInstance().setHeight(100),
-            child: Container(
-                margin: EdgeInsets.only(
-                    right: ScreenUtil.getInstance().setWidth(50)),
-                child: Center(
-                    child: AutoSizeText(
-                  'Requesting Help',
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: tWhite,
-                      fontSize: ScreenUtil.getInstance().setSp(100)),
-                ))),
-            decoration: ShapeDecoration(
-                color: tRoyalBlue,
-                shape: BeveledRectangleBorder(
-                    borderRadius: _bevelRadius.lerp(1)))),
-      ]));
-}
-
-statusBarWaiting() {
-  return Container(
-      height: ScreenUtil.getInstance().setHeight(100),
-      child: Stack(fit: StackFit.passthrough, children: <Widget>[
-        Container(
-          width: ScreenUtil.getInstance().setWidth(750),
-          color: tCelestialBlue,
-        ),
-        Container(
-            width: ScreenUtil.getInstance().setWidth(750),
-            height: ScreenUtil.getInstance().setHeight(100),
-            child: Container(
-                child: Center(
-                    child: AutoSizeText(
-              'Awaiting Help',
-              maxLines: 1,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: tWhite,
-                fontSize: ScreenUtil.getInstance().setSp(70),
-              ),
-            ))),
-            decoration: ShapeDecoration(
-                color: tRoyalBlue,
-                shape: BeveledRectangleBorder(
-                    borderRadius: _bevelRadius.lerp(1)))),
-      ]));
-}
-
-statusDetails(context) {
-  helpButtonTitle = "Update Location";
-  return Column(children: <Widget>[
-    statusBarDetails(),
-    homePageContentDetails(context),
-  ]);
-}
-
-statusNormal() {
-  helpButtonTitle = "";
-
-  return Column(children: <Widget>[
-    statusBarNormal(),
-    homePageContentNormal(),
-  ]);
-}
-
-statusOTW(context) {
-  helpButtonTitle = "Update Location";
-
-  return Column(children: <Widget>[
-    statusBarOTW(),
-    Spacer(),
-    Text('OTW'),
-    Spacer(),
-    detailsButtonUpdate(context),
-    SizedBox(height: ScreenUtil.getInstance().setHeight(25))
-  ]);
-}
-
-statusOTWDetails(context) {
-  helpButtonTitle = "Update Location";
-  return Column(children: <Widget>[
-    statusBarOTW(),
-    Spacer(),
-    detailsForm(),
-    Spacer(),
-    zfakeSubmitButton(context),
-    SizedBox(height: ScreenUtil.getInstance().setHeight(25))
-  ]);
-}
-
-statusRequest(context) {
-  helpButtonTitle = "Update Location";
-
-  return Column(children: <Widget>[
-    statusBarRequest(),
-    homePageContentRequest(context),
-  ]);
-}
-
-statusWaiting(context) {
-  helpButtonTitle = "Update Location";
-  return Column(children: <Widget>[
-    statusBarWaiting(),
-    Spacer(),
-    Text('Please wait\nnotifying staff...'),
-    Spacer(),
-    detailsButton(context),
-    SizedBox(height: ScreenUtil.getInstance().setHeight(25))
-  ]);
 }
 
 zfakeDetailSubmitButtonOnclick() async {

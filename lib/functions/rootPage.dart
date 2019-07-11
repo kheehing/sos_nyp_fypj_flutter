@@ -18,7 +18,7 @@ class RootPage extends StatefulWidget {
     switch (screen) {
       case 'Home':
         x = HomePage();
-        y = null;
+        y = HomePage().popupMenu();
         break;
       case 'Profile':
         x = ProfilePage();

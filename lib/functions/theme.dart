@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 const Color tashGrey = Color(0xffb4b8ab);
 const Color tRoyalBlue = Color(0xff0A2463);
 const Color tCelestialBlue = Color(0xff95C3E3);
+const Color tCelestialBlue2 = Color(0xff7AA0BA);
 const Color tWhite = Color(0xffFFFAFF);
 const Color tCherry = Color(0xffD8315B);
 const Color tEerieBlack = Color(0xff1E1B18);

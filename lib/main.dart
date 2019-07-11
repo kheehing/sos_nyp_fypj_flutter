@@ -12,6 +12,7 @@ import 'package:sosnyp/functions/theme.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
+    // home: MyApp(),
     home: _handleWindowDisplay(),
     theme: t,
     onGenerateRoute: (RouteSettings setting) {
