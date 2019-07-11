@@ -9,6 +9,7 @@ import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:sosnyp/functions/theme.dart';
 import 'package:sosnyp/main.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:sosnyp/functions/homeStatus-function.dart';
 
 backgroundColor(pBar, currentProgress) {
   Color thisColor;
@@ -164,7 +165,46 @@ class _HomePageState extends State<HomePage>
       ],
     );
   }
-
+button(context, String buttonTitle) {
+  Key test = GlobalKey(debugLabel: 'AnimatedContainer Key');
+  return GestureDetector(
+      child: AnimatedContainer(
+    key: test,
+    duration: Duration(milliseconds: 300),
+    height: ScreenUtil.getInstance().setHeight(100),
+    width: ScreenUtil.getInstance().setWidth(700),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(6.0),
+      color: tCelestialBlue,
+      boxShadow: [
+        BoxShadow(color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+        BoxShadow(
+            color: Colors.black26.withOpacity(.3),
+            offset: Offset(5.0, 8.0),
+            blurRadius: 5.0),
+        BoxShadow(
+            color: Colors.black26.withOpacity(.3),
+            offset: Offset(5.0, 5.0),
+            blurRadius: 5.0)
+      ],
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+           currentProgress = Progress.request;
+           distance = 495; 
+          });
+          helpButton(context);
+        },
+        child: Center(
+          child: Text(buttonTitle == null ? 'Help' : buttonTitle),
+        ),
+      ),
+    ),
+  ));
+}
   content() {
     // workingrequeset
     switch (currentProgress) {
@@ -189,6 +229,8 @@ class _HomePageState extends State<HomePage>
                           decoration: TextDecoration.underline,
                           fontSize: ScreenUtil.getInstance().setSp(50)))),
             ),
+            SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
+            button(context, 'help'),
           ]),
         );
 
