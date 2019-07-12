@@ -1,13 +1,16 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:clippy_flutter/clippy_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sosnyp/functions/homepage-function.dart';
 import 'package:sosnyp/functions/hompage-campus-repo.dart';
 import 'package:sosnyp/functions/rootPage.dart';
-import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:sosnyp/functions/theme.dart';
 import 'package:sosnyp/main.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -119,41 +122,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  buttonRequest(context, String buttonTitle) {
-    return Container(
-      height: ScreenUtil.getInstance().setHeight(100),
-      width: ScreenUtil.getInstance().setWidth(700),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6.0),
-        color: tCelestialBlue,
-        boxShadow: [
-          BoxShadow(color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
-          BoxShadow(
-              color: Colors.black26.withOpacity(.3),
-              offset: Offset(5.0, 8.0),
-              blurRadius: 5.0),
-          BoxShadow(
-              color: Colors.black26.withOpacity(.3),
-              offset: Offset(5.0, 5.0),
-              blurRadius: 5.0)
-        ],
-      ),
-      child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            child: Center(
-              child: Text(buttonTitle == null ? 'Help' : buttonTitle),
-            ),
-            onTap: () {
-              setState(() {
-                currentProgress = Progress.details;
-                distance = 990;
-              });
-            },
-          )),
-    );
-  }
-
   buttonHelp(context, String buttonTitle) {
     return Container(
       height: ScreenUtil.getInstance().setHeight(100),
@@ -185,6 +153,41 @@ class _HomePageState extends State<HomePage>
                 distance = 495;
               });
               helpButtonOnClick(context);
+            },
+          )),
+    );
+  }
+
+  buttonRequest(context, String buttonTitle) {
+    return Container(
+      height: ScreenUtil.getInstance().setHeight(100),
+      width: ScreenUtil.getInstance().setWidth(700),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6.0),
+        color: tCelestialBlue,
+        boxShadow: [
+          BoxShadow(color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+          BoxShadow(
+              color: Colors.black26.withOpacity(.3),
+              offset: Offset(5.0, 8.0),
+              blurRadius: 5.0),
+          BoxShadow(
+              color: Colors.black26.withOpacity(.3),
+              offset: Offset(5.0, 5.0),
+              blurRadius: 5.0)
+        ],
+      ),
+      child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            child: Center(
+              child: Text(buttonTitle == null ? 'Help' : buttonTitle),
+            ),
+            onTap: () {
+              setState(() {
+                currentProgress = Progress.details;
+                distance = 990;
+              });
             },
           )),
     );
@@ -340,6 +343,41 @@ class _HomePageState extends State<HomePage>
                           ),
                         ),
                       ])),
+                  Container(
+                      height: ScreenUtil.getInstance().setHeight(200),
+                      padding: EdgeInsets.all(10),
+                      child: Row(children: <Widget>[
+                        Container(
+                            width: ScreenUtil.getInstance().setWidth(375),
+                            padding: EdgeInsets.only(right: 10),
+                            child: AutoSizeText(
+                              'Take Picture of your surrounding',
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              style: TextStyle(
+                                  fontFamily: 'black_label',
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600),
+                            )),
+                        Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: tCelestialBlue,
+                            ),
+                            margin: EdgeInsets.only(
+                                left: ScreenUtil.getInstance().setWidth(70)),
+                            height: ScreenUtil.getInstance().setWidth(150),
+                            width: ScreenUtil.getInstance().setWidth(150),
+                            child: InkWell(
+                              borderRadius: new BorderRadius.circular(
+                                  ScreenUtil.getInstance().setWidth(75)),
+                              onTap: () => _imageCamera(),
+                              child: Icon(
+                                Icons.camera_alt,
+                                size: ScreenUtil.getInstance().setWidth(120),
+                              ),
+                            )),
+                      ])),
                 ]),
               ))),
               buttonDetails(context, 'Submit'),
@@ -348,7 +386,9 @@ class _HomePageState extends State<HomePage>
   }
 
   contentLoading() {
-    return currentProgress == Progress.loading ? SplashScreen() : Container();
+    return currentProgress == Progress.loading
+        ? CircularProgressIndicator()
+        : Container();
   }
 
   contentNormal() {
@@ -385,6 +425,15 @@ class _HomePageState extends State<HomePage>
           )
         : Container();
   }
+
+  // Future downloadFile() async {
+  //   final StorageReference ref =
+  //       FirebaseStorage.instance.ref().child(currentUser);
+  //   final imageUrl = await ref.getDownloadURL();
+  //   setState(() {
+  //     currentUserImageUrl = imageUrl;
+  //   });
+  // }
 
   contentOTW() {
     return currentProgress == Progress.otw ? Text('otw') : Container();
@@ -568,6 +617,21 @@ class _HomePageState extends State<HomePage>
           break;
       }
     });
+  }
+
+  _firestoreUpload(image) async {
+    final StorageUploadTask uploadTask = FirebaseStorage.instance
+        .ref()
+        .child(currentUser)
+        .putFile(File(image.path));
+    final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
+    print(taskSnapshot);
+  }
+
+  Future _imageCamera() async {
+    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+    await _firestoreUpload(image);
+    // await downloadFile();
   }
 
   void _onSelectedBlock(String value) {
