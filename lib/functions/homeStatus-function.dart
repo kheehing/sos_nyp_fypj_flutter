@@ -21,8 +21,6 @@ import 'package:url_launcher/url_launcher.dart';
 //     ));
 PermissionStatus _status;
 
-
-
 detailsButton(context) {
   return InkWell(
     child: Container(

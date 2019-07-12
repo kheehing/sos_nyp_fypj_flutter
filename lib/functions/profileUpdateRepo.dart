@@ -1,20 +1,6 @@
 import 'package:sosnyp/functions/profileUpdateModel.dart';
 
 class Repository {
-  List<Map> getAll() => _schoolCourse;
-
-  getLocalBySchool(String school) => _schoolCourse
-      .map((map) => Model.fromJson(map))
-      .where((item) => item.school == school)
-      .map((item) => item.course)
-      .expand((i) => i)
-      .toList();
-
-  List<String> getSchool() => _schoolCourse
-      .map((map) => Model.fromJson(map))
-      .map((item) => item.school)
-      .toList();
-
   List _schoolCourse = [
     {
       "school": "SIT",
@@ -103,4 +89,18 @@ class Repository {
       ]
     },
   ];
+
+  List<Map> getAll() => _schoolCourse;
+
+  List<String> getSchool() => _schoolCourse
+      .map((map) => Model.fromJson(map))
+      .map((item) => item.school)
+      .toList();
+      
+  getLocalBySchool(String school) => _schoolCourse
+      .map((map) => Model.fromJson(map))
+      .where((item) => item.school == school)
+      .map((item) => item.course)
+      .expand((i) => i)
+      .toList();
 }
