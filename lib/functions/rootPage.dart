@@ -18,7 +18,7 @@ class RootPage extends StatefulWidget {
     switch (screen) {
       case 'Home':
         x = HomePage();
-        y = HomePage().popupMenu();
+        y = null;
         break;
       case 'Profile':
         x = ProfilePage();
@@ -64,6 +64,14 @@ class _RootPage extends State<RootPage> {
     setState(() {
       currentUserImageUrl = imageUrl;
     });
+  }
+
+  @override
+  void dispose() {
+    x = null;
+    y = null;
+    rootContext = null;
+    super.dispose();
   }
 
   @override

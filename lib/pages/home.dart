@@ -6,8 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:sosnyp/functions/homepage-function.dart';
 import 'package:sosnyp/functions/hompage-campus-repo.dart';
 import 'package:sosnyp/functions/rootPage.dart';
@@ -18,13 +22,6 @@ import 'package:url_launcher/url_launcher.dart';
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _HomePageState();
-
-  popupMenu() {
-    return InkWell(
-      onTap: () => print('refreshs'),
-      child: Icon(Icons.cached),
-    );
-  }
 }
 
 enum Progress {
@@ -43,10 +40,12 @@ class _HomePageState extends State<HomePage>
   List<String> _floor = ["Choose .."];
   String _selectedBlock = "Choose a Block";
   String _selectedFloor = "Choose ..";
-
+  File image;
   Repository repo = Repository();
   double progressBarNum;
   double distance = 0;
+  PermissionStatus _status;
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
@@ -85,43 +84,6 @@ class _HomePageState extends State<HomePage>
       ],
     );
   }
-
-  buttonDetails(context, String buttonTitle) {
-    return Container(
-      height: ScreenUtil.getInstance().setHeight(100),
-      width: ScreenUtil.getInstance().setWidth(700),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6.0),
-        color: tCelestialBlue,
-        boxShadow: [
-          BoxShadow(color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
-          BoxShadow(
-              color: Colors.black26.withOpacity(.3),
-              offset: Offset(5.0, 8.0),
-              blurRadius: 5.0),
-          BoxShadow(
-              color: Colors.black26.withOpacity(.3),
-              offset: Offset(5.0, 5.0),
-              blurRadius: 5.0)
-        ],
-      ),
-      child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            child: Center(
-              child: Text(buttonTitle == null ? 'Help' : buttonTitle),
-            ),
-            onTap: () {
-              setState(() {
-                currentProgress = Progress.waiting;
-                distance = 1485;
-              });
-              // helpButtonOnClick(context);
-            },
-          )),
-    );
-  }
-
   buttonHelp(context, String buttonTitle) {
     return Container(
       height: ScreenUtil.getInstance().setHeight(100),
@@ -148,10 +110,6 @@ class _HomePageState extends State<HomePage>
               child: Text(buttonTitle == null ? 'Help' : buttonTitle),
             ),
             onTap: () {
-              setState(() {
-                currentProgress = Progress.request;
-                distance = 495;
-              });
               helpButtonOnClick(context);
             },
           )),
@@ -184,6 +142,13 @@ class _HomePageState extends State<HomePage>
               child: Text(buttonTitle == null ? 'Help' : buttonTitle),
             ),
             onTap: () {
+              Firestore.instance
+                  .collection('help.current')
+                  .document(currentUser)
+                  .updateData({
+                'status': 'details',
+                'time': DateTime.now(),
+              });
               setState(() {
                 currentProgress = Progress.details;
                 distance = 990;
@@ -351,7 +316,7 @@ class _HomePageState extends State<HomePage>
                             width: ScreenUtil.getInstance().setWidth(375),
                             padding: EdgeInsets.only(right: 10),
                             child: AutoSizeText(
-                              'Take Picture of your surrounding',
+                              'Take Photo of your surroundings',
                               textAlign: TextAlign.center,
                               maxLines: 2,
                               style: TextStyle(
@@ -380,7 +345,63 @@ class _HomePageState extends State<HomePage>
                       ])),
                 ]),
               ))),
-              buttonDetails(context, 'Submit'),
+              Container(
+                height: ScreenUtil.getInstance().setHeight(100),
+                width: ScreenUtil.getInstance().setWidth(700),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6.0),
+                  color: tCelestialBlue,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+                    BoxShadow(
+                        color: Colors.black26.withOpacity(.3),
+                        offset: Offset(5.0, 8.0),
+                        blurRadius: 5.0),
+                    BoxShadow(
+                        color: Colors.black26.withOpacity(.3),
+                        offset: Offset(5.0, 5.0),
+                        blurRadius: 5.0)
+                  ],
+                ),
+                child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      child: Center(
+                        child: Text('Submit'),
+                      ),
+                      onTap: () {
+                        if (_selectedBlock == "Choose a Block") {
+                          Scaffold.of(context).showSnackBar(new SnackBar(
+                            content: Text('Choose your Block'),
+                          ));
+                        } else if (_selectedFloor == "Choose ..") {
+                          Scaffold.of(context).showSnackBar(new SnackBar(
+                            content: Text('Choose your Floor'),
+                          ));
+                        } else if (image == null) {
+                          Scaffold.of(context).showSnackBar(new SnackBar(
+                            content: Text('Take an Image of your surrounding'),
+                          ));
+                        } else {
+                          Firestore.instance
+                              .collection('help.current')
+                              .document(currentUser)
+                              .updateData({
+                            'status': 'waiting',
+                            'details': {
+                              'block': _selectedBlock.toString(),
+                              'floor': _selectedFloor.toString(),
+                            }
+                          });
+                          setState(() {
+                            currentProgress = Progress.waiting;
+                            distance = 1485;
+                          });
+                        }
+                      },
+                    )),
+              ),
             ]))
         : Container();
   }
@@ -398,7 +419,7 @@ class _HomePageState extends State<HomePage>
             child: Column(children: <Widget>[
               Spacer(),
               Container(
-                  color: Colors.pink,
+                  // color: Colors.pink,
                   height: ScreenUtil.getInstance().setHeight(100),
                   child: AutoSizeText(
                     'If you need help, tap on the \'Help\' button. For futher assistance you may call the ',
@@ -408,7 +429,7 @@ class _HomePageState extends State<HomePage>
                         TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
                   )),
               Container(
-                color: Colors.blue,
+                // color: Colors.blue,
                 height: ScreenUtil.getInstance().setHeight(50),
                 child: GestureDetector(
                     onTap: () => launch("tel://+65123456789"),
@@ -426,17 +447,24 @@ class _HomePageState extends State<HomePage>
         : Container();
   }
 
-  // Future downloadFile() async {
-  //   final StorageReference ref =
-  //       FirebaseStorage.instance.ref().child(currentUser);
-  //   final imageUrl = await ref.getDownloadURL();
-  //   setState(() {
-  //     currentUserImageUrl = imageUrl;
-  //   });
-  // }
-
   contentOTW() {
-    return currentProgress == Progress.otw ? Text('otw') : Container();
+    return currentProgress == Progress.otw
+        ? Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: ScreenUtil.getInstance().setWidth(50)),
+            child: Column(children: <Widget>[
+              AutoSizeText(
+                'Staff is On the Way',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: ScreenUtil.getInstance().setSp(50),
+                ),
+              ),
+              JumpingDotsProgressIndicator(
+                fontSize: ScreenUtil.getInstance().setSp(50),
+              ),
+            ]))
+        : Container();
   }
 
   contentRequest() {
@@ -448,7 +476,7 @@ class _HomePageState extends State<HomePage>
               Container(
                 width: ScreenUtil.getInstance().setWidth(500),
                 child: AutoSizeText(
-                  'Your Request is currently being Process. You may want to add more details of your current location this will help our staff to find you faster',
+                  'Your request is being processed. Please proceed to the next step',
                   textAlign: TextAlign.center,
                   style:
                       TextStyle(fontSize: ScreenUtil.getInstance().setSp(35)),
@@ -461,12 +489,124 @@ class _HomePageState extends State<HomePage>
   }
 
   contentWaiting() {
-    return currentProgress == Progress.waiting ? Text('waiting') : Container();
+    return currentProgress == Progress.waiting
+        ? StreamBuilder(
+            stream: Firestore.instance
+                .collection('help.current')
+                .document(currentUser)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return CircularProgressIndicator();
+              }
+              Map<dynamic, dynamic> helper = snapshot.data['helper'];
+              if (helper['status'] == 'otw') {
+                SchedulerBinding.instance
+                    .addPostFrameCallback((_) => setState(() {
+                          currentProgress = Progress.otw;
+                          distance = 1980;
+                        }));
+              }
+              return Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: ScreenUtil.getInstance().setWidth(50)),
+                  child: Column(children: <Widget>[
+                    AutoSizeText(
+                      'Processing your request ',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: ScreenUtil.getInstance().setSp(50),
+                      ),
+                    ),
+                    JumpingDotsProgressIndicator(
+                      fontSize: ScreenUtil.getInstance().setSp(50),
+                    ),
+                  ]));
+            },
+          )
+        : Container();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  helpButtonOnClick(context) async {
+    void _onStatusRequest(Map<PermissionGroup, PermissionStatus> statuses) {
+      final status = statuses[PermissionGroup.locationWhenInUse];
+      _updateStatus(status);
+      if (status != PermissionStatus.granted) {
+        PermissionHandler().openAppSettings();
+      }
+    }
+
+    PermissionHandler().requestPermissions(
+        [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
+    var currentLocation = LocationData.fromMap(Map<String, double>());
+    var location = new Location();
+    try {
+      currentLocation = await location.getLocation();
+    } catch (e) {
+      currentLocation = null;
+    }
+    var data = await Firestore.instance
+        .collection('help.current')
+        .document(currentUser)
+        .get();
+    var profileData = await Firestore.instance
+        .collection('profile')
+        .document(currentUser)
+        .get();
+    if (!profileData.exists) {
+      Scaffold.of(context).showSnackBar(new SnackBar(
+        content: Text('Update your profile first'),
+      ));
+    } else if (data.data == null) {
+      Firestore.instance
+          .collection('help.current')
+          .document(currentUser)
+          .setData({
+        'type': 'help',
+        'helper': {
+          'otw': '',
+          'status': '',
+        },
+        'details': {
+          'block': '',
+          'floor': '',
+        },
+        'latitude': currentLocation.latitude.toString(),
+        'longitude': currentLocation.longitude.toString(),
+        'status': 'request',
+        'time': DateTime.now(),
+        'type': 'help',
+        'user': currentUser,
+        'user.details': {
+          'admin': profileData['admin'],
+          'course': profileData['course'],
+          'gender': profileData['gender'],
+          'mobile': profileData['mobile'],
+          'name': profileData['name'],
+          'school': profileData['school'],
+        },
+      }).catchError((onError) {});
+      setState(() {
+        currentProgress = Progress.request;
+        distance = 495;
+      });
+    }
+    //  else {
+    //   Firestore.instance
+    //       .collection('help.current')
+    //       .document(currentUser)
+    //       .updateData({
+    //     'status': 'request',
+    //     'latitude': currentLocation.latitude.toString(),
+    //     'longitude': currentLocation.longitude.toString(),
+    //     'time': DateTime.now(),
+    //   }).catchError((onError) {});
+    // }
   }
 
   @override
@@ -583,38 +723,38 @@ class _HomePageState extends State<HomePage>
         .document(currentUser)
         .get()
         .then((db) {
-      final current = db.data['status'].toString();
-      switch (current) {
-        case "normal":
-          setState(() {
-            currentProgress = Progress.normal;
-            distance = 0;
-          });
-          break;
-        case "request":
-          setState(() {
-            currentProgress = Progress.request;
-            distance = 495;
-          });
-          break;
-        case "details":
-          setState(() {
-            currentProgress = Progress.details;
-            distance = 990;
-          });
-          break;
-        case "waiting":
-          setState(() {
-            currentProgress = Progress.waiting;
-            distance = 1485;
-          });
-          break;
-        case "otw":
-          setState(() {
-            currentProgress = Progress.otw;
-            distance = 1980;
-          });
-          break;
+      if (db.data == null) {
+        setState(() {
+          currentProgress = Progress.normal;
+        });
+      } else {
+        final current = db.data['status'].toString();
+        switch (current) {
+          case "normal":
+            setState(() {
+              currentProgress = Progress.normal;
+              distance = 0;
+            });
+            break;
+          case "request":
+            setState(() {
+              currentProgress = Progress.request;
+              distance = 495;
+            });
+            break;
+          case "details":
+            setState(() {
+              currentProgress = Progress.details;
+              distance = 990;
+            });
+            break;
+          case "waiting":
+            setState(() {
+              currentProgress = Progress.waiting;
+              distance = 1485;
+            });
+            break;
+        }
       }
     });
   }
@@ -622,16 +762,18 @@ class _HomePageState extends State<HomePage>
   _firestoreUpload(image) async {
     final StorageUploadTask uploadTask = FirebaseStorage.instance
         .ref()
-        .child(currentUser)
+        .child('details/' + currentUser)
         .putFile(File(image.path));
     final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
     print(taskSnapshot);
   }
 
   Future _imageCamera() async {
-    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var thisimage = await ImagePicker.pickImage(source: ImageSource.camera);
+    setState(() {
+      image = thisimage;
+    });
     await _firestoreUpload(image);
-    // await downloadFile();
   }
 
   void _onSelectedBlock(String value) {
@@ -646,5 +788,11 @@ class _HomePageState extends State<HomePage>
   void _onSelectedFloor(String value) {
     _selectedFloor = value;
     setState(() => _selectedFloor = value);
+  }
+
+  void _updateStatus(PermissionStatus status) {
+    if (status != _status) {
+      _status = status;
+    }
   }
 }

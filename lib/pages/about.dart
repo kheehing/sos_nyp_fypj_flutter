@@ -431,7 +431,7 @@ class CollapsingList extends StatelessWidget {
         SliverFixedExtentList(
           itemExtent: ScreenUtil.getInstance().setHeight(350),
           delegate: SliverChildListDelegate([
-//
+            Text('data'),
           ]),
         ),
       ],

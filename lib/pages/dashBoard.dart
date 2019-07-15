@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:async/async.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 class DashBoardPage extends StatefulWidget {
   @override
@@ -99,279 +98,279 @@ class _DashBoardPageState extends State<DashBoardPage>
     streamController = null;
   }
 
-  Future<Stream> getData() async {
-    Stream stream1 = Firestore.instance.collection('user.attended').snapshots();
-    Stream stream2 = Firestore.instance.collection('user.current').snapshots();
-    return StreamGroup.merge([stream1, stream2]).asBroadcastStream();
-  }
-
   @override
   void initState() {
     streamController = StreamController.broadcast();
-    setupData();
     _tabController = new TabController(length: 3, vsync: this);
     super.initState();
   }
 
-  setupData() async {
-    Stream stream = await getData()
-      ..asBroadcastStream();
-    stream.listen((data) {
-      setState(() {
-        dataList.add(data[0]);
-        dataList.add(data[1]);
-      });
-    });
-  }
-
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    _openMap() async {
-      final String _long = await document['longitude'];
-      final String _lan = await document['latitude'];
-      // Android
-      var url = 'https://www.google.com/maps/search/?api=1&query=$_lan,$_long';
-      if (Platform.isIOS) {
-        // iOS
-        url = 'http://maps.apple.com/?ll=$_lan,$_long';
-      }
-      if (await canLaunch(url)) {
-        await launch(url);
+    if (document.data == null) {
+      return CircularProgressIndicator();
+    } else {
+      Map<dynamic, dynamic> userDetails = document.data['user.details'];
+      if (userDetails == null) {
+        return CircularProgressIndicator();
       } else {
-        throw 'Could not launch $url';
-      }
-    }
+        _openMap() async {
+          final String _long = await document['longitude'];
+          final String _lan = await document['latitude'];
+          // Android
+          var url =
+              'https://www.google.com/maps/search/?api=1&query=$_lan,$_long';
+          if (Platform.isIOS) {
+            // iOS
+            url = 'http://maps.apple.com/?ll=$_lan,$_long';
+          }
+          if (await canLaunch(url)) {
+            await launch(url);
+          } else {
+            throw 'Could not launch $url';
+          }
+        }
 
-    void _showDialog() async {
-      Widget _displayAttended() {
-        if (document['type'] == 'attended') {
-          return Container(
-              height: ScreenUtil.getInstance().setHeight(250),
-              child: Column(children: <Widget>[
-                Spacer(),
-                Text(
-                    'Request: ' +
-                        DateFormat('K:mm:ss a')
-                            .format(document['time'].toDate()),
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontFamily: 'black_label',
-                      fontWeight: FontWeight.bold,
-                    )),
-                SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
-                Text(
-                    'Assisted: ' +
-                        DateFormat('K:mm:ss a')
-                            .format(document['time attended'].toDate()),
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontFamily: 'black_label',
-                      fontWeight: FontWeight.bold,
-                    )),
-                SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
-                Text('Assistant: ' + document['helper'],
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontFamily: 'black_label',
-                      fontWeight: FontWeight.bold,
-                    )),
-                Spacer(),
-              ]));
-        } else
-          return SizedBox();
-      }
+        void _showDialog() async {
+          Widget _displayAttended() {
+            if (document['type'] == 'attended') {
+              Map<dynamic, dynamic> helper = document.data['helper'];
+              // Map<dynamic, dynamic> details = document.data['details'];
+              // Map<dynamic, dynamic> userDetails = document.data['user.details'];
+              return Container(
+                  height: ScreenUtil.getInstance().setHeight(250),
+                  child: Column(children: <Widget>[
+                    Spacer(),
+                    Text(
+                        'Request: ' +
+                            DateFormat('K:mm:ss a')
+                                .format(document['time'].toDate()),
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontFamily: 'black_label',
+                          fontWeight: FontWeight.bold,
+                        )),
+                    SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
+                    Text(
+                        'Assisted: ' +
+                            DateFormat('K:mm:ss a')
+                                .format(document['time attended'].toDate()),
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontFamily: 'black_label',
+                          fontWeight: FontWeight.bold,
+                        )),
+                    SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
+                    Text('Assistant: ' + helper['helper'],
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontFamily: 'black_label',
+                          fontWeight: FontWeight.bold,
+                        )),
+                    Spacer(),
+                  ]));
+            } else
+              return SizedBox();
+          }
 
-      Widget _displayCurrent() {
-        if (document.data['type'] == 'help') {
-          return Container(
-              height: ScreenUtil.getInstance().setHeight(250),
-              child: Column(children: <Widget>[
-                Spacer(),
-                Text('Location',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'black_label',
-                    )),
-                Row(children: <Widget>[
-                  Expanded(
-                      child: Center(
-                          child: Text(
-                    document['latitude'],
-                    textAlign: TextAlign.left,
-                  ))),
-                  Expanded(
-                      child: Center(
-                          child: Text(
-                    document['longitude'],
-                    textAlign: TextAlign.left,
-                  ))),
-                ]),
-                Row(children: <Widget>[
-                  Expanded(
-                      child: Center(
-                          child: Text('latitude',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: ScreenUtil.getInstance().setSp(25),
-                                fontFamily: 'black_label',
-                              )))),
-                  Expanded(
-                      child: Center(
-                          child: Text('longitude',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: ScreenUtil.getInstance().setSp(25),
-                                fontFamily: 'black_label',
-                              )))),
-                ]),
-                SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
-                Text('Last Requested Help',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'black_label',
-                    )),
-                Text(
-                  DateFormat('kk:mm:ss a').format(document['time'].toDate()),
+          Widget _displayCurrent() {
+            if (document.data['type'] == 'help') {
+              return Container(
+                  height: ScreenUtil.getInstance().setHeight(250),
+                  child: Column(children: <Widget>[
+                    Spacer(),
+                    Text('Location',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'black_label',
+                        )),
+                    Row(children: <Widget>[
+                      Expanded(
+                          child: Center(
+                              child: Text(
+                        document['latitude'],
+                        textAlign: TextAlign.left,
+                      ))),
+                      Expanded(
+                          child: Center(
+                              child: Text(
+                        document['longitude'],
+                        textAlign: TextAlign.left,
+                      ))),
+                    ]),
+                    Row(children: <Widget>[
+                      Expanded(
+                          child: Center(
+                              child: Text('latitude',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize:
+                                        ScreenUtil.getInstance().setSp(25),
+                                    fontFamily: 'black_label',
+                                  )))),
+                      Expanded(
+                          child: Center(
+                              child: Text('longitude',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize:
+                                        ScreenUtil.getInstance().setSp(25),
+                                    fontFamily: 'black_label',
+                                  )))),
+                    ]),
+                    SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
+                    Text('Last Requested Help',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'black_label',
+                        )),
+                    Text(
+                      DateFormat('kk:mm:ss a')
+                          .format(document['time'].toDate()),
+                    ),
+                    Spacer(),
+                  ]));
+            } else
+              return SizedBox();
+          }
+
+          Alert(
+            style: AlertStyle(
+              animationType: AnimationType.fromBottom,
+              isCloseButton: false,
+              isOverlayTapDismiss: true,
+              descStyle: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'black_label',
+                  fontWeight: FontWeight.w900),
+              animationDuration: Duration(milliseconds: 50),
+              alertBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                side: BorderSide(
+                  color: Colors.white,
                 ),
-                Spacer(),
-              ]));
-        } else
-          return SizedBox();
-      }
-
-      Alert(
-        style: AlertStyle(
-          animationType: AnimationType.fromBottom,
-          isCloseButton: false,
-          isOverlayTapDismiss: true,
-          descStyle: TextStyle(
-              fontSize: 15,
-              fontFamily: 'black_label',
-              fontWeight: FontWeight.w900),
-          animationDuration: Duration(milliseconds: 50),
-          alertBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            side: BorderSide(
-              color: Colors.white,
-            ),
-          ),
-          titleStyle: TextStyle(
-              fontSize: 20,
-              fontFamily: 'black_label',
-              fontWeight: FontWeight.w900),
-        ),
-        context: context,
-        title: document['user.name'] + ' (' + document['user.admin'] + ')',
-        desc: document['user.course'] + ' (' + document['user.school'] + ')',
-        buttons: [
-          DialogButton(
-              child: Text(
-                'Location',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: ScreenUtil.getInstance().setSp(50)),
               ),
-              onPressed: () => _openMap().whenComplete(() {
-                    Navigator.pop(context);
-                  }),
-              color: Colors.blue),
-        ],
-        content: Container(
-          child: Column(
+              titleStyle: TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'black_label',
+                  fontWeight: FontWeight.w900),
+            ),
+            context: context,
+            title: userDetails['name'] + ' (' + userDetails['admin'] + ')',
+            desc: userDetails['course'] + ' (' + userDetails['school'] + ')',
+            buttons: [
+              DialogButton(
+                  child: Text(
+                    'Location',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ScreenUtil.getInstance().setSp(50)),
+                  ),
+                  onPressed: () => _openMap().whenComplete(() {
+                        Navigator.pop(context);
+                      }),
+                  color: Colors.blue),
+            ],
+            content: Container(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: ScreenUtil.getInstance().setHeight(10)),
+                  Row(children: <Widget>[
+                    Expanded(
+                        child: Row(children: <Widget>[
+                      Text('Sex: ',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: 'black_label',
+                          )),
+                      Text(
+                        userDetails['gender'],
+                        textAlign: TextAlign.left,
+                      ),
+                    ])),
+                    Expanded(
+                        child: Row(children: <Widget>[
+                      Text('Mobile: ',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: 'black_label',
+                          )),
+                      Text(
+                        userDetails['mobile'],
+                        textAlign: TextAlign.left,
+                      ),
+                    ])),
+                  ]),
+                  _displayAttended(),
+                  _displayCurrent(),
+                ],
+              ),
+            ),
+          ).show();
+        }
+
+        return ListTile(
+          title: Row(
             children: <Widget>[
-              SizedBox(height: ScreenUtil.getInstance().setHeight(10)),
-              Row(children: <Widget>[
-                Expanded(
-                    child: Row(children: <Widget>[
-                  Text('Sex: ',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 12,
+              Expanded(
+                child: Text(userDetails['name'],
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontSize: 15,
                         fontFamily: 'black_label',
-                      )),
-                  Text(
-                    document['user.gender'],
-                    textAlign: TextAlign.left,
-                  ),
-                ])),
-                Expanded(
-                    child: Row(children: <Widget>[
-                  Text('Mobile: ',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'black_label',
-                      )),
-                  Text(
-                    document['user.mobile'],
-                    textAlign: TextAlign.left,
-                  ),
-                ])),
-              ]),
-              _displayAttended(),
-              _displayCurrent(),
+                        fontWeight: FontWeight.w900)),
+              ),
+              Container(
+                width: 260,
+                child: Row(
+                  children: <Widget>[
+                    Spacer(),
+                    Icon(
+                      Icons.call,
+                    ),
+                    AutoSizeText(
+                        new DateFormat("hh:mm a")
+                            .format(document['time'].toDate()),
+                        maxLines: 1,
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                            fontSize: ScreenUtil.getInstance().setSp(20),
+                            letterSpacing: ScreenUtil.getInstance().setSp(0.1),
+                            fontFamily: 'black_label',
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(15)),
+                    document['time attended'] == null
+                        ? Container()
+                        : Icon(Icons.call_end),
+                    document['time attended'] == null
+                        ? Container()
+                        : Expanded(
+                            child: AutoSizeText(
+                                DateFormat("hh:mm a")
+                                    .format(document['time attended'].toDate()),
+                                maxLines: 1,
+                                textAlign: TextAlign.end,
+                                style: TextStyle(
+                                    letterSpacing:
+                                        ScreenUtil.getInstance().setSp(0.1),
+                                    fontSize:
+                                        ScreenUtil.getInstance().setSp(20),
+                                    fontFamily: 'black_label',
+                                    fontWeight: FontWeight.bold))),
+                  ],
+                ),
+              ),
             ],
           ),
-        ),
-      ).show();
+          onTap: () {
+            _showDialog();
+          },
+          onLongPress: () {
+            _openMap();
+          },
+        );
+      }
     }
-
-    return ListTile(
-      title: Row(
-        children: <Widget>[
-          Expanded(
-            child: Text(document['user.name'],
-                maxLines: 1,
-                style: TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'black_label',
-                    fontWeight: FontWeight.w900)),
-          ),
-          Container(
-            width: 260,
-            child: Row(
-              children: <Widget>[
-                Spacer(),
-                Icon(
-                  Icons.call,
-                ),
-                AutoSizeText(
-                    new DateFormat("hh:mm a").format(document['time'].toDate()),
-                    maxLines: 1,
-                    textAlign: TextAlign.end,
-                    style: TextStyle(
-                        fontSize: ScreenUtil.getInstance().setSp(20),
-                        letterSpacing: ScreenUtil.getInstance().setSp(0.1),
-                        fontFamily: 'black_label',
-                        fontWeight: FontWeight.bold)),
-                SizedBox(width: ScreenUtil.getInstance().setWidth(15)),
-                document['time attended'] == null
-                    ? Container()
-                    : Icon(Icons.call_end),
-                document['time attended'] == null
-                    ? Container()
-                    : Expanded(
-                        child: AutoSizeText(
-                            DateFormat("hh:mm a")
-                                .format(document['time attended'].toDate()),
-                            maxLines: 1,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                                letterSpacing:
-                                    ScreenUtil.getInstance().setSp(0.1),
-                                fontSize: ScreenUtil.getInstance().setSp(20),
-                                fontFamily: 'black_label',
-                                fontWeight: FontWeight.bold))),
-              ],
-            ),
-          ),
-        ],
-      ),
-      onTap: () {
-        _showDialog();
-      },
-      onLongPress: () {
-        _openMap();
-      },
-    );
   }
 }
