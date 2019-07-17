@@ -8,7 +8,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final GlobalKey<ScaffoldState> loginScaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> loginScaffoldKey =
+      new GlobalKey<ScaffoldState>();
   bool currentState = true;
 
   @override

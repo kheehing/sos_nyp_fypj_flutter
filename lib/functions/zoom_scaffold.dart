@@ -171,6 +171,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
       children: [
         Container(
           child: Scaffold(
+            resizeToAvoidBottomPadding: false,
             body: menu(context, menuController),
           ),
         ),
@@ -245,8 +246,10 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
       MenuItem(Icons.face, 'Profile'),
     ];
     final List<MenuItem> adminOptions = [
+      MenuItem(Icons.adb, 'Test'),
       MenuItem(Icons.dashboard, 'DashBoard'),
       MenuItem(Icons.face, 'Inbox'),
+      MenuItem(Icons.supervisor_account, 'User'),
     ];
 
     return Container(

@@ -68,22 +68,22 @@ class _HomePageState extends State<HomePage>
             currentProgress == Progress.loading ? Container() : progressBar(),
             SizedBox(height: ScreenUtil.getInstance().setHeight(15)),
             Container(
-                height: ScreenUtil.getInstance().setHeight(800),
+                height: ScreenUtil.getInstance().setHeight(1000),
                 child: Column(children: <Widget>[
-                  Spacer(),
+                  SizedBox(height: ScreenUtil.getInstance().setHeight(20)),
                   contentNormal(),
                   contentRequest(),
                   contentDetails(),
                   contentWaiting(),
                   contentOTW(),
                   contentLoading(),
-                  Spacer(),
                 ])),
           ]),
         ),
       ],
     );
   }
+
   buttonHelp(context, String buttonTitle) {
     return Container(
       height: ScreenUtil.getInstance().setHeight(100),
@@ -242,7 +242,7 @@ class _HomePageState extends State<HomePage>
   contentDetails() {
     return currentProgress == Progress.details
         ? Container(
-            height: ScreenUtil.getInstance().setHeight(700),
+            height: ScreenUtil.getInstance().setHeight(980),
             child: Column(children: <Widget>[
               Container(
                   child: Center(
@@ -309,40 +309,41 @@ class _HomePageState extends State<HomePage>
                         ),
                       ])),
                   Container(
-                      height: ScreenUtil.getInstance().setHeight(200),
-                      padding: EdgeInsets.all(10),
-                      child: Row(children: <Widget>[
-                        Container(
-                            width: ScreenUtil.getInstance().setWidth(375),
-                            padding: EdgeInsets.only(right: 10),
-                            child: AutoSizeText(
-                              'Take Photo of your surroundings',
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              style: TextStyle(
-                                  fontFamily: 'black_label',
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600),
-                            )),
-                        Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: tCelestialBlue,
-                            ),
-                            margin: EdgeInsets.only(
-                                left: ScreenUtil.getInstance().setWidth(70)),
-                            height: ScreenUtil.getInstance().setWidth(150),
-                            width: ScreenUtil.getInstance().setWidth(150),
-                            child: InkWell(
-                              borderRadius: new BorderRadius.circular(
-                                  ScreenUtil.getInstance().setWidth(75)),
-                              onTap: () => _imageCamera(),
-                              child: Icon(
-                                Icons.camera_alt,
-                                size: ScreenUtil.getInstance().setWidth(120),
-                              ),
-                            )),
-                      ])),
+                    height: ScreenUtil.getInstance().setHeight(580),
+                    child: Center(
+                      child: InkWell(
+                        onTap: () {
+                          _imageCamera();
+                        },
+                        child: image == null
+                            ? Container(
+                                decoration: BoxDecoration(color: Colors.grey),
+                                child: Center(
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                spreadRadius:
+                                                    ScreenUtil.getInstance()
+                                                        .setSp(10),
+                                                color: Colors.black
+                                                    .withOpacity(0.5),
+                                                blurRadius: 17.0),
+                                          ]),
+                                      child: Icon(
+                                        Icons.photo_camera,
+                                        size:
+                                            ScreenUtil.getInstance().setSp(100),
+                                        color: Colors.white,
+                                      )),
+                                ),
+                              )
+                            : Image.file(image),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: ScreenUtil.getInstance().setHeight(10))
                 ]),
               ))),
               Container(
@@ -483,7 +484,7 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               Spacer(),
-              buttonRequest(context, 'More Details'),
+              buttonRequest(context, 'Continue'),
             ]))
         : Container();
   }
@@ -765,6 +766,7 @@ class _HomePageState extends State<HomePage>
         .child('details/' + currentUser)
         .putFile(File(image.path));
     final StorageTaskSnapshot taskSnapshot = (await uploadTask.onComplete);
+
     print(taskSnapshot);
   }
 

@@ -5,9 +5,6 @@ import 'package:sosnyp/main.dart';
 import 'package:sosnyp/functions/profileUpdateRepo.dart';
 
 class UpdateProfilePage extends StatefulWidget {
-  final String title;
-  const UpdateProfilePage({Key key, this.title}) : super(key: key);
-
   @override
   _UpdateProfilePageState createState() => new _UpdateProfilePageState();
 }
@@ -50,6 +47,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
     _school = List.from(_school)..addAll(repo.getSchool());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controllerAdmin.dispose();
+    _controllerMobile.dispose();
+    _controllerName.dispose();
+    super.dispose();
   }
 
   @override
@@ -373,6 +378,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         'school': _selectedSchool,
         'course': _selectedCourse,
         'gender': _selectedGender,
+        'accountType': 'normal',
       }).catchError((onError) {});
       Navigator.of(context).pop();
     }

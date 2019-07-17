@@ -7,6 +7,8 @@ import 'package:sosnyp/pages/home.dart';
 import 'package:sosnyp/pages/about.dart';
 import 'package:sosnyp/pages/inbox.dart';
 import 'package:sosnyp/pages/profile.dart';
+import 'package:sosnyp/pages/users.dart';
+import 'package:sosnyp/testing/testing.dart';
 
 // X is the pageContent; Y is the popupMenu
 String title, currentUserImageUrl;
@@ -36,7 +38,14 @@ class RootPage extends StatefulWidget {
         x = AboutPage();
         y = null;
         break;
-      default:
+      case 'User':
+        x = UserPage();
+        y = null;
+        break;
+      case 'Test':
+        x = Test();
+        y = null;
+        break;
     }
   }
 
@@ -46,8 +55,8 @@ class RootPage extends StatefulWidget {
 
 class _RootPage extends State<RootPage> {
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
-
   var widget;
+
   @override
   Widget build(BuildContext context) {
     return new ZoomScaffold(
@@ -68,9 +77,9 @@ class _RootPage extends State<RootPage> {
 
   @override
   void dispose() {
-    x = null;
-    y = null;
-    rootContext = null;
+    x.dispose();
+    y.dispose();
+    rootContext.dispose();
     super.dispose();
   }
 

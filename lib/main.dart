@@ -16,11 +16,13 @@ void main() {
     home: _handleWindowDisplay(),
     theme: t,
     onGenerateRoute: (RouteSettings setting) {
+      var tis;
       switch (setting.name) {
         case '/UpdateProfile':
-          return FadeRoute(page: UpdateProfilePage());
+          tis = FadeRoute(page: UpdateProfilePage());
           break;
       }
+      return tis;
     },
   ));
 }
@@ -36,9 +38,6 @@ Widget _handleWindowDisplay() {
         return SplashScreen();
       } else if (snapshot.hasData) {
         currentUser = snapshot.data.uid;
-        // var name = snapshot.data.toString();
-        // print(name);
-        // add display name
         return RootPage();
       } else {
         return LoginPage();
@@ -64,8 +63,8 @@ class FadeRoute extends PageRouteBuilder {
             Widget child,
           ) =>
               FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
+            opacity: animation,
+            child: child,
+          ),
         );
 }

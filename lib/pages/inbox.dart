@@ -22,10 +22,11 @@ class _InboxPageState extends State<InboxPage> {
   Stream<QuerySnapshot> helpCurrent;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contextInbox) {
     return StreamBuilder<QuerySnapshot>(
         stream: helpCurrent,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        builder: (BuildContext contextInboxBuilder,
+            AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
@@ -39,7 +40,10 @@ class _InboxPageState extends State<InboxPage> {
         });
   }
 
-  Widget buildListItem(BuildContext context, DocumentSnapshot document) {
+  Widget buildListItem(
+      BuildContext contextInboxBuildList, DocumentSnapshot document) {
+    String userDetailsImageUrl;
+
     if (document.data == null) {
       return CircularProgressIndicator();
     } else {
@@ -105,17 +109,6 @@ class _InboxPageState extends State<InboxPage> {
               .delete();
         }
 
-        String userDetailsImageUrl;
-
-        Future downloadFile(String userLink) async {
-          final StorageReference ref =
-              FirebaseStorage.instance.ref().child('details/' + userLink);
-          final imageUrl = await ref.getDownloadURL();
-          setState(() {
-            userDetailsImageUrl = imageUrl;
-          });
-        }
-
         void _showDialog() async {
           final DocumentSnapshot db = await Firestore.instance
               .collection('help.current')
@@ -157,7 +150,7 @@ class _InboxPageState extends State<InboxPage> {
                   fontFamily: 'black_label',
                   fontWeight: FontWeight.w900),
             ),
-            context: context,
+            context: contextInboxBuildList,
             title: userDetails['name'],
             buttons: [],
             content: Container(
@@ -182,7 +175,8 @@ class _InboxPageState extends State<InboxPage> {
                       ),
                       onPressed: () {
                         updateHelper().then((value) {
-                          Navigator.of(context).pop(context);
+                          Navigator.of(contextInboxBuildList)
+                              .pop(contextInboxBuildList);
                         });
                       }),
                   SizedBox(height: ScreenUtil.getInstance().setHeight(10)),
@@ -198,7 +192,7 @@ class _InboxPageState extends State<InboxPage> {
                                   size: ScreenUtil.getInstance().setSp(80),
                                 ),
                                 onPressed: () => _openMap().whenComplete(() {
-                                      Navigator.pop(context);
+                                      Navigator.pop(contextInboxBuildList);
                                     }),
                                 color: Colors.blue)),
                         SizedBox(width: ScreenUtil.getInstance().setHeight(10)),
@@ -240,7 +234,6 @@ class _InboxPageState extends State<InboxPage> {
                         child: Text(
                       new DateFormat("dd MMM yyyy hh:mm:ss")
                           .format(document['time'].toDate()),
-                      style: Theme.of(context).textTheme.body1,
                     )),
                   ],
                 ),

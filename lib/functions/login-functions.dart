@@ -64,22 +64,20 @@ class _LoginFormCardState extends State<LoginFormCard> {
                 child: Stack(
                   fit: StackFit.expand,
                   children: <Widget>[
-                    Text("Login",
-                        style: TextStyle(
-                            fontSize: ScreenUtil.getInstance().setSp(45),
-                            fontFamily: "Poppins-Bold",
-                            letterSpacing: .6)),
                     Container(
                       margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 30),
-                      child: Text("Email",
+                          top: ScreenUtil.getInstance().setHeight(20),
+                          left: ScreenUtil.getInstance().setWidth(20)),
+                      child: Text("Login",
                           style: TextStyle(
-                              fontFamily: "Poppins-Medium",
-                              fontSize: ScreenUtil.getInstance().setSp(26))),
+                              fontSize: ScreenUtil.getInstance().setSp(45),
+                              fontFamily: "Black_label",
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: .6)),
                     ),
                     Container(
                       margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 22.5),
+                          top: ScreenUtil.getInstance().setHeight(100)),
                       child: TextFormField(
                         controller: controllerEmail,
                         validator: validateEmail,
@@ -90,42 +88,39 @@ class _LoginFormCardState extends State<LoginFormCard> {
                             decoration: TextDecoration.none,
                             color: Colors.black),
                         decoration: InputDecoration(
-                            hintText: "Email",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 12.0)),
+                          labelText: "Email",
+                          labelStyle: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
                       ),
                     ),
                     Container(
                       margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 10),
-                      child: Text("Password",
-                          style: TextStyle(
-                              fontFamily: "Poppins-Medium",
-                              fontSize: ScreenUtil.getInstance().setSp(26))),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 9),
+                          top: ScreenUtil.getInstance().setHeight(240)),
                       child: TextFormField(
-                          controller: controllerPassword,
-                          obscureText: true,
-                          autocorrect: false,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Password Can't be empty";
-                            } else
-                              return null;
-                          },
-                          initialValue: null,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                              hintText: "Password",
-                              hintStyle: TextStyle(
-                                  color: Colors.grey, fontSize: 12.0))),
+                        controller: controllerPassword,
+                        obscureText: true,
+                        autocorrect: false,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Password Can't be empty";
+                          } else
+                            return null;
+                        },
+                        initialValue: null,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          labelStyle: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
                     ),
                     Container(
                       margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 7),
+                          top: ScreenUtil.getInstance().setHeight(350)),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
@@ -146,8 +141,8 @@ class _LoginFormCardState extends State<LoginFormCard> {
               ),
             ),
             Container(
-                margin:
-                    EdgeInsets.only(top: ScreenUtil.getInstance().height / 4.5),
+                margin: EdgeInsets.only(
+                    top: ScreenUtil.getInstance().setHeight(550)),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
@@ -256,21 +251,20 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
               child: Stack(
                 fit: StackFit.expand,
                 children: <Widget>[
-                  Text("Register",
-                      style: TextStyle(
-                          fontSize: ScreenUtil.getInstance().setSp(45),
-                          fontFamily: "Poppins-Bold",
-                          letterSpacing: .6)),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: ScreenUtil.getInstance().setHeight(20),
+                        left: ScreenUtil.getInstance().setWidth(20)),
+                    child: Text("Register",
+                        style: TextStyle(
+                            fontSize: ScreenUtil.getInstance().setSp(45),
+                            fontFamily: "Black_label",
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: .6)),
+                  ),
                   Container(
                       margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 30),
-                      child: Text("Email",
-                          style: TextStyle(
-                              fontFamily: "Poppins-Medium",
-                              fontSize: ScreenUtil.getInstance().setSp(26)))),
-                  Container(
-                      margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 22.5),
+                          top: ScreenUtil.getInstance().setHeight(100)),
                       child: TextFormField(
                         controller: controllerEmailR,
                         validator: validateEmail,
@@ -279,60 +273,54 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
                             decoration: TextDecoration.none,
                             color: Colors.black),
                         decoration: InputDecoration(
-                            hintText: "Email",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 12.0)),
+                          labelText: "Email",
+                          labelStyle: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
                       )),
                   Container(
                       margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 10.5),
-                      child: Text("Password",
-                          style: TextStyle(
-                              fontFamily: "Poppins-Medium",
-                              fontSize: ScreenUtil.getInstance().setSp(26)))),
-                  Container(
-                      margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 9.5),
+                          top: ScreenUtil.getInstance().setHeight(240)),
                       child: TextFormField(
-                          controller: controllerPasswordR,
-                          obscureText: true,
-                          initialValue: null,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Password Can't be empty";
-                            } else
-                              return null;
-                          },
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                              hintText: "Password",
-                              hintStyle: TextStyle(
-                                  color: Colors.grey, fontSize: 12.0)))),
+                        controller: controllerPasswordR,
+                        obscureText: true,
+                        initialValue: null,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Password Can't be empty";
+                          } else
+                            return null;
+                        },
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          labelStyle: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      )),
                   Container(
                       margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 6.25),
-                      child: Text("Confirm Password",
-                          style: TextStyle(
-                              fontFamily: "Poppins-Medium",
-                              fontSize: ScreenUtil.getInstance().setSp(26)))),
-                  Container(
-                      margin: EdgeInsets.only(
-                          top: ScreenUtil.getInstance().height / 5.9),
+                          top: ScreenUtil.getInstance().setHeight(380)),
                       child: TextFormField(
-                          obscureText: true,
-                          validator: validateCfmPass,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                              hintText: "Confirm Password",
-                              hintStyle: TextStyle(
-                                  color: Colors.grey, fontSize: 12.0)))),
+                        obscureText: true,
+                        validator: validateCfmPass,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          labelText: "Confirm Password",
+                          labelStyle: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      )),
                 ],
               ),
             ),
           ),
           Container(
               margin:
-                  EdgeInsets.only(top: ScreenUtil.getInstance().height / 4.1),
+                  EdgeInsets.only(top: ScreenUtil.getInstance().setHeight(610)),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[

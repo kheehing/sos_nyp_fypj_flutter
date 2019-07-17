@@ -1,123 +1,143 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class MyApp extends StatelessWidget {
+class Test extends StatefulWidget {
+  @override
+  _TestState createState() => _TestState();
+}
+
+class _TestState extends State<Test> {
+  var _searchview = TextEditingController();
+  bool _firstSearch = true;
+  String _query = "";
+  List<String> _userList;
+  List<String> _filterList;
+  _getData() async {
+    print('1');
+    var x = Firestore.instance.collection('profile').snapshots();
+    x.map((doc) => doc.documents.map((doc) {
+          print('2');
+          print(doc['name']);
+          setState(() {
+            print('3');
+            _userList.add(doc['name'].toString());
+          });
+        }));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _userList = new List<String>();
+    _getData();
+    print('userList: ' + _userList.toString());
+    // _userList = [
+    //   "Orion",
+    //   "Boomerang",
+    //   "Cat's Eye",
+    //   "Pelican",
+    //   "Ghost Head",
+    //   "Witch Head",
+    //   "Snake",
+    //   "Ant",
+    //   "Bernad 68",
+    //   "Flame",
+    //   "Eagle",
+    //   "Horse Head",
+    //   "Elephant's Trunk",
+    //   "Butterfly"
+    // ];
+    _userList.sort();
+  }
+
+  _TestState() {
+    _searchview.addListener(() {
+      if (_searchview.text.isEmpty) {
+        setState(() {
+          _firstSearch = true;
+          _query = "";
+        });
+      } else {
+        setState(() {
+          _firstSearch = false;
+          _query = _searchview.text;
+        });
+      }
+    });
+  }
+//Build our Home widget
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text('Collapsing List Demo')),
-        body: CollapsingList(),
+    return Container(
+      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+      child: Column(
+        children: <Widget>[
+          _createSearchView(),
+          _firstSearch ? _createListView() : _performSearch()
+        ],
       ),
     );
   }
-}
 
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate({
-    @required this.minHeight,
-    @required this.maxHeight,
-    @required this.child,
-  });
-  final double minHeight;
-  final double maxHeight;
-  final Widget child;
-  @override
-  double get minExtent => minHeight;
-  @override
-  double get maxExtent => math.max(maxHeight, minHeight);
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return new SizedBox.expand(child: child);
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight ||
-        minHeight != oldDelegate.minHeight ||
-        child != oldDelegate.child;
-  }
-}
-
-class CollapsingList extends StatelessWidget {
-  SliverPersistentHeader makeHeader(String headerText) {
-    return SliverPersistentHeader(
-      pinned: true,
-      delegate: _SliverAppBarDelegate(
-        minHeight: 60.0,
-        maxHeight: 200.0,
-        child: Container(
-            color: Colors.lightBlue, child: Center(child: Text(headerText))),
+//Create a SearchView
+  Widget _createSearchView() {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: ScreenUtil.getInstance().setWidth(20),
+        vertical: ScreenUtil.getInstance().setHeight(10),
+      ),
+      child: TextField(
+        controller: _searchview,
+        decoration: InputDecoration(
+          labelText: "Search User",
+          labelStyle: TextStyle(color: Colors.grey[300]),
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        makeHeader('Header Section 1'),
-        SliverGrid.count(
-          crossAxisCount: 3,
-          children: [
-            Container(color: Colors.red, height: 150.0),
-            Container(color: Colors.purple, height: 150.0),
-            Container(color: Colors.green, height: 150.0),
-            Container(color: Colors.orange, height: 150.0),
-            Container(color: Colors.yellow, height: 150.0),
-            Container(color: Colors.pink, height: 150.0),
-            Container(color: Colors.cyan, height: 150.0),
-            Container(color: Colors.indigo, height: 150.0),
-            Container(color: Colors.blue, height: 150.0),
-          ],
-        ),
-        makeHeader('Header Section 2'),
-        SliverFixedExtentList(
-          itemExtent: 150.0,
-          delegate: SliverChildListDelegate(
-            [
-              Container(color: Colors.red),
-              Container(color: Colors.purple),
-              Container(color: Colors.green),
-              Container(color: Colors.orange),
-              Container(color: Colors.yellow),
-            ],
-          ),
-        ),
-        makeHeader('Header Section 3'),
-        SliverGrid(
-          gridDelegate: new SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 200.0,
-            mainAxisSpacing: 10.0,
-            crossAxisSpacing: 10.0,
-            childAspectRatio: 4.0,
-          ),
-          delegate: new SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return new Container(
-                alignment: Alignment.center,
-                color: Colors.teal[100 * (index % 9)],
-                child: new Text('grid item $index'),
+//Create a ListView widget
+  Widget _createListView() {
+    return Flexible(
+        child: ListView.builder(
+            itemCount: _userList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                onTap: () => print('object'),
+                title: Text("${_userList[index]}"),
               );
-            },
-            childCount: 20,
-          ),
-        ),
-        makeHeader('Header Section 4'),
-        // Yes, this could also be a SliverFixedExtentList. Writing
-        // this way just for an example of SliverList construction.
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              Container(color: Colors.pink, height: 150.0),
-              Container(color: Colors.cyan, height: 150.0),
-              Container(color: Colors.indigo, height: 150.0),
-              Container(color: Colors.blue, height: 150.0),
-            ],
-          ),
-        ),
-      ],
+            }));
+  }
+
+//Perform actual search
+  Widget _performSearch() {
+    _filterList = List<String>();
+    for (int i = 0; i < _userList.length; i++) {
+      var item = _userList[i];
+      if (item.toLowerCase().contains(_query.toLowerCase())) {
+        _filterList.add(item);
+      }
+    }
+    return _createFilteredListView();
+  }
+
+//Create the Filtered ListView
+  Widget _createFilteredListView() {
+    return Flexible(
+      child: ListView.builder(
+          itemCount: _filterList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              color: Colors.white,
+              elevation: 5.0,
+              child: Container(
+                margin: EdgeInsets.all(15.0),
+                child: Text("${_filterList[index]}"),
+              ),
+            );
+          }),
     );
   }
 }
