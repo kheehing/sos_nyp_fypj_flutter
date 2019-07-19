@@ -1,10 +1,90 @@
 import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+Future _showAlert(BuildContext context, _listProfile) {
+  Widget showAlertText(String title, String content, double height) {
+    return Container(
+      height: ScreenUtil.getInstance().setHeight(100),
+      margin: EdgeInsets.only(
+        top: ScreenUtil.getInstance().setHeight(height),
+        left: ScreenUtil.getInstance().setWidth(10),
+        right: ScreenUtil.getInstance().setWidth(10),
+      ),
+      child: Row(children: <Widget>[
+        Container(
+            width: ScreenUtil.getInstance().setWidth(200),
+            child: Text(
+              title,
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(
+                  fontSize: ScreenUtil.getInstance().setSp(50),
+                  letterSpacing: ScreenUtil.getInstance().setSp(1)),
+            )),
+        Expanded(
+            child: AutoSizeText(
+          content,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(50)),
+        )),
+      ]),
+    );
+  }
+
+  return showDialog(
+    context: context,
+    builder: (_) => Center(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(
+            ScreenUtil.getInstance().setSp(25),
+          ),
+          color: Colors.white,
+        ),
+        width: ScreenUtil.getInstance().setWidth(600),
+        height: ScreenUtil.getInstance().setHeight(750),
+        padding: EdgeInsets.all(ScreenUtil.getInstance().setSp(10)),
+        child: Scaffold(
+            resizeToAvoidBottomPadding: false,
+            body: Container(
+              width: ScreenUtil.getInstance().setWidth(580),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      // color: Colors.pink.shade200,
+                      height: ScreenUtil.getInstance().setHeight(400),
+                      child: Stack(children: <Widget>[
+                        showAlertText('Name:', _listProfile['name'], 0),
+                        showAlertText('Admin:', _listProfile['admin'], 60),
+                        showAlertText('School', _listProfile['school'], 120),
+                        showAlertText('Course:', _listProfile['course'], 180),
+                        showAlertText('mobile:', _listProfile['mobile'], 240),
+                        showAlertText(
+                            'acType:', _listProfile['accountType'], 300),
+                      ]),
+                    ),
+                    RaisedButton(
+                      child: Text('Suspend Account'),
+                      onPressed: () {
+                        // disable account
+                        // build myself or not including this
+                        print('not working....');
+                      },
+                    ),
+                  ]),
+            )),
+      ),
+    ),
+  );
+}
 
 class Test extends StatefulWidget {
   @override
@@ -15,8 +95,8 @@ class _TestState extends State<Test> {
   var _searchview = TextEditingController();
   bool _firstSearch = true;
   String _query = "";
-  List<String> _listName;
-  List<String> _filterListName;
+  List<dynamic> _listProfile;
+  List<dynamic> _filterListProfile;
 
   _TestState() {
     _searchview.addListener(() {
@@ -48,15 +128,23 @@ class _TestState extends State<Test> {
   }
 
   getDBProfile() {
-    _listName = new List<String>();
+    _listProfile = new List<dynamic>();
     Firestore.instance.collection('profile').snapshots().listen((snapshot) {
-      print(snapshot.documents.map((documentSnapshot) {
-        setState(() {
-          _listName.add(capitalize(documentSnapshot.data['name']));
-        });
-      }));
+      snapshot.documents.forEach((documentSnapshot) => setState(() {
+            if (documentSnapshot.documentID != "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
+              _listProfile.add({
+                'accountType': documentSnapshot.data['accountType'].toString(),
+                'admin': documentSnapshot.data['admin'].toString(),
+                'course': documentSnapshot.data['course'].toString(),
+                'gender': documentSnapshot.data['gender'].toString(),
+                'mobile': documentSnapshot.data['mobile'].toString(),
+                'name': capitalize(documentSnapshot.data['name'].toString()),
+                'school': documentSnapshot.data['school'].toString(),
+                'uid': documentSnapshot.documentID.toString(),
+              });
+          }));
+      _listProfile..sort((a, b) => a['name'].compareTo(b['name']));
     });
-    _listName.sort();
   }
 
   @override
@@ -68,11 +156,11 @@ class _TestState extends State<Test> {
   Widget _createFilteredListView() {
     return Flexible(
       child: ListView.builder(
-          itemCount: _filterListName.length,
+          itemCount: _filterListProfile.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
-              onTap: () => print(_filterListName[index]),
-              title: Text("${_filterListName[index]}"),
+              onTap: () => _showAlert(context, _filterListProfile[index]),
+              title: Text("${_filterListProfile[index]['name']}"),
             );
           }),
     );
@@ -81,11 +169,11 @@ class _TestState extends State<Test> {
   Widget _createListView() {
     return Flexible(
       child: ListView.builder(
-          itemCount: _listName.length,
+          itemCount: _listProfile.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
-              onTap: () => print(_listName[index]),
-              title: Text("${_listName[index]}"),
+              onTap: () => _showAlert(context, _listProfile[index]),
+              title: Text("${_listProfile[index]['name']}"),
             );
           }),
     );
@@ -109,11 +197,14 @@ class _TestState extends State<Test> {
   }
 
   Widget _performSearch() {
-    _filterListName = List<String>();
-    for (int i = 0; i < _listName.length; i++) {
-      var item = _listName[i];
+    _filterListProfile = new List<dynamic>();
+    for (int i = 0; i < _listProfile.length; i++) {
+      var item = _listProfile[i]['name'];
+      var acType = _listProfile[i]['accountType'];
       if (item.toLowerCase().contains(_query.toLowerCase())) {
-        _filterListName.add(item);
+        _filterListProfile.add(_listProfile[i]);
+      } else if (acType.toLowerCase().contains(_query.toLowerCase())) {
+        _filterListProfile.add(_listProfile[i]);
       }
     }
     return _createFilteredListView();
