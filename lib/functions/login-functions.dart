@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// // import 'package:firebase_auth/firebase_auth.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -197,19 +199,35 @@ class _LoginFormCardState extends State<LoginFormCard> {
       FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: controllerEmail.text, password: controllerPassword.text)
+          .then((_) => // check if account is enabled on firebaseStorage
+              FirebaseAuth.instance.currentUser().then((data) {
+                Firestore.instance
+                    .collection('profile')
+                    .document(data.uid)
+                    .get()
+                    .then((data) {
+                  if (data.data == null) {
+                    FirebaseAuth.instance.signOut();
+                    // alert idk why no profile snackbar
+                  } else if (data.data['enabled'] == false) {
+                    FirebaseAuth.instance.signOut();
+                    // account have been suspended snackbar
+                  }
+                });
+              }))
           .catchError((e) {
         if (e.toString() ==
             "PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null)") {
           Scaffold.of(context).showSnackBar(SnackBar(
             content: Text("Wrong Password."),
-            duration: Duration(seconds: 3),
+            duration: Duration(seconds: 2),
           ));
         }
         if (e.toString() ==
             "PlatformException(ERROR_TOO_MANY_REQUESTS, We have blocked all requests from this device due to unusual activity. Try again later. [ Too many unsuccessful login attempts.  Please include reCaptcha verification or try again later ], null)") {
           Scaffold.of(context).showSnackBar(SnackBar(
               content: Text("Too Many Request.\nTry again later"),
-              duration: Duration(seconds: 2)));
+              duration: Duration(seconds: 1)));
         }
         debugPrint('Error: ' + e.toString());
       });
@@ -384,6 +402,21 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
               duration: Duration(seconds: 2)));
         }
         debugPrint('Error: ' + e.toString());
+      }).whenComplete(() {
+        // // update user
+        // UserUpdateInfo thiss = new UserUpdateInfo();
+        // thiss.displayName = "";
+        // create a profile page on 'profile'
+        FirebaseAuth.instance.currentUser().then((data) {
+          print(data.toString());
+          data.displayName;
+          data.phoneNumber;
+          data.email;
+          Firestore.instance.collection('profile').document(data.uid).setData({
+            'enabled': true,
+            'accountType': 'user',
+          });
+        });
       });
     }
   }
