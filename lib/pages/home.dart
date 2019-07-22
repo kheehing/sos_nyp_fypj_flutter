@@ -19,6 +19,87 @@ import 'package:sosnyp/functions/theme.dart';
 import 'package:sosnyp/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+colorBackground(pBar, currentProgress) {
+  Color thisColor;
+  switch (pBar) {
+    case Progress.normal:
+      break;
+    case Progress.request:
+      if (pBar == currentProgress)
+        return thisColor = Colors.white;
+      else if (currentProgress == Progress.normal)
+        return thisColor = tCelestialBlue;
+      else
+        return thisColor = Color(0xff757575);
+      break;
+    case Progress.details:
+      if (pBar == currentProgress)
+        return thisColor = Colors.white;
+      else if (currentProgress == Progress.request ||
+          currentProgress == Progress.normal)
+        return thisColor = tCelestialBlue;
+      else
+        return thisColor = Color(0xff757575);
+      break;
+    case Progress.waiting:
+      if (pBar == currentProgress)
+        return thisColor = Colors.white;
+      else if (currentProgress == Progress.otw)
+        return thisColor = Color(0xff757575);
+      else
+        return thisColor = tCelestialBlue;
+      break;
+    case Progress.otw:
+      if (pBar == currentProgress)
+        return thisColor = Colors.white;
+      else
+        return thisColor = tCelestialBlue;
+      break;
+  }
+  return thisColor;
+}
+
+colorFont(pBar, currentProgress) {
+  Color thisColor;
+  switch (pBar) {
+    case Progress.normal:
+      break;
+    case Progress.request:
+      if (pBar == currentProgress)
+        return thisColor = Colors.black;
+      else if (currentProgress == Progress.normal)
+        return thisColor = Colors.white;
+      else
+        return thisColor = Color(0xff424242);
+      break;
+    case Progress.details:
+      if (pBar == currentProgress)
+        return thisColor = Colors.black;
+      else if (currentProgress == Progress.request ||
+          currentProgress == Progress.normal)
+        return thisColor = Colors.white;
+      else
+        return thisColor = Color(0xff424242);
+      break;
+    case Progress.waiting:
+      if (pBar == currentProgress)
+        return thisColor = Colors.black;
+      else if (currentProgress == Progress.request ||
+          currentProgress == Progress.otw)
+        return thisColor = Color(0xff424242);
+      else
+        return thisColor = Colors.white;
+      break;
+    case Progress.otw:
+      if (pBar == currentProgress)
+        return thisColor = Colors.black;
+      else
+        return thisColor = Colors.white;
+      break;
+  }
+  return thisColor;
+}
+
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _HomePageState();
@@ -144,87 +225,6 @@ class _HomePageState extends State<HomePage>
             },
           )),
     );
-  }
-
-  colorBackground(pBar, currentProgress) {
-    Color thisColor;
-    switch (pBar) {
-      case Progress.normal:
-        break;
-      case Progress.request:
-        if (pBar == currentProgress)
-          return thisColor = Colors.white;
-        else if (currentProgress == Progress.normal)
-          return thisColor = tCelestialBlue;
-        else
-          return thisColor = Color(0xff757575);
-        break;
-      case Progress.details:
-        if (pBar == currentProgress)
-          return thisColor = Colors.white;
-        else if (currentProgress == Progress.request ||
-            currentProgress == Progress.normal)
-          return thisColor = tCelestialBlue;
-        else
-          return thisColor = Color(0xff757575);
-        break;
-      case Progress.waiting:
-        if (pBar == currentProgress)
-          return thisColor = Colors.white;
-        else if (currentProgress == Progress.otw)
-          return thisColor = Color(0xff757575);
-        else
-          return thisColor = tCelestialBlue;
-        break;
-      case Progress.otw:
-        if (pBar == currentProgress)
-          return thisColor = Colors.white;
-        else
-          return thisColor = tCelestialBlue;
-        break;
-    }
-    return thisColor;
-  }
-
-  colorFont(pBar, currentProgress) {
-    Color thisColor;
-    switch (pBar) {
-      case Progress.normal:
-        break;
-      case Progress.request:
-        if (pBar == currentProgress)
-          return thisColor = Colors.black;
-        else if (currentProgress == Progress.normal)
-          return thisColor = Colors.white;
-        else
-          return thisColor = Color(0xff424242);
-        break;
-      case Progress.details:
-        if (pBar == currentProgress)
-          return thisColor = Colors.black;
-        else if (currentProgress == Progress.request ||
-            currentProgress == Progress.normal)
-          return thisColor = Colors.white;
-        else
-          return thisColor = Color(0xff424242);
-        break;
-      case Progress.waiting:
-        if (pBar == currentProgress)
-          return thisColor = Colors.black;
-        else if (currentProgress == Progress.request ||
-            currentProgress == Progress.otw)
-          return thisColor = Color(0xff424242);
-        else
-          return thisColor = Colors.white;
-        break;
-      case Progress.otw:
-        if (pBar == currentProgress)
-          return thisColor = Colors.black;
-        else
-          return thisColor = Colors.white;
-        break;
-    }
-    return thisColor;
   }
 
   contentDetails() {
@@ -642,19 +642,23 @@ class _HomePageState extends State<HomePage>
                         currentProgress == Progress.otw
                             ? shadow(988)
                             : SizedBox(),
-                        progressBarContent('HI.OTW', 988, Progress.otw),
+                        progressBarContent(
+                            Icons.directions_run, 'OTW', 988, Progress.otw),
                         currentProgress == Progress.waiting
                             ? shadow(741)
                             : SizedBox(),
-                        progressBarContent('waiting', 741, Progress.waiting),
+                        progressBarContent(
+                            Icons.alarm, 'Waiting', 741, Progress.waiting),
                         currentProgress == Progress.details
                             ? shadow(494)
                             : SizedBox(),
-                        progressBarContent('Details', 494, Progress.details),
+                        progressBarContent(
+                            Icons.assignment, 'Details', 494, Progress.details),
                         currentProgress == Progress.request
                             ? shadow(247)
                             : SizedBox(),
-                        progressBarContent('Request', 247, Progress.request),
+                        progressBarContent(Icons.assignment_late, 'Request',
+                            247, Progress.request),
                         currentProgress == Progress.normal
                             ? shadow(0)
                             : SizedBox(),
@@ -663,7 +667,8 @@ class _HomePageState extends State<HomePage>
         ]));
   }
 
-  progressBarContent(String text, double marginLeft, Progress pBar) {
+  progressBarContent(
+      IconData pIcon, String text, double marginLeft, Progress pBar) {
     return Container(
         margin: EdgeInsets.only(
             left: ScreenUtil.getInstance().setWidth(marginLeft)),
@@ -674,13 +679,19 @@ class _HomePageState extends State<HomePage>
           child: Container(
             color: colorBackground(pBar, currentProgress),
             padding: EdgeInsets.all(ScreenUtil.getInstance().setSp(25)),
-            child: Center(
-                child: AutoSizeText(text,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(pIcon),
+                AutoSizeText(text,
                     maxLines: 1,
                     style: TextStyle(
+                      fontWeight: FontWeight.w900,
                       color: colorFont(pBar, currentProgress),
-                      fontSize: ScreenUtil.getInstance().setSp(90),
-                    ))),
+                      fontSize: ScreenUtil.getInstance().setSp(30),
+                    ))
+              ],
+            ),
           ),
         ));
   }
@@ -704,15 +715,20 @@ class _HomePageState extends State<HomePage>
                   bottomLeft:
                       Radius.circular(ScreenUtil.getInstance().setHeight(25)),
                 )),
-            child: Center(
-                child: AutoSizeText(text,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.thumb_up),
+                AutoSizeText(text,
                     maxLines: 1,
                     style: TextStyle(
                       color: currentProgress == Progress.normal
                           ? Colors.black
                           : Color(0xff424242),
                       fontSize: ScreenUtil.getInstance().setSp(90),
-                    ))),
+                    ))
+              ],
+            ),
           ),
         ));
   }

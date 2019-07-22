@@ -46,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: ScreenUtil.getInstance().setHeight(60),
                   ),
+                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[

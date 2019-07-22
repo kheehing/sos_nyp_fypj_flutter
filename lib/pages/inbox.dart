@@ -12,6 +12,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sosnyp/functions/splashScreen.dart';
 import 'package:sosnyp/main.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class InboxPage extends StatefulWidget {
   @override
@@ -160,11 +161,16 @@ class _InboxPageState extends State<InboxPage> {
                       style: TextStyle(
                           fontFamily: 'black_label',
                           fontWeight: FontWeight.bold)),
-                  Text('Called for assistance',
-                      style: TextStyle(
+                  InkWell(
+                    onTap: () => launch("tel://${userDetails['mobile']}"),
+                    child: Text("Call User: ${userDetails['mobile']}",
+                        style: TextStyle(
+                          color: Color(0xff5d74e3),
                           fontFamily: 'black_label',
-                          fontWeight: FontWeight.bold)),
-                  SizedBox(height: ScreenUtil.getInstance().setHeight(10)),
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ),
+                  SizedBox(height: ScreenUtil.getInstance().setHeight(20)),
                   DialogButton(
                       height: ScreenUtil.getInstance().setHeight(100),
                       child: Text(
@@ -193,6 +199,19 @@ class _InboxPageState extends State<InboxPage> {
                                           .pop();
                                     }),
                                 color: Colors.blue)),
+
+                        // Container(
+                        //   height: ScreenUtil.getInstance().setHeight(50),
+                        //   child: GestureDetector(
+                        //       onTap: () => launch("tel://+65123456789"),
+                        //       child: AutoSizeText("emergency hotline",
+                        //           maxLines: 1,
+                        //           style: TextStyle(
+                        //               color: Color(0xFF5d74e3),
+                        //               decoration: TextDecoration.underline,
+                        //               fontSize:
+                        //                   ScreenUtil.getInstance().setSp(50)))),
+                        // ),
                         SizedBox(width: ScreenUtil.getInstance().setHeight(10)),
                         Expanded(
                             child: DialogButton(
@@ -225,13 +244,17 @@ class _InboxPageState extends State<InboxPage> {
                     fontWeight: FontWeight.w900),
               )),
               Container(
-                width: 180,
+                width: ScreenUtil.getInstance().setWidth(350),
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                        child: Text(
+                        child: AutoSizeText(
                       new DateFormat("dd MMM yyyy hh:mm:ss")
                           .format(document['time'].toDate()),
+                      maxLines: 1,
+                      style: TextStyle(
+                        wordSpacing: ScreenUtil.getInstance().setSp(1),
+                      ),
                     )),
                   ],
                 ),
