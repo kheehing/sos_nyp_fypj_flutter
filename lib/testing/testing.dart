@@ -1,12 +1,23 @@
 import 'dart:core';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+enableAccount(String uid) {
+  Firestore.instance.collection('profile').document(uid).updateData({
+    'enabled': true,
+  });
+}
+
+suspendAccount(String uid) {
+  Firestore.instance.collection('profile').document(uid).updateData({
+    'enabled': false,
+  });
+}
+
 Future _showAlert(BuildContext context, _listProfile) {
   Widget showAlertText(String title, String content, double height) {
     return Container(
@@ -48,18 +59,23 @@ Future _showAlert(BuildContext context, _listProfile) {
           ),
           color: Colors.white,
         ),
-        width: ScreenUtil.getInstance().setWidth(600),
+        width: ScreenUtil.getInstance().setWidth(650),
         height: ScreenUtil.getInstance().setHeight(750),
-        padding: EdgeInsets.all(ScreenUtil.getInstance().setSp(10)),
+        padding: EdgeInsets.all(ScreenUtil.getInstance().setSp(25)),
         child: Scaffold(
             resizeToAvoidBottomPadding: false,
             body: Container(
-              width: ScreenUtil.getInstance().setWidth(580),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  ScreenUtil.getInstance().setSp(25),
+                ),
+                color: Colors.white,
+              ),
+              width: ScreenUtil.getInstance().setWidth(650),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      // color: Colors.pink.shade200,
                       height: ScreenUtil.getInstance().setHeight(400),
                       child: Stack(children: <Widget>[
                         showAlertText('Name:', _listProfile['name'], 0),
@@ -68,17 +84,21 @@ Future _showAlert(BuildContext context, _listProfile) {
                         showAlertText('Course:', _listProfile['course'], 180),
                         showAlertText('mobile:', _listProfile['mobile'], 240),
                         showAlertText(
-                            'acType:', _listProfile['accountType'], 300),
+                            'enable:', _listProfile['enabled'].toString(), 300),
                       ]),
                     ),
                     RaisedButton(
-                      child: Text('Suspend Account'),
-                      onPressed: () {
-                        // disable account
-                        // build myself or not including this
-                        print('not working....');
-                      },
-                    ),
+                        child: Text('Suspend Account'),
+                        onPressed: () {
+                          suspendAccount(_listProfile['uid']);
+                          Navigator.of(context, rootNavigator: true).pop();
+                        }),
+                    RaisedButton(
+                        child: Text('Enable Account'),
+                        onPressed: () {
+                          enableAccount(_listProfile['uid']);
+                          Navigator.of(context, rootNavigator: true).pop();
+                        }),
                   ]),
             )),
       ),
@@ -128,14 +148,15 @@ class _TestState extends State<Test> {
   }
 
   getDBProfile() {
-    _listProfile = new List<dynamic>();
     Firestore.instance.collection('profile').snapshots().listen((snapshot) {
+      _listProfile = new List<dynamic>();
       snapshot.documents.forEach((documentSnapshot) => setState(() {
             if (documentSnapshot.documentID != "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
               _listProfile.add({
                 'accountType': documentSnapshot.data['accountType'].toString(),
                 'admin': documentSnapshot.data['admin'].toString(),
                 'course': documentSnapshot.data['course'].toString(),
+                'enabled': documentSnapshot.data['enabled'].toString(),
                 'gender': documentSnapshot.data['gender'].toString(),
                 'mobile': documentSnapshot.data['mobile'].toString(),
                 'name': capitalize(documentSnapshot.data['name'].toString()),
@@ -150,6 +171,7 @@ class _TestState extends State<Test> {
   @override
   void initState() {
     super.initState();
+    _listProfile = new List<dynamic>();
     getDBProfile();
   }
 
@@ -169,7 +191,7 @@ class _TestState extends State<Test> {
   Widget _createListView() {
     return Flexible(
       child: ListView.builder(
-          itemCount: _listProfile.length,
+          itemCount: _listProfile.length == null ? 10 : _listProfile.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
               onTap: () => _showAlert(context, _listProfile[index]),

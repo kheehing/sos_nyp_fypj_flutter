@@ -199,22 +199,6 @@ class _LoginFormCardState extends State<LoginFormCard> {
       FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: controllerEmail.text, password: controllerPassword.text)
-          .then((_) => // check if account is enabled on firebaseStorage
-              FirebaseAuth.instance.currentUser().then((data) {
-                Firestore.instance
-                    .collection('profile')
-                    .document(data.uid)
-                    .get()
-                    .then((data) {
-                  if (data.data == null) {
-                    FirebaseAuth.instance.signOut();
-                    // alert idk why no profile snackbar
-                  } else if (data.data['enabled'] == false) {
-                    FirebaseAuth.instance.signOut();
-                    // account have been suspended snackbar
-                  }
-                });
-              }))
           .catchError((e) {
         if (e.toString() ==
             "PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null)") {

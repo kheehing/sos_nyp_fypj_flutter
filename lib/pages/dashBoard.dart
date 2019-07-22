@@ -266,7 +266,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                         fontSize: ScreenUtil.getInstance().setSp(50)),
                   ),
                   onPressed: () => _openMap().whenComplete(() {
-                        Navigator.pop(context);
+                        Navigator.of(context, rootNavigator: true).pop();
                       }),
                   color: Colors.blue),
             ],

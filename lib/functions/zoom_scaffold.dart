@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sosnyp/functions/circular_image.dart';
 import 'package:sosnyp/functions/rootPage.dart';
-import 'package:sosnyp/functions/rootPage.dart' as prefix0;
 import 'package:sosnyp/main.dart';
+import 'package:sosnyp/pages/about.dart';
+import 'package:sosnyp/pages/inbox.dart';
+import 'package:sosnyp/pages/profile.dart';
+import 'package:sosnyp/pages/users.dart';
+import 'package:sosnyp/pages/dashboard.dart';
+import 'package:sosnyp/testing/testing.dart';
+import 'package:sosnyp/pages/home.dart';
 
 typedef Widget ZoomScaffoldBuilder(
     BuildContext context, MenuController menuController);
@@ -23,6 +29,7 @@ class MenuController extends ChangeNotifier {
   final TickerProvider vsync;
   final AnimationController _animationController;
   MenuState state = MenuState.closed;
+
 
   MenuController({
     this.vsync,
@@ -121,7 +128,39 @@ class ZoomScaffoldMenuController extends StatefulWidget {
 class ZoomScaffoldMenuControllerState
     extends State<ZoomScaffoldMenuController> {
   MenuController menuController;
-
+  changeScreen(screen) {
+    title = screen.toString();
+    switch (screen) {
+      case 'Home':
+        x = HomePage();
+        y = null;
+        break;
+      case 'Profile':
+        x = ProfilePage();
+        y = ProfilePage().popupMenu(rootContext);
+        break;
+      case 'DashBoard':
+        x = DashBoardPage();
+        y = null;
+        break;
+      case 'Inbox':
+        x = InboxPage();
+        y = null;
+        break;
+      case 'About':
+        x = AboutPage();
+        y = null;
+        break;
+      case 'User':
+        x = UserPage();
+        y = null;
+        break;
+      case 'Test':
+        x = Test();
+        y = null;
+        break;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return widget.builder(context, getMenuController(context));
@@ -295,7 +334,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
               return ListTile(
                 onTap: () {
                   menuController.toggle();
-                  RootPage().changeScreen(item.title, menuController);
+                  ZoomScaffoldMenuControllerState().changeScreen(item.title);
                 },
                 leading: Icon(
                   item.icon,
@@ -321,7 +360,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                 return ListTile(
                   onTap: () {
                     menuController.toggle();
-                    RootPage().changeScreen(item.title, menuController);
+                    ZoomScaffoldMenuControllerState().changeScreen(item.title);
                   },
                   leading: Icon(
                     item.icon,
@@ -341,7 +380,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
           ListTile(
             onTap: () {
               menuController.toggle();
-              RootPage().changeScreen('About', menuController);
+              ZoomScaffoldMenuControllerState().changeScreen('About');
             },
             leading: Icon(
               Icons.help_outline,
@@ -362,14 +401,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                   fontSize: 14,
                 )),
             onTap: () {
-              FirebaseAuth.instance.signOut().then((value) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              }).then((_) {
-                currentUser = null;
-                currentUserName = null;
-                prefix0.currentUserImageUrl = null;
-                RootPage().changeScreen('Home', menuController);
-              });
+              FirebaseAuth.instance.signOut();
             },
           ),
         ],

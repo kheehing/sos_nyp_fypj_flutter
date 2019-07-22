@@ -22,11 +22,10 @@ class _InboxPageState extends State<InboxPage> {
   Stream<QuerySnapshot> helpCurrent;
 
   @override
-  Widget build(BuildContext contextInbox) {
+  Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
         stream: helpCurrent,
-        builder: (BuildContext contextInboxBuilder,
-            AsyncSnapshot<QuerySnapshot> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
@@ -40,8 +39,7 @@ class _InboxPageState extends State<InboxPage> {
         });
   }
 
-  Widget buildListItem(
-      BuildContext contextInboxBuildList, DocumentSnapshot document) {
+  Widget buildListItem(BuildContext context, DocumentSnapshot document) {
     String userDetailsImageUrl;
 
     if (document.data == null) {
@@ -86,7 +84,7 @@ class _InboxPageState extends State<InboxPage> {
               .document(document.documentID)
               .get();
           Map<dynamic, dynamic> helper = await db.data['helper'];
-          Navigator.of(context).pop(context);
+          Navigator.of(context, rootNavigator: true).pop();
           Firestore.instance.collection('help.attended').document().setData({
             'details': db.data['details'],
             'helper': {
@@ -150,7 +148,7 @@ class _InboxPageState extends State<InboxPage> {
                   fontFamily: 'black_label',
                   fontWeight: FontWeight.w900),
             ),
-            context: contextInboxBuildList,
+            context: context,
             title: userDetails['name'],
             buttons: [],
             content: Container(
@@ -175,8 +173,7 @@ class _InboxPageState extends State<InboxPage> {
                       ),
                       onPressed: () {
                         updateHelper().then((value) {
-                          Navigator.of(contextInboxBuildList)
-                              .pop(contextInboxBuildList);
+                          Navigator.of(context, rootNavigator: true).pop();
                         });
                       }),
                   SizedBox(height: ScreenUtil.getInstance().setHeight(10)),
@@ -192,7 +189,8 @@ class _InboxPageState extends State<InboxPage> {
                                   size: ScreenUtil.getInstance().setSp(80),
                                 ),
                                 onPressed: () => _openMap().whenComplete(() {
-                                      Navigator.pop(contextInboxBuildList);
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop();
                                     }),
                                 color: Colors.blue)),
                         SizedBox(width: ScreenUtil.getInstance().setHeight(10)),
