@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// // import 'package:firebase_auth/firebase_auth.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -73,7 +72,6 @@ class _LoginFormCardState extends State<LoginFormCard> {
                       child: Text("Login",
                           style: TextStyle(
                               fontSize: ScreenUtil.getInstance().setSp(45),
-                              fontFamily: "Black_label",
                               fontWeight: FontWeight.bold,
                               letterSpacing: .6)),
                     ),
@@ -133,7 +131,6 @@ class _LoginFormCardState extends State<LoginFormCard> {
                                 child: Text("Forgot Password?",
                                     style: TextStyle(
                                         color: Color(0xFF5d74e3),
-                                        fontFamily: "Poppins-Medium",
                                         fontSize: ScreenUtil.getInstance()
                                             .setSp(28))))
                           ]),
@@ -181,7 +178,6 @@ class _LoginFormCardState extends State<LoginFormCard> {
                                 child: Text("Login",
                                     style: TextStyle(
                                         color: Colors.white,
-                                        fontFamily: "Poppins-Bold",
                                         fontSize: 18,
                                         letterSpacing: 1.0)),
                               ),
@@ -260,7 +256,6 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
                     child: Text("Register",
                         style: TextStyle(
                             fontSize: ScreenUtil.getInstance().setSp(45),
-                            fontFamily: "Black_label",
                             fontWeight: FontWeight.bold,
                             letterSpacing: .6)),
                   ),
@@ -291,8 +286,10 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
                         validator: (value) {
                           if (value.isEmpty) {
                             return "Password Can't be empty";
-                          } else
-                            return null;
+                          } else if (value.length < 6) {
+                            return "Longer Password";
+                          }
+                          return null;
                         },
                         style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
@@ -359,7 +356,6 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
                               child: Text("Register",
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontFamily: "Poppins-Bold",
                                       fontSize: 18,
                                       letterSpacing: 1.0)),
                             ),
@@ -381,21 +377,16 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
           .catchError((e) {
         if (e.toString() ==
             "PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null)") {
-          Scaffold.of(context).showSnackBar(SnackBar(
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
               content: Text("The email address is already in use"),
-              duration: Duration(seconds: 2)));
+              duration: Duration(seconds: 2),
+            ),
+          );
         }
         debugPrint('Error: ' + e.toString());
       }).whenComplete(() {
-        // // update user
-        // UserUpdateInfo thiss = new UserUpdateInfo();
-        // thiss.displayName = "";
-        // create a profile page on 'profile'
         FirebaseAuth.instance.currentUser().then((data) {
-          print(data.toString());
-          data.displayName;
-          data.phoneNumber;
-          data.email;
           Firestore.instance.collection('profile').document(data.uid).setData({
             'enabled': true,
             'accountType': 'user',

@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage>
   double progressBarNum;
   double distance = 0;
   PermissionStatus _status;
-
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
@@ -84,35 +83,24 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  buttonHelp(context, String buttonTitle) {
-    return Container(
+  buttonHelp() {
+    return ButtonTheme(
+      shape: new RoundedRectangleBorder(
+          borderRadius:
+              new BorderRadius.circular(ScreenUtil.getInstance().setSp(20))),
+      minWidth: ScreenUtil.getInstance().setWidth(650),
       height: ScreenUtil.getInstance().setHeight(100),
-      width: ScreenUtil.getInstance().setWidth(700),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6.0),
+      child: RaisedButton(
         color: tCelestialBlue,
-        boxShadow: [
-          BoxShadow(color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
-          BoxShadow(
-              color: Colors.black26.withOpacity(.3),
-              offset: Offset(5.0, 8.0),
-              blurRadius: 5.0),
-          BoxShadow(
-              color: Colors.black26.withOpacity(.3),
-              offset: Offset(5.0, 5.0),
-              blurRadius: 5.0)
-        ],
+        onPressed: () => helpButtonOnClick(context),
+        child: AutoSizeText(
+          'Help',
+          maxLines: 1,
+          style: TextStyle(
+            fontSize: ScreenUtil.getInstance().setSp(50),
+          ),
+        ),
       ),
-      child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            child: Center(
-              child: Text(buttonTitle == null ? 'Help' : buttonTitle),
-            ),
-            onTap: () {
-              helpButtonOnClick(context);
-            },
-          )),
     );
   }
 
@@ -258,9 +246,8 @@ class _HomePageState extends State<HomePage>
                                 textAlign: TextAlign.left,
                                 maxLines: 1,
                                 style: TextStyle(
-                                  fontFamily: 'black_label',
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: ScreenUtil.getInstance().setSp(30),
+                                  fontWeight: FontWeight.w400,
                                 ))),
                         Expanded(
                           child: DropdownButton<String>(
@@ -270,6 +257,11 @@ class _HomePageState extends State<HomePage>
                                 value: dropDownStringItem,
                                 child: Text(
                                   dropDownStringItem,
+                                  style: TextStyle(
+                                    fontSize:
+                                        ScreenUtil.getInstance().setSp(30),
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -288,9 +280,9 @@ class _HomePageState extends State<HomePage>
                               textAlign: TextAlign.left,
                               maxLines: 1,
                               style: TextStyle(
-                                  fontFamily: 'black_label',
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600),
+                                fontSize: ScreenUtil.getInstance().setSp(30),
+                                fontWeight: FontWeight.w400,
+                              ),
                             )),
                         Expanded(
                           child: DropdownButton<String>(
@@ -300,6 +292,11 @@ class _HomePageState extends State<HomePage>
                                 value: dropDownStringItem,
                                 child: Text(
                                   dropDownStringItem,
+                                  style: TextStyle(
+                                    fontSize:
+                                        ScreenUtil.getInstance().setSp(30),
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -354,15 +351,19 @@ class _HomePageState extends State<HomePage>
                   color: tCelestialBlue,
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black26.withOpacity(.3), blurRadius: 1.0),
+                      color: Colors.black26.withOpacity(.3),
+                      blurRadius: 1.0,
+                    ),
                     BoxShadow(
-                        color: Colors.black26.withOpacity(.3),
-                        offset: Offset(5.0, 8.0),
-                        blurRadius: 5.0),
+                      color: Colors.black26.withOpacity(.3),
+                      offset: Offset(5.0, 8.0),
+                      blurRadius: 5.0,
+                    ),
                     BoxShadow(
-                        color: Colors.black26.withOpacity(.3),
-                        offset: Offset(5.0, 5.0),
-                        blurRadius: 5.0)
+                      color: Colors.black26.withOpacity(.3),
+                      offset: Offset(5.0, 5.0),
+                      blurRadius: 5.0,
+                    )
                   ],
                 ),
                 child: Material(
@@ -420,7 +421,6 @@ class _HomePageState extends State<HomePage>
             child: Column(children: <Widget>[
               Spacer(),
               Container(
-                  // color: Colors.pink,
                   height: ScreenUtil.getInstance().setHeight(100),
                   child: AutoSizeText(
                     'If you need help, tap on the \'Help\' button. For futher assistance you may call the ',
@@ -430,7 +430,6 @@ class _HomePageState extends State<HomePage>
                         TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
                   )),
               Container(
-                // color: Colors.blue,
                 height: ScreenUtil.getInstance().setHeight(50),
                 child: GestureDetector(
                     onTap: () => launch("tel://+65123456789"),
@@ -442,7 +441,7 @@ class _HomePageState extends State<HomePage>
                             fontSize: ScreenUtil.getInstance().setSp(50)))),
               ),
               SizedBox(height: ScreenUtil.getInstance().setHeight(25)),
-              buttonHelp(context, 'Help'),
+              buttonHelp(),
             ]),
           )
         : Container();

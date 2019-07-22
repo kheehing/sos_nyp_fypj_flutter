@@ -48,11 +48,12 @@ TextTheme _buildbrightTextTheme(TextTheme base) {
         title: base.title.copyWith(fontSize: 18.0),
         caption: base.caption.copyWith(
           fontWeight: FontWeight.w400,
-          fontSize: 14.0,
+          fontSize: 15,
         ),
       )
       .apply(
         displayColor: tRoyalBlue,
         bodyColor: tRoyalBlue,
+        fontFamily: 'Black_label',
       );
 }

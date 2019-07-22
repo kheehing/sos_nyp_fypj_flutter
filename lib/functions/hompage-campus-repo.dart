@@ -1,5 +1,5 @@
 import 'package:sosnyp/functions/homepage-campus-model.dart';
-
+// // Idk the school layout (wack only)
 class Repository {
   List _blockFloor = [
     {

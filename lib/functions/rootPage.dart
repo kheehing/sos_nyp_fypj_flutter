@@ -4,7 +4,7 @@ import 'package:sosnyp/main.dart';
 import 'package:sosnyp/pages/home.dart';
 
 
-// X is the pageContent; Y is the popupMenu
+// // X is the pageContent; Y is the popupMenu
 String title, currentUserImageUrl;
 var x, y, rootContext;
 

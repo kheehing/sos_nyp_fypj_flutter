@@ -7,12 +7,12 @@ import 'package:sosnyp/functions/circular_image.dart';
 import 'package:sosnyp/functions/rootPage.dart';
 import 'package:sosnyp/main.dart';
 import 'package:sosnyp/pages/about.dart';
+import 'package:sosnyp/pages/dashboard.dart';
+import 'package:sosnyp/pages/home.dart';
 import 'package:sosnyp/pages/inbox.dart';
 import 'package:sosnyp/pages/profile.dart';
 import 'package:sosnyp/pages/users.dart';
-import 'package:sosnyp/pages/dashboard.dart';
 import 'package:sosnyp/testing/testing.dart';
-import 'package:sosnyp/pages/home.dart';
 
 typedef Widget ZoomScaffoldBuilder(
     BuildContext context, MenuController menuController);
@@ -29,7 +29,6 @@ class MenuController extends ChangeNotifier {
   final TickerProvider vsync;
   final AnimationController _animationController;
   MenuState state = MenuState.closed;
-
 
   MenuController({
     this.vsync,
@@ -128,6 +127,11 @@ class ZoomScaffoldMenuController extends StatefulWidget {
 class ZoomScaffoldMenuControllerState
     extends State<ZoomScaffoldMenuController> {
   MenuController menuController;
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, getMenuController(context));
+  }
+
   changeScreen(screen) {
     title = screen.toString();
     switch (screen) {
@@ -160,10 +164,6 @@ class ZoomScaffoldMenuControllerState
         y = null;
         break;
     }
-  }
-  @override
-  Widget build(BuildContext context) {
-    return widget.builder(context, getMenuController(context));
   }
 
   @override
@@ -247,7 +247,10 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                   : SizedBox(width: ScreenUtil.getInstance().setWidth(25))
             ],
             title: Container(
-              child: Text(title == null ? "SOS NYP" : title),
+              child: Text(
+                title == null ? "SOS NYP" : title,
+                style: TextStyle(fontFamily: 'Black_label'),
+              ),
             )),
         body: widget.contentScreen.contentBuilder(context),
       ),
