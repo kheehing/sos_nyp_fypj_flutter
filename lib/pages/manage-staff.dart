@@ -108,19 +108,19 @@ Future _showAlert(BuildContext context, _listProfile) {
   );
 }
 
-class UserPage extends StatefulWidget {
+class ManageStaffPage extends StatefulWidget {
   @override
-  _UserPageState createState() => _UserPageState();
+  _ManageStaffPageState createState() => _ManageStaffPageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _ManageStaffPageState extends State<ManageStaffPage> {
   var _searchview = TextEditingController();
   bool _firstSearch = true;
   String _query = "";
   List<dynamic> _listProfile;
   List<dynamic> _filterListProfile;
 
-  _UserPageState() {
+  _ManageStaffPageState() {
     _searchview.addListener(() {
       if (_searchview.text.isEmpty) {
         setState(() {
@@ -153,7 +153,7 @@ class _UserPageState extends State<UserPage> {
     Firestore.instance.collection('profile').snapshots().listen((snapshot) {
       _listProfile = new List<dynamic>();
       snapshot.documents.forEach((documentSnapshot) => setState(() {
-            if (documentSnapshot.data['accountType'] == 'user') {
+            if (documentSnapshot.data['accountType'] == 'staff') {
               _listProfile.add({
                 'accountType': documentSnapshot.data['accountType'].toString(),
                 'admin': documentSnapshot.data['admin'].toString(),

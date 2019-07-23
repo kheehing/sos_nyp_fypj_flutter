@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sosnyp/functions/rootPage.dart';
 import 'package:sosnyp/main.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class CheckEnable extends StatefulWidget {
   @override
@@ -34,10 +35,12 @@ class FadeRoute extends PageRouteBuilder {
 }
 
 class _CheckEnableState extends State<CheckEnable> {
+  FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
   bool x;
 
   @override
   Widget build(BuildContext context) {
+    _firebaseMessaging.requestNotificationPermissions();
     return x == null
         ? Scaffold(body: Center(child: CircularProgressIndicator()))
         : RootPage();
@@ -68,5 +71,21 @@ class _CheckEnableState extends State<CheckEnable> {
       }
     });
     super.initState();
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('onMessage: $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('onLaunch: $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('onResume : $message');
+      },
+    );
+    _firebaseMessaging.getToken().then((token) {
+      print('THIS IS THE FREAKING TOKEN: $token');
+    });
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
   }
 }

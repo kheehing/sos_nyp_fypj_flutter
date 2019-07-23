@@ -108,19 +108,19 @@ Future _showAlert(BuildContext context, _listProfile) {
   );
 }
 
-class UserPage extends StatefulWidget {
+class ManageUserPage extends StatefulWidget {
   @override
-  _UserPageState createState() => _UserPageState();
+  _ManageUserPageState createState() => _ManageUserPageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _ManageUserPageState extends State<ManageUserPage> {
   var _searchview = TextEditingController();
   bool _firstSearch = true;
   String _query = "";
   List<dynamic> _listProfile;
   List<dynamic> _filterListProfile;
 
-  _UserPageState() {
+  _ManageUserPageState() {
     _searchview.addListener(() {
       if (_searchview.text.isEmpty) {
         setState(() {

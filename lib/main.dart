@@ -5,6 +5,8 @@ import 'package:sosnyp/pages/login.dart';
 import 'package:sosnyp/pages/profileUpdate.dart';
 import 'package:sosnyp/functions/theme.dart';
 import 'package:sosnyp/functions/main-functions.dart';
+import 'package:sosnyp/pages/manage-staff.dart';
+import 'package:sosnyp/pages/manage-user.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -17,13 +19,25 @@ void main() {
         case '/UpdateProfile':
           route = FadeRoute(page: UpdateProfilePage());
           break;
+        case '/Add-user':
+          // route = FadeRoute(page: AddStaffPage());
+          break;
+        case '/Add-staff':
+          // route = FadeRoute(page: UpdateProfilePage());
+          break;
+        case '/Manage-user':
+          route = FadeRoute(page: ManageUserPage());
+          break;
+        case '/Manage-staff':
+          route = FadeRoute(page: ManageStaffPage());
+          break;
       }
       return route;
     },
   ));
 }
 
-String currentUser, currentUserName;
+String currentUser, currentUserName, currentUserType;
 
 Widget _handleWindowDisplay() {
   return StreamBuilder(
