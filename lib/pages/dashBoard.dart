@@ -189,12 +189,14 @@ class _DashBoardPageState extends State<DashBoardPage>
                               child: Text(
                         document['latitude'],
                         textAlign: TextAlign.left,
+                        style: TextStyle(fontWeight: FontWeight.w900),
                       ))),
                       Expanded(
                           child: Center(
                               child: Text(
                         document['longitude'],
                         textAlign: TextAlign.left,
+                        style: TextStyle(fontWeight: FontWeight.w900),
                       ))),
                     ]),
                     Row(children: <Widget>[
@@ -226,6 +228,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                     Text(
                       DateFormat('kk:mm:ss a')
                           .format(document['time'].toDate()),
+                      style: TextStyle(fontWeight: FontWeight.w900),
                     ),
                     Spacer(),
                   ]));
@@ -276,32 +279,38 @@ class _DashBoardPageState extends State<DashBoardPage>
                   SizedBox(height: ScreenUtil.getInstance().setHeight(10)),
                   Row(children: <Widget>[
                     Expanded(
-                        child: Row(children: <Widget>[
-                      Text('Sex: ',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'black_label',
-                          )),
-                      Text(
-                        userDetails['gender'],
-                        textAlign: TextAlign.left,
-                      ),
-                    ])),
-                    Expanded(
-                        child: Row(children: <Widget>[
-                      Text('Mobile: ',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'black_label',
-                          )),
-                      Text(
-                        userDetails['mobile'],
-                        textAlign: TextAlign.left,
-                      ),
-                    ])),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                          Text('Sex: ',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: 'black_label',
+                              )),
+                          Text(
+                            userDetails['gender'],
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontWeight: FontWeight.w900),
+                          ),
+                        ])),
                   ]),
+                  Container(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                        Text('Mobile: ',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'black_label',
+                            )),
+                        Text(
+                          userDetails['mobile'],
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ])),
                   _displayAttended(),
                   _displayCurrent(),
                 ],

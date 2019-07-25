@@ -26,11 +26,11 @@ class ProfilePage extends StatefulWidget {
         Navigator.of(context).pushNamed('/UpdateProfile');
       },
       itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 1,
-              child: Text("Update Profile"),
-            ),
-          ],
+        PopupMenuItem(
+          value: 1,
+          child: Text("Update Profile"),
+        ),
+      ],
     );
   }
 }
@@ -178,7 +178,8 @@ class _ProfileState extends State<ProfilePage> {
             Container(
                 height: ScreenUtil.getInstance().setHeight(40),
                 width: ScreenUtil.getInstance().setWidth(500),
-                child: AutoSizeText('Admin',
+                child: AutoSizeText(
+                    currentUserType == UserType.user ? 'Admin' : '',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: ScreenUtil.getInstance().setHeight(270),
@@ -194,7 +195,7 @@ class _ProfileState extends State<ProfilePage> {
                   children: <Widget>[
                     Expanded(
                         child: AutoSizeText(
-                      'Course',
+                      currentUserType == UserType.user ? 'Course' : '',
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -202,29 +203,7 @@ class _ProfileState extends State<ProfilePage> {
                     )),
                     Expanded(
                         child: AutoSizeText(
-                      '-',
-                      maxLines: 1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: ScreenUtil.getInstance().setHeight(40)),
-                    )),
-                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
-                  ],
-                ),
-                SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                        child: AutoSizeText(
-                      'School',
-                      maxLines: 1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: ScreenUtil.getInstance().setHeight(40)),
-                    )),
-                    Expanded(
-                        child: AutoSizeText(
-                      '-',
+                      currentUserType == UserType.user ? '-' : '',
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -238,7 +217,7 @@ class _ProfileState extends State<ProfilePage> {
                   children: <Widget>[
                     Expanded(
                         child: AutoSizeText(
-                      'Mobile',
+                      currentUserType == UserType.user ? 'School' : '',
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -246,7 +225,7 @@ class _ProfileState extends State<ProfilePage> {
                     )),
                     Expanded(
                         child: AutoSizeText(
-                      '-',
+                      currentUserType == UserType.user ? '-' : '',
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -260,7 +239,7 @@ class _ProfileState extends State<ProfilePage> {
                   children: <Widget>[
                     Expanded(
                         child: AutoSizeText(
-                      'Gender',
+                      currentUserType == UserType.user ? 'Mobile' : '',
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -268,7 +247,29 @@ class _ProfileState extends State<ProfilePage> {
                     )),
                     Expanded(
                         child: AutoSizeText(
-                      '-',
+                      currentUserType == UserType.user ? '-' : '',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    SizedBox(width: ScreenUtil.getInstance().setWidth(50))
+                  ],
+                ),
+                SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: AutoSizeText(
+                      currentUserType == UserType.user ? 'Gender' : '',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: ScreenUtil.getInstance().setHeight(40)),
+                    )),
+                    Expanded(
+                        child: AutoSizeText(
+                      currentUserType == UserType.user ? '-' : '',
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(

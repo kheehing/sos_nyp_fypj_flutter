@@ -11,7 +11,7 @@ import 'package:sosnyp/pages/dashboard.dart';
 import 'package:sosnyp/pages/home.dart';
 import 'package:sosnyp/pages/inbox.dart';
 import 'package:sosnyp/pages/profile.dart';
-import 'package:sosnyp/pages/users.dart';
+import 'package:sosnyp/pages/accounts.dart';
 import 'package:sosnyp/testing/testing.dart';
 
 typedef Widget ZoomScaffoldBuilder(
@@ -141,7 +141,9 @@ class ZoomScaffoldMenuControllerState
         break;
       case 'Profile':
         x = ProfilePage();
-        y = ProfilePage().popupMenu(rootContext);
+        y = currentUserType == UserType.staff
+            ? null
+            : ProfilePage().popupMenu(rootContext);
         break;
       case 'DashBoard':
         x = DashBoardPage();
@@ -155,8 +157,8 @@ class ZoomScaffoldMenuControllerState
         x = AboutPage();
         y = null;
         break;
-      case 'User':
-        x = UserPage();
+      case 'Accounts':
+        x = AccountPage();
         y = null;
         break;
       case 'Test':
@@ -291,7 +293,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
       MenuItem(Icons.adb, 'Test'),
       MenuItem(Icons.dashboard, 'DashBoard'),
       MenuItem(Icons.face, 'Inbox'),
-      MenuItem(Icons.supervisor_account, 'User'),
+      MenuItem(Icons.supervisor_account, 'Accounts'),
     ];
 
     return Container(
@@ -404,7 +406,11 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                   fontSize: 14,
                 )),
             onTap: () {
-              FirebaseAuth.instance.signOut();
+              FirebaseAuth.instance.signOut().then((_) {
+                setState(() {
+                  currentUserType = null;
+                });
+              });
             },
           ),
         ],

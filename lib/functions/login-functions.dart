@@ -20,10 +20,6 @@ String validateEmail(String value) {
 class LoginFormCard extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _LoginFormCardState();
-
-  testLogin() {
-    _LoginFormCardState().login();
-  }
 }
 
 class RegisterFormCard extends StatefulWidget {
@@ -350,7 +346,7 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              register();
+                              _register();
                             },
                             child: Center(
                               child: Text("Register",
@@ -367,7 +363,7 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
         ]));
   }
 
-  register() {
+  _register() {
     if (registerFormKey.currentState.validate()) {
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(

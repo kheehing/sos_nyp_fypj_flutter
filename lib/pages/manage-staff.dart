@@ -138,15 +138,22 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-      child: Column(
-        children: <Widget>[
-          _createSearchView(),
-          _firstSearch ? _createListView() : _performSearch()
-        ],
-      ),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Manage Staff',
+            style: TextStyle(fontFamily: 'Black_Label'),
+          ),
+        ),
+        body: Container(
+          margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+          child: Column(
+            children: <Widget>[
+              _createSearchView(),
+              _firstSearch ? _createListView() : _performSearch()
+            ],
+          ),
+        ));
   }
 
   getDBProfile() {

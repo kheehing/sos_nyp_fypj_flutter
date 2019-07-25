@@ -1,3 +1,5 @@
+// Flutter will find the 'main.dart' and the 'main()' function to run the program so dont rename those files.
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sosnyp/functions/splashScreen.dart';
@@ -6,7 +8,9 @@ import 'package:sosnyp/pages/profileUpdate.dart';
 import 'package:sosnyp/functions/theme.dart';
 import 'package:sosnyp/functions/main-functions.dart';
 import 'package:sosnyp/pages/manage-staff.dart';
+import 'package:sosnyp/pages/add-staff.dart';
 import 'package:sosnyp/pages/manage-user.dart';
+import 'package:sosnyp/pages/add-user.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -19,16 +23,16 @@ void main() {
         case '/UpdateProfile':
           route = FadeRoute(page: UpdateProfilePage());
           break;
-        case '/Add-user':
-          // route = FadeRoute(page: AddStaffPage());
+        case '/AddUser':
+          route = FadeRoute(page: AddUserPage());
           break;
-        case '/Add-staff':
-          // route = FadeRoute(page: UpdateProfilePage());
+        case '/AddStaff':
+          route = FadeRoute(page: AddStaffPage());
           break;
-        case '/Manage-user':
+        case '/ManageUser':
           route = FadeRoute(page: ManageUserPage());
           break;
-        case '/Manage-staff':
+        case '/ManageStaff':
           route = FadeRoute(page: ManageStaffPage());
           break;
       }
@@ -37,7 +41,14 @@ void main() {
   ));
 }
 
-String currentUser, currentUserName, currentUserType;
+enum UserType {
+  admin,
+  user,
+  staff,
+}
+
+String currentUser, currentUserName;
+UserType currentUserType;
 
 Widget _handleWindowDisplay() {
   return StreamBuilder(

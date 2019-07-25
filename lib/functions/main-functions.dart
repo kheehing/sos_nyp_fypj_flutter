@@ -61,8 +61,20 @@ class _CheckEnableState extends State<CheckEnable> {
         Firestore.instance.collection('profile').document(currentUser).get();
     db.then((_) {
       if (_.data['enabled'] == true) {
+        if (_.data['accountType'].toString() == "user") {
+          setState(() {
+            currentUserType = UserType.user;
+          });
+        } else if (_.data['accountType'].toString() == "staff") {
+          setState(() {
+            currentUserType = UserType.staff;
+          });
+        } else if (_.data['accountType'].toString() == "admin") {
+          setState(() {
+            currentUserType = UserType.admin;
+          });
+        }
         downloadFile();
-
         setState(() {
           x = true;
         });
