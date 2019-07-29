@@ -46,7 +46,7 @@ class _InboxPageState extends State<InboxPage> {
     if (document.data == null) {
       return CircularProgressIndicator();
     } else {
-      Map<dynamic, dynamic> userDetails = document.data['user.details'];
+      Map<dynamic, dynamic> userDetails = document.data['userdetails'];
       if (userDetails == null) {
         return CircularProgressIndicator();
       } else {
@@ -100,7 +100,7 @@ class _InboxPageState extends State<InboxPage> {
             'time attended': DateTime.now(),
             'type': 'attended',
             'user': db.data['user'],
-            'user.details': db.data['user.details'],
+            'userdetails': db.data['userdetails'],
           }, merge: true).catchError((onError) {});
           Firestore.instance
               .collection('help.current')

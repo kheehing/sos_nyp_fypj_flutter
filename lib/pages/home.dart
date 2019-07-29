@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage>
             currentProgress == Progress.loading ? Container() : progressBar(),
             SizedBox(height: ScreenUtil.getInstance().setHeight(15)),
             Container(
-                height: ScreenUtil.getInstance().setHeight(1000),
+                height: ScreenUtil.getInstance().setHeight(995),
                 child: Column(children: <Widget>[
                   SizedBox(height: ScreenUtil.getInstance().setHeight(20)),
                   contentNormal(),
@@ -230,7 +230,7 @@ class _HomePageState extends State<HomePage>
   contentDetails() {
     return currentProgress == Progress.details
         ? Container(
-            height: ScreenUtil.getInstance().setHeight(980),
+            height: ScreenUtil.getInstance().setHeight(975),
             child: Column(children: <Widget>[
               Container(
                   child: Center(
@@ -306,7 +306,7 @@ class _HomePageState extends State<HomePage>
                         ),
                       ])),
                   Container(
-                    height: ScreenUtil.getInstance().setHeight(580),
+                    height: ScreenUtil.getInstance().setHeight(550),
                     child: Center(
                       child: InkWell(
                         onTap: () {
@@ -582,7 +582,7 @@ class _HomePageState extends State<HomePage>
         'time': DateTime.now(),
         'type': 'help',
         'user': currentUser,
-        'user.details': {
+        'userdetails': {
           'admin': profileData['admin'],
           'course': profileData['course'],
           'gender': profileData['gender'],
@@ -596,17 +596,6 @@ class _HomePageState extends State<HomePage>
         distance = 495;
       });
     }
-    //  else {
-    //   Firestore.instance
-    //       .collection('help.current')
-    //       .document(currentUser)
-    //       .updateData({
-    //     'status': 'request',
-    //     'latitude': currentLocation.latitude.toString(),
-    //     'longitude': currentLocation.longitude.toString(),
-    //     'time': DateTime.now(),
-    //   }).catchError((onError) {});
-    // }
   }
 
   @override

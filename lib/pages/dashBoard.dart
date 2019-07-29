@@ -109,7 +109,7 @@ class _DashBoardPageState extends State<DashBoardPage>
     if (document.data == null) {
       return CircularProgressIndicator();
     } else {
-      Map<dynamic, dynamic> userDetails = document.data['user.details'];
+      Map<dynamic, dynamic> userDetails = document.data['userdetails'];
       if (userDetails == null) {
         return CircularProgressIndicator();
       } else {
@@ -134,8 +134,6 @@ class _DashBoardPageState extends State<DashBoardPage>
           Widget _displayAttended() {
             if (document['type'] == 'attended') {
               Map<dynamic, dynamic> helper = document.data['helper'];
-              // Map<dynamic, dynamic> details = document.data['details'];
-              // Map<dynamic, dynamic> userDetails = document.data['user.details'];
               return Container(
                   height: ScreenUtil.getInstance().setHeight(250),
                   child: Column(children: <Widget>[
