@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -192,20 +193,26 @@ class _LoginFormCardState extends State<LoginFormCard> {
           .signInWithEmailAndPassword(
               email: controllerEmail.text, password: controllerPassword.text)
           .catchError((e) {
-        if (e.toString() ==
-            "PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null)") {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text("Wrong Password."),
-            duration: Duration(seconds: 2),
-          ));
-        }
-        if (e.toString() ==
-            "PlatformException(ERROR_TOO_MANY_REQUESTS, We have blocked all requests from this device due to unusual activity. Try again later. [ Too many unsuccessful login attempts.  Please include reCaptcha verification or try again later ], null)") {
-          Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text("Too Many Request.\nTry again later"),
-              duration: Duration(seconds: 1)));
-        }
-        debugPrint('Error: ' + e.toString());
+        Flushbar(
+          message: "${e.code}".replaceAll('_', ' ').replaceAll('ERROR ', ''),
+          margin: EdgeInsets.all(8),
+          icon: e.code == "ERROR_WRONG_PASSWORD"
+              ? Icon(
+                  Icons.no_encryption,
+                  color: Colors.white,
+                )
+              : e.code == "ERROR_TOO_MANY_REQUESTS"
+                  ? Icon(
+                      Icons.speaker_notes_off,
+                      color: Colors.white,
+                    )
+                  : Icon(
+                      Icons.help,
+                      color: Colors.white,
+                    ),
+          borderRadius: 8,
+          duration: Duration(seconds: 2),
+        )..show(context);
       });
     }
   }
@@ -363,6 +370,15 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
         ]));
   }
 
+  String validateCfmPass(String value) {
+    if (value.isEmpty) {
+      return "Password Can't be empty";
+    } else if (value != controllerPasswordR.text)
+      return 'Enter the same password';
+    else
+      return null;
+  }
+
   _register() {
     if (registerFormKey.currentState.validate()) {
       FirebaseAuth.instance
@@ -371,33 +387,34 @@ class _RegisterFormCardState extends State<RegisterFormCard> {
         password: controllerPasswordR.text,
       )
           .catchError((e) {
-        if (e.toString() ==
-            "PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null)") {
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text("The email address is already in use"),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-        debugPrint('Error: ' + e.toString());
-      }).whenComplete(() {
-        FirebaseAuth.instance.currentUser().then((data) {
-          Firestore.instance.collection('profile').document(data.uid).setData({
-            'enabled': true,
-            'accountType': 'user',
-          });
-        });
-      });
+        Flushbar(
+          message: "${e.code}".replaceAll('_', ' ').replaceAll('ERROR ', ''),
+          margin: EdgeInsets.all(8),
+          icon: e.code == "ERROR_EMAIL_ALREADY_IN_USE"
+              ? Icon(
+                  Icons.email,
+                  color: Colors.white,
+                )
+              : e.code == "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL"
+                  ? Icon(
+                      Icons.supervisor_account,
+                      color: Colors.white,
+                    )
+                  : Icon(
+                      Icons.help,
+                      color: Colors.white,
+                    ),
+          borderRadius: 8,
+          duration: Duration(seconds: 2),
+        )..show(context);
+      }).whenComplete(() => FirebaseAuth.instance.currentUser().then((data) =>
+              Firestore.instance
+                  .collection('profile')
+                  .document(data.uid)
+                  .setData({
+                'enabled': true,
+                'accountType': 'user',
+              })));
     }
-  }
-
-  String validateCfmPass(String value) {
-    if (value.isEmpty) {
-      return "Password Can't be empty";
-    } else if (value != controllerPasswordR.text)
-      return 'Enter the same password';
-    else
-      return null;
   }
 }

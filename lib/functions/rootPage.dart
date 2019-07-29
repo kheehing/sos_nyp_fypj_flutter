@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sosnyp/functions/zoom_scaffold.dart';
 import 'package:sosnyp/main.dart';
 import 'package:sosnyp/pages/home.dart';
-
+import 'package:sosnyp/pages/inbox.dart';
 
 // // X is the pageContent; Y is the popupMenu
 String title, currentUserImageUrl;
@@ -22,11 +22,17 @@ class _RootPage extends State<RootPage> {
     return new ZoomScaffold(
         contentkey: scaffoldKey,
         contentScreen: Layout(
-          contentBuilder: (cc) => x == null ? HomePage() : x,
+          contentBuilder: (cc) => x == null
+              ? currentUserType == UserType.user
+                  ? HomePage()
+                  : currentUserType == UserType.staff
+                      ? InboxPage()
+                      : currentUserType == UserType.admin
+                          ? InboxPage()
+                          : InboxPage()
+              : x,
         ));
   }
-
-
 
   @override
   void dispose() {
@@ -43,5 +49,6 @@ class _RootPage extends State<RootPage> {
   void initState() {
     super.initState();
     rootContext = context;
+    print('The current userType is ${currentUserType.toString()}');
   }
 }

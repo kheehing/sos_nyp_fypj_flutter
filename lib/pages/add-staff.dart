@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,11 +28,14 @@ class _AddStaffPageState extends State<AddStaffPage> {
   static GlobalKey<FormState> registerFormKey = new GlobalKey<FormState>();
   final controllerEmailR = new TextEditingController();
   final controllerPasswordR = new TextEditingController();
+  final controllerNameR = new TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      resizeToAvoidBottomPadding: false,
-      resizeToAvoidBottomInset: false,
+        key: _scaffoldKey,
+        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('Add Staff'),
         ),
@@ -47,7 +52,7 @@ class _AddStaffPageState extends State<AddStaffPage> {
                     child: Stack(children: <Widget>[
                       Container(
                         width: double.infinity,
-                        height: ScreenUtil.getInstance().setHeight(560),
+                        height: ScreenUtil.getInstance().setHeight(850),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8.0),
@@ -106,16 +111,39 @@ class _AddStaffPageState extends State<AddStaffPage> {
                                       top: ScreenUtil.getInstance()
                                           .setHeight(240)),
                                   child: TextFormField(
+                                    controller: controllerNameR,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return "Name can't be empty";
+                                      } else
+                                        return null;
+                                    },
+                                    keyboardType: TextInputType.text,
+                                    style: TextStyle(
+                                        decoration: TextDecoration.none,
+                                        color: Colors.black),
+                                    decoration: InputDecoration(
+                                      labelText: "Name",
+                                      labelStyle: TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  )),
+                              Container(
+                                  margin: EdgeInsets.only(
+                                      top: ScreenUtil.getInstance()
+                                          .setHeight(380)),
+                                  child: TextFormField(
                                     controller: controllerPasswordR,
                                     obscureText: true,
                                     initialValue: null,
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return "Password Can't be empty";
+                                        return "Password can't be empty";
                                       } else if (value.length < 6) {
                                         return "Longer Password";
-                                      }
-                                      return null;
+                                      } else
+                                        return null;
                                     },
                                     style: TextStyle(color: Colors.black),
                                     decoration: InputDecoration(
@@ -128,7 +156,7 @@ class _AddStaffPageState extends State<AddStaffPage> {
                               Container(
                                   margin: EdgeInsets.only(
                                       top: ScreenUtil.getInstance()
-                                          .setHeight(380)),
+                                          .setHeight(520)),
                                   child: TextFormField(
                                     obscureText: true,
                                     validator: validateCfmPass,
@@ -146,7 +174,7 @@ class _AddStaffPageState extends State<AddStaffPage> {
                       ),
                       Container(
                           margin: EdgeInsets.only(
-                              top: ScreenUtil.getInstance().setHeight(610)),
+                              top: ScreenUtil.getInstance().setHeight(880)),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
@@ -183,7 +211,10 @@ class _AddStaffPageState extends State<AddStaffPage> {
                                       color: Colors.transparent,
                                       child: InkWell(
                                         onTap: () {
-                                          _register();
+                                          _register(
+                                            controllerEmailR.text,
+                                            controllerPasswordR.text,
+                                          );
                                         },
                                         child: Center(
                                           child: Text("Register",
@@ -212,32 +243,48 @@ class _AddStaffPageState extends State<AddStaffPage> {
       return null;
   }
 
-  _register() {
+  _register(String email, String password) async {
     if (registerFormKey.currentState.validate()) {
-      FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-        email: controllerEmailR.text,
-        password: controllerPasswordR.text,
-      )
-          .catchError((e) {
-        if (e.toString() ==
-            "PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null)") {
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text("The email address is already in use"),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-        debugPrint('Error: ' + e.toString());
-      }).whenComplete(() {
-        FirebaseAuth.instance.currentUser().then((data) {
-          Firestore.instance.collection('profile').document(data.uid).setData({
+      FirebaseApp secondaryApp = await FirebaseApp.configure(
+        name: 'SecondaryApp',
+        options: await FirebaseApp.instance.options,
+      );
+      try {
+        await FirebaseAuth.fromApp(secondaryApp)
+            .createUserWithEmailAndPassword(email: email, password: password);
+        await FirebaseAuth.fromApp(secondaryApp).currentUser().then((onValue) {
+          Firestore.instance
+              .collection('profile')
+              .document(onValue.uid)
+              .setData({
             'enabled': true,
             'accountType': 'staff',
+            'name': controllerNameR.text.toString(),
           });
         });
-      });
+        await FirebaseAuth.fromApp(secondaryApp).signOut();
+      } on PlatformException catch (e) {
+        Flushbar(
+          message: "${e.code}".replaceAll('_', ' ').replaceAll('ERROR ', ''),
+          margin: EdgeInsets.all(8),
+          icon: e.code == "ERROR_EMAIL_ALREADY_IN_USE"
+              ? Icon(
+                  Icons.email,
+                  color: Colors.white,
+                )
+              : e.code == "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL"
+                  ? Icon(
+                      Icons.supervisor_account,
+                      color: Colors.white,
+                    )
+                  : Icon(
+                      Icons.help,
+                      color: Colors.white,
+                    ),
+          borderRadius: 8,
+          duration: Duration(seconds: 2),
+        )..show(_scaffoldKey.currentContext);
+      }
     }
   }
 }

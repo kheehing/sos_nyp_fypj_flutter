@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,11 +28,15 @@ class _AddUserPageState extends State<AddUserPage> {
   static GlobalKey<FormState> registerFormKey = new GlobalKey<FormState>();
   final controllerEmailR = new TextEditingController();
   final controllerPasswordR = new TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  FocusNode myFocusNode;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+        key: _scaffoldKey,
         resizeToAvoidBottomPadding: false,
-        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('Add User'),
         ),
@@ -132,6 +138,7 @@ class _AddUserPageState extends State<AddUserPage> {
                                   child: TextFormField(
                                     obscureText: true,
                                     validator: validateCfmPass,
+                                    focusNode: myFocusNode,
                                     style: TextStyle(color: Colors.black),
                                     decoration: InputDecoration(
                                       labelText: "Confirm Password",
@@ -183,7 +190,10 @@ class _AddUserPageState extends State<AddUserPage> {
                                       color: Colors.transparent,
                                       child: InkWell(
                                         onTap: () {
-                                          _register();
+                                          _register(
+                                            controllerEmailR.text,
+                                            controllerPasswordR.text,
+                                          );
                                         },
                                         child: Center(
                                           child: Text("Register",
@@ -203,6 +213,20 @@ class _AddUserPageState extends State<AddUserPage> {
             )));
   }
 
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    myFocusNode = FocusNode();
+  }
+
   String validateCfmPass(String value) {
     if (value.isEmpty) {
       return "Password Can't be empty";
@@ -212,32 +236,47 @@ class _AddUserPageState extends State<AddUserPage> {
       return null;
   }
 
-  _register() {
+  _register(String email, String password) async {
     if (registerFormKey.currentState.validate()) {
-      FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-        email: controllerEmailR.text,
-        password: controllerPasswordR.text,
-      )
-          .catchError((e) {
-        if (e.toString() ==
-            "PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null)") {
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text("The email address is already in use"),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-        debugPrint('Error: ' + e.toString());
-      }).whenComplete(() {
-        FirebaseAuth.instance.currentUser().then((data) {
-          Firestore.instance.collection('profile').document(data.uid).setData({
+      FirebaseApp secondaryApp = await FirebaseApp.configure(
+        name: 'SecondaryApp',
+        options: await FirebaseApp.instance.options,
+      );
+      try {
+        await FirebaseAuth.fromApp(secondaryApp)
+            .createUserWithEmailAndPassword(email: email, password: password);
+        await FirebaseAuth.fromApp(secondaryApp).currentUser().then((onValue) {
+          Firestore.instance
+              .collection('profile')
+              .document(onValue.uid)
+              .setData({
             'enabled': true,
             'accountType': 'user',
           });
         });
-      });
+        await FirebaseAuth.fromApp(secondaryApp).signOut();
+      } on PlatformException catch (e) {
+        Flushbar(
+          message: "${e.code}".replaceAll('_', ' ').replaceAll('ERROR ', ''),
+          margin: EdgeInsets.all(8),
+          icon: e.code == "ERROR_EMAIL_ALREADY_IN_USE"
+              ? Icon(
+                  Icons.email,
+                  color: Colors.white,
+                )
+              : e.code == "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL"
+                  ? Icon(
+                      Icons.supervisor_account,
+                      color: Colors.white,
+                    )
+                  : Icon(
+                      Icons.help,
+                      color: Colors.white,
+                    ),
+          borderRadius: 8,
+          duration: Duration(seconds: 2),
+        )..show(_scaffoldKey.currentContext);
+      }
     }
   }
 }

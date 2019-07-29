@@ -281,7 +281,7 @@ class _ProfileState extends State<ProfilePage> {
               ])),
         ],
       );
-    } else {
+    } else if (currentUserType == UserType.user) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -433,6 +433,53 @@ class _ProfileState extends State<ProfilePage> {
               ])),
         ],
       );
+    } else {
+      return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: ScreenUtil.getInstance().setHeight(50)),
+            Stack(children: <Widget>[
+              Container(
+                height: ScreenUtil.getInstance().setWidth(420),
+                width: ScreenUtil.getInstance().setWidth(420),
+                child: currentUserImageUrl == null
+                    ? FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Icon(
+                          Icons.account_circle,
+                          size: ScreenUtil.getInstance().setHeight(500),
+                        ))
+                    : CircularImage(NetworkImage(currentUserImageUrl)),
+              ),
+              Container(
+                  margin: EdgeInsets.only(
+                      top: ScreenUtil.getInstance().setHeight(300),
+                      left: ScreenUtil.getInstance().setWidth(300)),
+                  height: ScreenUtil.getInstance().setHeight(100),
+                  width: ScreenUtil.getInstance().setHeight(100),
+                  decoration: BoxDecoration(
+                    color: tCelestialBlue,
+                    shape: BoxShape.circle,
+                  ),
+                  child: GestureDetector(
+                      onTap: () {
+                        _profileImageSelection(context);
+                      },
+                      child: Icon(Icons.add,
+                          size: ScreenUtil.getInstance().setHeight(60)))),
+            ]),
+            SizedBox(height: ScreenUtil.getInstance().setHeight(30)),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              Container(
+                  height: ScreenUtil.getInstance().setHeight(100),
+                  width: ScreenUtil.getInstance().setWidth(600),
+                  child: AutoSizeText(data['name'],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: ScreenUtil.getInstance().setHeight(270),
+                      )))
+            ])
+          ]);
     }
   }
 

@@ -1,4 +1,4 @@
-// Flutter will find the 'main.dart' and the 'main()' function to run the program so dont rename those files.
+// Flutter will find the 'main.dart' and the 'main()' function to run the program so dont rename this file and the 'main()' function.
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

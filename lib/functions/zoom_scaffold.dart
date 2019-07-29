@@ -212,18 +212,20 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
       children: [
         Container(
           child: Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
+            // resizeToAvoidBottomPadding: true,
             body: menu(context, menuController),
           ),
         ),
         GestureDetector(
-          onTap: () {
-            if (menuController.state == MenuState.open) {
-              menuController.toggle();
-            }
-          },
-          child: createContentDisplay(),
-        ),
+            onTap: () {
+              if (menuController.state == MenuState.open) {
+                menuController.toggle();
+              }
+            },
+            child: Container(
+              child: createContentDisplay(),
+            )),
       ],
     );
   }
@@ -231,7 +233,8 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
   createContentDisplay() {
     return zoomAndSlideContent(new Container(
       child: new Scaffold(
-        resizeToAvoidBottomPadding: false,
+        // resizeToAvoidBottomPadding: true,
+        // resizeToAvoidBottomInset: false,
         key: widget.contentkey,
         appBar: new AppBar(
             elevation: 0.0,
@@ -285,27 +288,30 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
   }
 
   menu(BuildContext context, menuController) {
-    final List<MenuItem> options = [
+    final List<MenuItem> userOptions = [
       MenuItem(Icons.home, 'Home'),
       MenuItem(Icons.face, 'Profile'),
     ];
+    final List<MenuItem> staffOptions = [
+      MenuItem(Icons.inbox, 'Inbox'),
+      MenuItem(Icons.dashboard, 'DashBoard'),
+    ];
     final List<MenuItem> adminOptions = [
       MenuItem(Icons.adb, 'Test'),
-      MenuItem(Icons.dashboard, 'DashBoard'),
-      MenuItem(Icons.face, 'Inbox'),
       MenuItem(Icons.supervisor_account, 'Accounts'),
     ];
 
     return Container(
+      height: ScreenUtil.getInstance().setHeight(1302),
       padding: EdgeInsets.only(
-          top: 62,
-          left: 32,
-          bottom: 8,
+          top: ScreenUtil.getInstance().setHeight(80),
+          left: ScreenUtil.getInstance().setWidth(50),
+          bottom: ScreenUtil.getInstance().setWidth(5),
           right: MediaQuery.of(context).size.width / 2.9),
       child: Column(
         children: <Widget>[
           Container(
-              height: 50,
+              height: ScreenUtil.getInstance().setHeight(90),
               child: Row(
                 children: <Widget>[
                   Padding(
@@ -328,40 +334,45 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                 ],
               )),
           Spacer(),
-          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
-            SizedBox(
-                height: ScreenUtil.getInstance().setHeight(50),
-                child: Center(
-                  child: Text('User Functions'),
-                )),
-          Column(
-            children: options.map((item) {
-              return ListTile(
-                onTap: () {
-                  menuController.toggle();
-                  ZoomScaffoldMenuControllerState().changeScreen(item.title);
-                },
-                leading: Icon(
-                  item.icon,
-                  size: 20,
-                ),
-                title: Text(item.title,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    )),
-              );
-            }).toList(),
-          ),
-          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
-            SizedBox(
-                height: ScreenUtil.getInstance().setHeight(100),
-                child: Center(
-                  child: Text('Admin Functions'),
-                )),
-          if (currentUser == "Sa7pRwTTNWgFks2ETFHIWJ84AIA2")
+          currentUserType == UserType.admin
+              ? SizedBox(
+                  height: ScreenUtil.getInstance().setHeight(50),
+                  child: Center(
+                    child: Text('User Functions'),
+                  ))
+              : Container(),
+          if (currentUserType == UserType.admin ||
+              currentUserType == UserType.user)
             Column(
-              children: adminOptions.map((item) {
+              children: userOptions.map((item) {
+                return ListTile(
+                  onTap: () {
+                    menuController.toggle();
+                    ZoomScaffoldMenuControllerState().changeScreen(item.title);
+                  },
+                  leading: Icon(
+                    item.icon,
+                    size: 20,
+                  ),
+                  title: Text(item.title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+                );
+              }).toList(),
+            ),
+          currentUserType == UserType.admin
+              ? SizedBox(
+                  height: ScreenUtil.getInstance().setHeight(100),
+                  child: Center(
+                    child: Text('Staff Functions'),
+                  ))
+              : Container(),
+          if (currentUserType == UserType.staff ||
+              currentUserType == UserType.admin)
+            Column(
+              children: staffOptions.map((item) {
                 return ListTile(
                   onTap: () {
                     menuController.toggle();
@@ -381,6 +392,37 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                 );
               }).toList(),
             ),
+          currentUserType == UserType.admin
+              ? SizedBox(
+                  height: ScreenUtil.getInstance().setHeight(100),
+                  child: Center(
+                    child: Text('Admin Functions'),
+                  ))
+              : Container(),
+          currentUserType == UserType.admin
+              ? Column(
+                  children: adminOptions.map((item) {
+                    return ListTile(
+                      onTap: () {
+                        menuController.toggle();
+                        ZoomScaffoldMenuControllerState()
+                            .changeScreen(item.title);
+                      },
+                      leading: Icon(
+                        item.icon,
+                        size: 20,
+                      ),
+                      title: Text(
+                        item.title,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                )
+              : Container(),
           Spacer(),
           ListTile(
             onTap: () {

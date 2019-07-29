@@ -199,19 +199,6 @@ class _InboxPageState extends State<InboxPage> {
                                           .pop();
                                     }),
                                 color: Colors.blue)),
-
-                        // Container(
-                        //   height: ScreenUtil.getInstance().setHeight(50),
-                        //   child: GestureDetector(
-                        //       onTap: () => launch("tel://+65123456789"),
-                        //       child: AutoSizeText("emergency hotline",
-                        //           maxLines: 1,
-                        //           style: TextStyle(
-                        //               color: Color(0xFF5d74e3),
-                        //               decoration: TextDecoration.underline,
-                        //               fontSize:
-                        //                   ScreenUtil.getInstance().setSp(50)))),
-                        // ),
                         SizedBox(width: ScreenUtil.getInstance().setHeight(10)),
                         Expanded(
                             child: DialogButton(
