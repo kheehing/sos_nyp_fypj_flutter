@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -20,8 +19,14 @@ class DashBoardPage extends StatefulWidget {
 class _DashBoardPageState extends State<DashBoardPage>
     with SingleTickerProviderStateMixin {
   List<dynamic> dataList = [];
-  StreamController streamController;
   TabController _tabController;
+  List<dynamic> blockFloor = new List<dynamic>();
+  List<String> block = new List<String>(),
+      floor = new List<String>(),
+      responder = new List<String>(),
+      user = new List<String>(),
+      averageTimeTaken = new List<String>();
+  num numCurrent, numAttended;
 
   @override
   Widget build(BuildContext context) {
@@ -41,40 +46,9 @@ class _DashBoardPageState extends State<DashBoardPage>
             child: TabBarView(
               controller: _tabController,
               children: [
-                Center(child: Text('Statistics')),
-                StreamBuilder(
-                    stream: Firestore.instance
-                        .collection('help.current')
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<dynamic> snapshot) {
-                      if (snapshot.hasData == false) {
-                        return SplashScreen();
-                      } else if (snapshot.connectionState ==
-                              ConnectionState.none ||
-                          snapshot.connectionState == ConnectionState.waiting) {
-                        return SplashScreen();
-                      } else
-                        return ListView.builder(
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) => _buildListItem(
-                              context, snapshot.data.documents[index]),
-                        );
-                    }),
-                StreamBuilder(
-                    stream: Firestore.instance
-                        .collection('help.attended')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.none ||
-                          snapshot.connectionState == ConnectionState.waiting) {
-                        return SplashScreen();
-                      } else
-                        return ListView.builder(
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) => _buildListItem(
-                                context, snapshot.data.documents[index]));
-                    }),
+                _statisticsPage(),
+                _streamCurrent(),
+                _streamCompleted(),
               ],
             )),
         TabBar(
@@ -91,27 +65,107 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
+  Widget _statisticsPage() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          height: ScreenUtil.getInstance().setHeight(1100),
+          width: ScreenUtil.getInstance().setWidth(750),
+          child: Column(children: <Widget>[
+            Container(
+              margin: EdgeInsets.all(ScreenUtil.getInstance().setSp(10)),
+              child: Row(children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      vertical: ScreenUtil.getInstance().setHeight(5)),
+                  margin: EdgeInsets.all(ScreenUtil.getInstance().setSp(10)),
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(
+                          ScreenUtil.getInstance().setSp(10))),
+                  width: ScreenUtil.getInstance().setWidth(340),
+                  child: Column(children: <Widget>[
+                    Text(
+                      'Current',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: ScreenUtil.getInstance().setSp(32),
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    Text(
+                      numCurrent.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey.shade800,
+                        fontSize: ScreenUtil.getInstance().setSp(32),
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ]),
+                ),
+                Spacer(),
+                Container(
+                  margin: EdgeInsets.all(ScreenUtil.getInstance().setSp(10)),
+                  padding: EdgeInsets.symmetric(
+                      vertical: ScreenUtil.getInstance().setHeight(5)),
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(
+                          ScreenUtil.getInstance().setSp(10))),
+                  width: ScreenUtil.getInstance().setWidth(340),
+                  child: Column(children: <Widget>[
+                    Text(
+                      'Attended',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: ScreenUtil.getInstance().setSp(32),
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    Text(
+                      numAttended.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey.shade800,
+                        fontSize: ScreenUtil.getInstance().setSp(32),
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ]),
+                ),
+                Container(),
+              ]),
+            ),
+          ]),
+        ),
+      ],
+    );
+  }
+
   @override
   void dispose() {
+    _tabController.dispose();
     super.dispose();
-    streamController?.close();
-    streamController = null;
   }
 
   @override
   void initState() {
-    streamController = StreamController.broadcast();
     _tabController = new TabController(length: 3, vsync: this);
+    _getStatistics();
     super.initState();
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     if (document.data == null) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator());
     } else {
       Map<dynamic, dynamic> userDetails = document.data['userdetails'];
       if (userDetails == null) {
-        return CircularProgressIndicator();
+        return Center(child: CircularProgressIndicator());
       } else {
         _openMap() async {
           final String _long = await document['longitude'];
@@ -379,5 +433,94 @@ class _DashBoardPageState extends State<DashBoardPage>
         );
       }
     }
+  }
+
+  _getStatistics() async {
+    await Firestore.instance
+        .collection('help.current')
+        .getDocuments()
+        .then((docData) => setState(() {
+              numCurrent = docData.documents.length;
+              docData.documents.forEach((data) {
+                if (data.data['details']['block'] != "")
+                  block.add(data.data['details']['block']);
+                if (data.data['details']['floor'] != "")
+                  floor.add(data.data['details']['floor']);
+                if (data.data['details']['floor'] != "" &&
+                    data.data['details']['block'] != "")
+                  blockFloor.add({
+                    'floor': data.data['details']['floor'].toString(),
+                    'block': data.data['details']['block'].toString(),
+                  });
+              });
+            }));
+    await Firestore.instance
+        .collection('help.attended')
+        .getDocuments()
+        .then((docData) => setState(() {
+              numAttended = docData.documents.length;
+              docData.documents.forEach((data) {
+                if (data.data['details']['block'] != "")
+                  block.add(data.data['details']['block']);
+                if (data.data['details']['floor'] != "")
+                  floor.add(data.data['details']['floor']);
+                if (data.data['details']['floor'] != "" &&
+                    data.data['details']['block'] != "")
+                  blockFloor.add({
+                    'floor': data.data['details']['floor'].toString(),
+                    'block': data.data['details']['block'].toString(),
+                  });
+                final DateTime requestTime = data.data['time'].toDate();
+                final DateTime helpedTime = data.data['time attended'].toDate();
+                final differenceInTime =
+                    helpedTime.difference(requestTime).inSeconds;
+                averageTimeTaken.add(differenceInTime.toString());
+                if (data.data['helper']['helper'] != "")
+                  responder.add(data.data['helper']['helper'].toString());
+                if (data.data['user'] != "")
+                  user.add(data.data['userdetails']['name'].toString());
+              });
+            }));
+    print("Block: ${block.toString()}");
+    print("Floor: ${floor.toString()}");
+    print("Block & Floor: ${blockFloor.toString()}");
+    print("average TimeTaken: ${averageTimeTaken.toString()}");
+    print("Responder: ${responder.toString()}");
+    print("User: ${user.toString()}");
+    print("Attended: $numAttended");
+    print("Current: $numCurrent");
+  }
+
+  Widget _streamCompleted() {
+    return StreamBuilder(
+        stream: Firestore.instance.collection('help.attended').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.none ||
+              snapshot.connectionState == ConnectionState.waiting) {
+            return SplashScreen();
+          } else
+            return ListView.builder(
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) =>
+                    _buildListItem(context, snapshot.data.documents[index]));
+        });
+  }
+
+  Widget _streamCurrent() {
+    return StreamBuilder(
+        stream: Firestore.instance.collection('help.current').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData == false) {
+            return SplashScreen();
+          } else if (snapshot.connectionState == ConnectionState.none ||
+              snapshot.connectionState == ConnectionState.waiting) {
+            return SplashScreen();
+          } else
+            return ListView.builder(
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) =>
+                  _buildListItem(context, snapshot.data.documents[index]),
+            );
+        });
   }
 }
