@@ -41,45 +41,44 @@ class _TestState extends State<Test> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.all(ScreenUtil.getInstance().setSp(10)),
+      decoration: BoxDecoration(
+          color: Colors.grey.shade300,
+          borderRadius:
+              BorderRadius.circular(ScreenUtil.getInstance().setSp(10))),
       height: ScreenUtil.getInstance().setHeight(500),
-      width: ScreenUtil.getInstance().setWidth(500),
       child: Padding(
         padding: EdgeInsets.all(8.0),
         child: Container(
           child: Center(
             child: Column(
               children: <Widget>[
-                Text(
-                  'Time spent on daily tasks',
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
                 Expanded(
-                  child: charts.PieChart(_seriesPieData,
-                      animate: true,
-                      animationDuration: Duration(seconds: 1),
-                      behaviors: [
-                        new charts.DatumLegend(
-                          outsideJustification:
-                              charts.OutsideJustification.endDrawArea,
-                          horizontalFirst: false,
-                          desiredMaxRows: 2,
-                          cellPadding:
-                              new EdgeInsets.only(right: 4.0, bottom: 4.0),
-                          entryTextStyle: charts.TextStyleSpec(
-                              color: charts.MaterialPalette.purple.shadeDefault,
-                              fontFamily: 'Georgia',
-                              fontSize: 11),
-                        )
-                      ],
-                      defaultRenderer: new charts.ArcRendererConfig(
-                          arcWidth: 100,
-                          arcRendererDecorators: [
-                            new charts.ArcLabelDecorator(
-                                labelPosition: charts.ArcLabelPosition.inside)
-                          ])),
+                  child: charts.PieChart(
+                    _seriesPieData,
+                    animate: true,
+                    animationDuration: Duration(milliseconds: 500),
+                    behaviors: [
+                      new charts.DatumLegend(
+                        outsideJustification:
+                            charts.OutsideJustification.endDrawArea,
+                        horizontalFirst: false,
+                        desiredMaxRows: 2,
+                        cellPadding:
+                            new EdgeInsets.only(right: 4.0, bottom: 4.0),
+                        entryTextStyle: charts.TextStyleSpec(
+                            color: charts.MaterialPalette.purple.shadeDefault,
+                            fontFamily: 'Georgia',
+                            fontSize: 11),
+                      )
+                    ],
+                    // defaultRenderer: new charts.ArcRendererConfig(
+                    //     arcWidth: 100,
+                    //     arcRendererDecorators: [
+                    //       new charts.ArcLabelDecorator(
+                    //           labelPosition: charts.ArcLabelPosition.inside)
+                    //     ]),
+                  ),
                 ),
               ],
             ),
