@@ -96,7 +96,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                       ),
                     ),
                     Text(
-                      numCurrent.toString(),
+                      numCurrent == null ? '-' : numCurrent.toString(),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.grey.shade800,
@@ -127,7 +127,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                       ),
                     ),
                     Text(
-                      numAttended.toString(),
+                      numAttended == null ? '-' : numAttended.toString(),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.grey.shade800,

@@ -448,11 +448,11 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                   fontSize: 14,
                 )),
             onTap: () {
+              Firestore.instance
+                  .collection('staffs')
+                  .document(currentUser)
+                  .delete();
               FirebaseAuth.instance.signOut().whenComplete(() {
-                Firestore.instance
-                    .collection('staffs')
-                    .document(currentUser)
-                    .delete();
                 setState(() {
                   currentUserType = null;
                 });
