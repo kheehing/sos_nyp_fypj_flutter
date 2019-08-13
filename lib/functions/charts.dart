@@ -21,9 +21,7 @@ class GroupedBarChart extends StatelessWidget {
       seriesList,
       animate: animate,
       barGroupingType: charts.BarGroupingType.grouped,
-      behaviors: [
-        new charts.SeriesLegend(position: charts.BehaviorPosition.end),
-      ],
+      behaviors: [new charts.SeriesLegend()],
     );
   }
 
@@ -43,47 +41,87 @@ class GroupedBarChart extends StatelessWidget {
       return data;
     }
 
-    final floor1 = [
-      new Floor('B', 5),
-      new Floor('H', 2),
-      new Floor('S', 9),
-      new Floor('P1', 7),
-    ];
+    final floortest = test();
+    print('Floortest: $floortest');
 
-    final floor2 = [
-      new Floor('B', 5),
-      new Floor('L', 5),
-      new Floor('A', 1),
-      new Floor('N', 2),
-    ];
-
-    final floor3 = [
-      new Floor('B', 8),
-      new Floor('M', 1),
-      new Floor('F', 5),
-      new Floor('G', 4),
-    ];
-
-    return [
-      new charts.Series<Floor, String>(
-        id: 'Floor 1',
+    final data = {
+      'floor1': [
+        new Floor('B', 5),
+        new Floor('H', 2),
+        new Floor('S', 9),
+        new Floor('P1', 7),
+      ],
+      'floor2': [
+        new Floor('B', 5),
+        new Floor('L', 5),
+        new Floor('A', 1),
+        new Floor('N', 2),
+      ],
+      'floor3': [
+        new Floor('B', 8),
+        new Floor('M', 1),
+        new Floor('F', 5),
+        new Floor('G', 4),
+      ],
+    };
+    print(data);
+    List<charts.Series<Floor, String>> x =
+        new List<charts.Series<Floor, String>>();
+    data.forEach((key, object) {
+      // print('Key:: $key');
+      // print('Key: ${key.runtimeType}');
+      // print('Object: $object');
+      // print('Object: ${object.runtimeType}');
+      x.add(charts.Series<Floor, String>(
+        id: key,
         domainFn: (Floor floor, _) => floor.block,
         measureFn: (Floor floor, _) => floor.floor,
-        data: floor1,
-      ),
-      new charts.Series<Floor, String>(
-        id: 'Floor 2',
-        domainFn: (Floor floor, _) => floor.block,
-        measureFn: (Floor floor, _) => floor.floor,
-        data: floor2,
-      ),
-      new charts.Series<Floor, String>(
-        id: 'Floor 3',
-        domainFn: (Floor floor, _) => floor.block,
-        measureFn: (Floor floor, _) => floor.floor,
-        data: floor3,
-      ),
-    ];
+        data: object,
+      ));
+    });
+    return x;
+
+    // final floor1 = [
+    //   new Floor('B', 5),
+    //   new Floor('H', 2),
+    //   new Floor('S', 9),
+    //   new Floor('P1', 7),
+    // ];
+
+    // final floor2 = [
+    //   new Floor('B', 5),
+    //   new Floor('L', 5),
+    //   new Floor('A', 1),
+    //   new Floor('N', 2),
+    // ];
+
+    // final floor3 = [
+    //   new Floor('B', 8),
+    //   new Floor('M', 1),
+    //   new Floor('F', 5),
+    //   new Floor('G', 4),
+    // ];
+
+    // return [
+    //   new charts.Series<Floor, String>(
+    //     id: 'Floor 1',
+    //     domainFn: (Floor floor, _) => floor.block,
+    //     measureFn: (Floor floor, _) => floor.floor,
+    //     data: floor1,
+    //   ),
+    //   new charts.Series<Floor, String>(
+    //     id: 'Floor 2',
+    //     domainFn: (Floor floor, _) => floor.block,
+    //     measureFn: (Floor floor, _) => floor.floor,
+    //     data: floor2,
+    //   ),
+    //   new charts.Series<Floor, String>(
+    //     id: 'Floor 3',
+    //     domainFn: (Floor floor, _) => floor.block,
+    //     measureFn: (Floor floor, _) => floor.floor,
+    //     data: floor3,
+    //   ),
+    // ];
   }
 }
 

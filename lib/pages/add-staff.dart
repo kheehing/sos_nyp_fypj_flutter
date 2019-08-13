@@ -261,6 +261,17 @@ class _AddStaffPageState extends State<AddStaffPage> {
             'accountType': 'staff',
             'name': controllerNameR.text.toString(),
           });
+        }).whenComplete(() {
+          Flushbar(
+            message: "Staff Creation Completed",
+            margin: EdgeInsets.all(8),
+            icon: Icon(
+              Icons.done,
+              color: Colors.white,
+            ),
+            borderRadius: 8,
+            duration: Duration(seconds: 2),
+          )..show(_scaffoldKey.currentContext);
         });
         await FirebaseAuth.fromApp(secondaryApp).signOut();
       } on PlatformException catch (e) {

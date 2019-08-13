@@ -1,26 +1,29 @@
+// import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:sosnyp/functions/zoom_scaffold.dart';
 import 'package:sosnyp/main.dart';
 import 'package:sosnyp/pages/home.dart';
 import 'package:sosnyp/pages/inbox.dart';
 
-// // X is the pageContent; Y is the popupMenu
+/// X is the pageContent; Y is the popupMenu
 String title, currentUserImageUrl;
 var x, y, rootContext;
 
 class RootPage extends StatefulWidget {
+  final rootScaffoldKey = _RootPage().rootScaffoldKey;
+
   @override
   State<StatefulWidget> createState() => _RootPage();
 }
 
 class _RootPage extends State<RootPage> {
-  GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> rootScaffoldKey = new GlobalKey<ScaffoldState>();
   var widget;
 
   @override
   Widget build(BuildContext context) {
-    return new ZoomScaffold(
-        contentkey: scaffoldKey,
+    return ZoomScaffold(
+        contentkey: rootScaffoldKey,
         contentScreen: Layout(
           contentBuilder: (cc) => x == null
               ? currentUserType == UserType.user
@@ -49,6 +52,5 @@ class _RootPage extends State<RootPage> {
   void initState() {
     super.initState();
     rootContext = context;
-    print('The current userType is ${currentUserType.toString()}');
   }
 }

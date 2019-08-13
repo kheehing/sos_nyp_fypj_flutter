@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sosnyp/functions/login-functions.dart';
 
 class LoginPage extends StatefulWidget {
+  final GlobalKey<ScaffoldState> key = _LoginPageState().loginScaffoldKey;
   @override
   _LoginPageState createState() => new _LoginPageState();
 }

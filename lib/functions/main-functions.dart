@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sosnyp/functions/rootPage.dart';
 import 'package:sosnyp/main.dart';
+import 'package:flushbar/flushbar.dart';
 
 class CheckEnable extends StatefulWidget {
   @override
@@ -97,6 +98,16 @@ class _CheckEnableState extends State<CheckEnable> {
             });
           } else if (_.data['enabled'] == false) {
             FirebaseAuth.instance.signOut();
+            Flushbar(
+              message: "Account Suspended, Contact Your PEM for help.",
+              margin: EdgeInsets.all(8),
+              icon: Icon(
+                Icons.error,
+                color: Colors.white,
+              ),
+              borderRadius: 8,
+              duration: Duration(seconds: 5),
+            )..show(context);
           }
         }));
     _firebaseMessaging.configure(

@@ -253,6 +253,17 @@ class _AddUserPageState extends State<AddUserPage> {
             'enabled': true,
             'accountType': 'user',
           });
+        }).whenComplete(() {
+          Flushbar(
+            message: "User Creation Completed",
+            margin: EdgeInsets.all(8),
+            icon: Icon(
+              Icons.done,
+              color: Colors.white,
+            ),
+            borderRadius: 8,
+            duration: Duration(seconds: 2),
+          )..show(_scaffoldKey.currentContext);
         });
         await FirebaseAuth.fromApp(secondaryApp).signOut();
       } on PlatformException catch (e) {
