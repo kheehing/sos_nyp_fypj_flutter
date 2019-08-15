@@ -134,19 +134,19 @@ It is a ternary operator, instead of using if else this is used instead. From th
 'secondaValue' is after ':' and will run if the statement is false.
 it can be nested like a 'if else' statement:
 
-void main() {
-  bool firstStatement = true; 
-  bool secondStatement = true;
-  bool thirdStatement = true;
-  
-firstStatement == true 
-? secondStatement == true
-  ? print('2ndTrue')
-  : print('2ndFalse')
-: thirdStatement == true
-  ? print('3ndTrue')
-  : print('3ndFalse');
-}
+void main() {<br />
+  bool firstStatement = true; <br />
+  bool secondStatement = true;<br />
+  bool thirdStatement = true;<br />
+  <br />
+firstStatement == true <br />
+? secondStatement == true<br />
+  ? print('2ndTrue')<br />
+  : print('2ndFalse')<br />
+: thirdStatement == true<br />
+  ? print('3ndTrue')<br />
+  : print('3ndFalse');<br />
+}<br />
 ([Test this at dartpad.dartlang.org](https://dartpad.dartlang.org/)) you can change the true false to play with it.
 
 ### zoom_scaffold.dart ()
