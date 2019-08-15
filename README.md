@@ -1,25 +1,20 @@
 # sosnyp
+Please scroll down to the last part if you are lazy to read these.
 
 ## Problem Statement:
-
 There are many cases of special needs students with physical disabilities, especially children, being neglected during emergency drills. This could lead to major issue in a real emergency when no proper help is abailable. Technology has been and continue to be an advantage to people with disabilities. Hence, employing Apps and other digital tools is very beneficial for the special needs in time of emergency.
 
 ## Objective:
-
 To create a mobile application that provides assistance for special needs students with physical disabilities in time of emergency
 
 ## Accounts created for the app
 
 ### Admin
-
 #### UserName & Password:
-
 admin@gmail.com 123456
 
 ### User
-
 #### UserName & Password:
-
 test@gmail.com 123qwe
 
 ## Getting Started With Flutter
@@ -32,7 +27,11 @@ A few resources to get you started if this is your first Flutter project:
   For help getting started with Flutter, view our
   [online documentation](https://flutter.dev/docs), which offers tutorials,
   samples, guidance on mobile development, and a full API reference.
-  
+### Installing flutter
+[Installing with this guide](https://www.youtube.com/watch?v=lBR1jWW8cMc) or you can find other tutorial to your like.
+I would reccomand you starting a new project, and try out how how to code in dart with flutter, before resuming on the codes.
+You can try to connect to a firebase just to see how it works.
+
 ### [Flutter Packages](https://pub.dev/flutter)
 I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor browser when finding the packages update.
 
@@ -43,8 +42,6 @@ I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor b
 - [Cookbook](https://flutter.dev/docs/cookbook)
 - [Samples](https://github.com/flutter/samples/blob/master/INDEX.md)
 - [Videos](https://www.youtube.com/flutterdev)
-
-## Running / Installing Application
 
 ### Visual Studio Code 
 - Ctrl + F5 (Run app without breakpoints)
@@ -86,17 +83,34 @@ apply plugin: 'com.google.gms.google-services'<br />
 
 ## Dependencies (pubspec.yaml)
 
-- cloud_firestore: 0.12.5+2
-- firebase_auth: 0.11.1+7
-- firebase_storage: 3.0.2
-- intl: 0.15.8
-- rflutter_alert: 1.0.2
-- url_launcher: 5.0.3
-- location: ^2.3.5
-- provider: ^3.0.0
-- permission_handler: 3.1.0
-- cached_network_image: ^0.8.0
-- image_picker: 0.6.0+10
+  cloud_firestore: ^0.12.5+2
+  firebase_auth: ^0.11.1+7
+  firebase_core: ^0.4.0+8
+  firebase_storage: ^3.0.2
+  firebase_messaging: ^5.1.2
+
+  intl: 0.15.8
+  rflutter_alert: 1.0.2
+  url_launcher: 5.0.3
+  location: ^2.3.5
+  provider: ^3.0.0
+  permission_handler: 3.1.0
+  cached_network_image: ^0.8.0
+  image_picker: 0.6.0+10
+  flutter_screenutil: 0.5.3
+  rounded_modal: ^1.0.0
+  auto_size_text: ^2.0.1
+  clippy_flutter: ^1.1.0
+  progress_indicators: ^0.1.4
+  flushbar: ^1.8.0
+  charts_flutter: ^0.6.0
+
+### About dependencies
+- The program is using flushbar, instead of snackbar for more customising
+- Screenutil is used for width and height, but its buggy as different phone have different resolution so there might be overflow pixel.
+- AutoSizeText is used to scale the text to the container.
+- the Statistic page is incomplete but charts_flutter was intended to be used to display graphs of the stats.
+you can search those up online.
 
 ### [Android Developers](https://developer.android.com/)
 I use this site to seach for dependecies on both Build.gradle.
@@ -107,3 +121,38 @@ I use this site to seach for dependecies on both Build.gradle.
 - Ios uses [info.plist](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/AboutInformationPropertyListFiles.html) (ios/runner/info.plist)
 
 refer to the links, google or some other youtube videos on which permissions you need from the device.
+
+
+
+
+
+# NOTE*******
+Sometimes you will encounter code like:    'test == true ? firstValue : secondValue;'   
+It is a ternary operator, instead of using if else this is used instead. From the code above:
+'test == true' is the 'if, else' statement.
+'firstValue' is after the '?' and will run if the statement is true.
+'secondaValue' is after ':' and will run if the statement is false.
+it can be nested like a 'if else' statement:
+
+void main() {
+  bool firstStatement = true; 
+  bool secondStatement = true;
+  bool thirdStatement = true;
+  
+firstStatement == true 
+? secondStatement == true
+  ? print('2ndTrue')
+  : print('2ndFalse')
+: thirdStatement == true
+  ? print('3ndTrue')
+  : print('3ndFalse');
+}
+([Test this at dartpad.dartlang.org](https://dartpad.dartlang.org/)) you can change the true false to play with it.
+
+### zoom_scaffold.dart ()
+[This drawer is being used](https://github.com/pedromassango/flutter_delivery).
+- For it to work, the content in the body of zoom_scaffold.dart is being changed instead of using route when the user press on the drawer. If you want to add a new page goto line 135 - 169 and add in the switch statement. X is the body in Scaffold, Y is the popupmenu.
+- As for what to be displayed in the drawer goto line 290. Lists of which user can access which page are listed there.
+
+
+
