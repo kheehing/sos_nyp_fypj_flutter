@@ -149,10 +149,12 @@ firstStatement == true <br />
 }<br />
 ([Test this at dartpad.dartlang.org](https://dartpad.dartlang.org/)) you can change the true false to play with it.
 
-### zoom_scaffold.dart ()
+### zoom_scaffold.dart (Main body that display whats in the app)
 [This drawer is being used](https://github.com/pedromassango/flutter_delivery).
-- For it to work, the content in the body of zoom_scaffold.dart is being changed instead of using route when the user press on the drawer. If you want to add a new page goto line 135 - 169 and add in the switch statement. X is the body in Scaffold, Y is the popupmenu.
+- For it to work, the content in the body of zoom_scaffold.dart is being changed instead of using route when the user select the menu from the drawer. If you want to add a new page goto line 135 - 169 and add in the switch statement. X is the body in Scaffold, Y is the popupmenu.
 - As for what to be displayed in the drawer goto line 290. Lists of which user can access which page are listed there.
 
+### How the App Works
+[click here for image](https://imgur.com/abF2YTW)
 
 
