@@ -127,12 +127,12 @@ refer to the links, google or some other youtube videos on which permissions you
 
 
 # NOTE*******
-Sometimes you will encounter code like:    'test == true ? firstValue : secondValue;'   
-It is a ternary operator, instead of using if else this is used instead. From the code above:
-'test == true' is the 'if, else' statement.
-'firstValue' is after the '?' and will run if the statement is true.
-'secondaValue' is after ':' and will run if the statement is false.
-it can be nested like a 'if else' statement:
+Sometimes you will encounter code like:    'test == true ? firstValue : secondValue;'   <br />
+It is a ternary operator, instead of using if else this is used instead. From the code above:<br />
+- 'test == true' is the 'if, else' statement.
+- 'firstValue' is after the '?' and will run if the statement is true.
+- 'secondaValue' is after ':' and will run if the statement is false.
+it can be nested like a 'if else' statement:<br />
 
 void main() {<br />
   bool firstStatement = true; <br />
