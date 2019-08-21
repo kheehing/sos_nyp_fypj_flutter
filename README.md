@@ -147,7 +147,7 @@ firstStatement == true <br />
   ? print('3ndTrue')<br />
   : print('3ndFalse');<br />
 }<br />
-([Test this at dartpad.dartlang.org](https://dartpad.dartlang.org/)) you can change the true false to play with it.
+([Test this at dartpad.dartlang.org](https://dartpad.dartlang.org/)) you can copy the code and change the true false to see how it works.
 
 ### zoom_scaffold.dart (Main body that display whats in the app)
 [This drawer is being used](https://github.com/pedromassango/flutter_delivery).
@@ -157,6 +157,11 @@ firstStatement == true <br />
 ### How the App Works
 [click here for image](https://imgur.com/abF2YTW)
 
-#### google account
+### Branches
+master is main source of code.
+firebase is the firestore function code.
+the others doesn't really matters.
+
+### google account
 sosnypfypj2019@gmail.com
 Nypfypj123
