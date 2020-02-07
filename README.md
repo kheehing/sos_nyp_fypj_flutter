@@ -1,13 +1,8 @@
-# sosnyp
-Please scroll down to the last part if you are lazy to read these.
+# SOSNYP
 
-## Problem Statement:
-There are many cases of special needs students with physical disabilities, especially children, being neglected during emergency drills. This could lead to major issue in a real emergency when no proper help is abailable. Technology has been and continue to be an advantage to people with disabilities. Hence, employing Apps and other digital tools is very beneficial for the special needs in time of emergency.
+Did This Project for my year 3 FYPJ. There are many cases of special needs students with physical disabilities, especially children, being neglected during emergency drills. This could lead to major issue in a real emergency when no proper help is abailable. Technology has been and continue to be an advantage to people with disabilities. Hence, employing Apps and other digital tools is very beneficial for the special needs in time of emergency.
 
-## Objective:
-To create a mobile application that provides assistance for special needs students with physical disabilities in time of emergency
-
-## Accounts created for the app
+## Getting Started (Accounts for the application)
 
 ### Admin
 #### UserName & Password:
@@ -17,7 +12,11 @@ admin@gmail.com 123456
 #### UserName & Password:
 test@gmail.com 123qwe
 
-## Getting Started With Flutter
+### Prerequisites
+
+you will need to download flutter. The IDE i'm using is VisualStudio Code.
+
+### Installing
 
 This project is a starting point for a Flutter application.
 A few resources to get you started if this is your first Flutter project:
@@ -43,43 +42,14 @@ I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor b
 - [Samples](https://github.com/flutter/samples/blob/master/INDEX.md)
 - [Videos](https://www.youtube.com/flutterdev)
 
-### Visual Studio Code 
-- Ctrl + F5 (Run app without breakpoints)
+## Running the app
 
-### Android Studio 
-- the green play button on the top right.
+Ctrl + F5
 
-### Command Prompt (CMD) 
-- Enter cd <app dir> (Replace <app dir> with your application’s directory.)
-- Run 'flutter run' (Run the app)
-  
-#### Installing on ur devices
-- Run 'flutter build appbundle' (Build an app bundle)
-- Run 'flutter build apk --split-per-abi' (build 2 APK files)
-- Run 'flutterr install' (Install an APK on a device)
-
-## Build.gradle (android)
-
-dependencies {<br />
-classpath 'com.android.tools.build:gradle:3.2.1'<br />
-classpath 'com.google.gms:google-services:4.2.0'<br />
-}<br />
-
-- Sometimes, when adding dependencies on pubspec.yaml the dependencies have to be changed to a different version. e.g. (classpath 'com.android.tools.build:gradle:3.2.1' => classpath 'com.android.tools.build:gradle:3.3.0') this might cause some error
-
-## Build.gradle (android/app)
-
-...<br />
-dependencies {<br />
-testImplementation 'junit:junit:4.12'<br />
-implementation 'com.google.firebase:firebase-auth:18.0.0'<br />
-implementation "com.google.firebase:firebase-core:17.0.0"<br />
-}<br />
-apply plugin: 'com.google.gms.google-services'<br />
-
-- Under 'defaultConfig' multiDexEnabled has to be enabled or the app will crash (idk why)
-- At the end need to apply plugin: 'com.google.gms.google-services'
-- more or less this page need not have to change anything other than adding some dependencies.
+or in CMD type 
+```
+flutter run
+```
 
 ## Dependencies (pubspec.yaml)
 
@@ -105,63 +75,58 @@ apply plugin: 'com.google.gms.google-services'<br />
   flushbar: ^1.8.0
   charts_flutter: ^0.6.0
 
-### About dependencies
-- The program is using flushbar, instead of snackbar for more customising
-- Screenutil is used for width and height, but its buggy as different phone have different resolution so there might be overflow pixel.
-- AutoSizeText is used to scale the text to the container.
-- the Statistic page is incomplete but charts_flutter was intended to be used to display graphs of the stats.
-you can search those up online.
+## Authors
+
+Me
+
+## Noted
+
+### [Flutter Documentation](https://flutter.dev/docs)
+- [Get Started](https://flutter.dev/docs/get-started/install) (installing)
+- [Widgets Catalog](https://flutter.dev/docs/development/ui/widgets)
+- [API Docs](https://api.flutter.dev/)
+- [Cookbook](https://flutter.dev/docs/cookbook)
+- [Samples](https://github.com/flutter/samples/blob/master/INDEX.md)
+- [Videos](https://www.youtube.com/flutterdev)r
+
+### [Flutter Packages](https://pub.dev/flutter)
+I couldn't access via chrome when using school's Internet/Wifi so i'm usig Tor browser when finding the packages update.
+
+### Build.gradle (android)
+
+dependencies {<br />
+classpath 'com.android.tools.build:gradle:3.2.1'<br />
+classpath 'com.google.gms:google-services:4.2.0'<br />
+}<br />
+
+- Sometimes, when adding dependencies on pubspec.yaml the dependencies have to be changed to a different version. e.g. (classpath 'com.android.tools.build:gradle:3.2.1' => classpath 'com.android.tools.build:gradle:3.3.0') this might cause some error
+
+### Build.gradle (android/app)
+
+...<br />
+dependencies {<br />
+testImplementation 'junit:junit:4.12'<br />
+implementation 'com.google.firebase:firebase-auth:18.0.0'<br />
+implementation "com.google.firebase:firebase-core:17.0.0"<br />
+}<br />
+apply plugin: 'com.google.gms.google-services'<br />
+
+- Under 'defaultConfig' multiDexEnabled has to be enabled or the app will crash (idk why)
+- At the end need to apply plugin: 'com.google.gms.google-services'
+- more or less this page need not have to change anything other than adding some dependencies.
 
 ### [Android Developers](https://developer.android.com/)
 I use this site to seach for dependecies on both Build.gradle.
 
-## Permissions (AndroidManifest.xml / info.plist)
+### Permissions (AndroidManifest.xml / info.plist)
 
 - Android uses [AndroidManifest.xml](https://developer.android.com/guide/topics/manifest/manifest-intro) (android/app/src/main/AndroidManifest.xml)
 - Ios uses [info.plist](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/AboutInformationPropertyListFiles.html) (ios/runner/info.plist)
 
-refer to the links, google or some other youtube videos on which permissions you need from the device.
 
-
-
-
-
-# NOTE*******
-Sometimes you will encounter code like:    'test == true ? firstValue : secondValue;'   <br />
-It is a ternary operator, instead of using if else this is used instead. From the code above:<br />
-- 'test == true' is the 'if, else' statement.
-- 'firstValue' is after the '?' and will run if the statement is true.
-- 'secondaValue' is after ':' and will run if the statement is false.
-it can be nested like a 'if else' statement:<br />
-
-void main() {<br />
-  bool firstStatement = true; <br />
-  bool secondStatement = true;<br />
-  bool thirdStatement = true;<br />
-  <br />
-firstStatement == true <br />
-? secondStatement == true<br />
-  ? print('2ndTrue')<br />
-  : print('2ndFalse')<br />
-: thirdStatement == true<br />
-  ? print('3ndTrue')<br />
-  : print('3ndFalse');<br />
-}<br />
-([Test this at dartpad.dartlang.org](https://dartpad.dartlang.org/)) you can copy the code and change the true false to see how it works.
-
-### zoom_scaffold.dart (Main body that display whats in the app)
-[This drawer is being used](https://github.com/pedromassango/flutter_delivery).
-- For it to work, the content in the body of zoom_scaffold.dart is being changed instead of using route when the user select the menu from the drawer. If you want to add a new page goto line 135 - 169 and add in the switch statement. X is the body in Scaffold, Y is the popupmenu.
-- As for what to be displayed in the drawer goto line 290. Lists of which user can access which page are listed there.
-
-### How the App Works
+## How the App Works
 [click here for image](https://imgur.com/abF2YTW)
 
-### Branches
-master is main source of code.
-firebase is the firestore function code.
-the others doesn't really matters.
-
-### google account
+## google account
 sosnypfypj2019@gmail.com
 Nypfypj123
