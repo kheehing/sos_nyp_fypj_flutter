@@ -6,11 +6,11 @@ Did This Project for my year 3 FYPJ. There are many cases of special needs stude
 
 ### Admin
 #### UserName & Password:
-admin@gmail.com 123456
+admin@mail.com 123456
 
 ### User
 #### UserName & Password:
-test@gmail.com 123qwe
+-
 
 ### Prerequisites
 
