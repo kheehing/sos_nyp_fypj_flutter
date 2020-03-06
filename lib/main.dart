@@ -13,6 +13,7 @@ import 'package:sosnyp/pages/manage-user.dart';
 import 'package:sosnyp/pages/add-user.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: _handleWindowDisplay(),

@@ -63,12 +63,6 @@ flutter:
     - assets/Images/NYP_logo.png
 
   # To add fonts to your application:
-  fonts:
-    - family: Black_label
-      fonts:
-        - asset: assets\Font\black_label\BlackLabel-Light.ttf
-    - family: Code
-      fonts:
-        - asset: assets\Font\code\CODE Bold.otf
+  # fonts:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

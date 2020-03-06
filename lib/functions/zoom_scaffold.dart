@@ -325,7 +325,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                   ),
                   Expanded(
                       child: AutoSizeText(
-                    currentUserName == null ? '' : currentUserName,
+                    currentUserName == null ? 'h' : currentUserName,
                     maxLines: 2,
                     style: TextStyle(
                       fontSize: ScreenUtil.getInstance().setSp(80),

@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:location/location.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:location/location.dart' as loca;
+import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:sosnyp/functions/homepage-function.dart';
 import 'package:sosnyp/functions/hompage-campus-repo.dart';
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage>
   Repository repo = Repository();
   double progressBarNum;
   double distance = 0;
-  PermissionStatus _status;
+  // PermissionStatus _status;
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
@@ -533,23 +533,23 @@ class _HomePageState extends State<HomePage>
   }
 
   helpButtonOnClick(context) async {
-    void _onStatusRequest(Map<PermissionGroup, PermissionStatus> statuses) {
-      final status = statuses[PermissionGroup.locationWhenInUse];
-      _updateStatus(status);
-      if (status != PermissionStatus.granted) {
-        PermissionHandler().openAppSettings();
-      }
-    }
+    // void _onStatusRequest(Map<PermissionGroup, PermissionStatus> statuses) {
+    //   final status = statuses[PermissionGroup.locationWhenInUse];
+    //   _updateStatus(status);
+    //   if (status != PermissionStatus.granted) {
+    //     PermissionHandler().openAppSettings();
+    //   }
+    // }
 
-    PermissionHandler().requestPermissions(
-        [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
-    var currentLocation = LocationData.fromMap(Map<String, double>());
-    var location = new Location();
-    try {
-      currentLocation = await location.getLocation();
-    } catch (e) {
-      currentLocation = null;
-    }
+    // PermissionHandler().requestPermissions(
+    //     [PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
+    // var currentLocation = LocationData.fromMap(Map<String, double>());
+    // var location = new Location();
+    // try {
+    //   currentLocation = await location.getLocation();
+    // } catch (e) {
+    //   currentLocation = null;
+    // }
     var data = await Firestore.instance
         .collection('help.current')
         .document(currentUser)
@@ -576,8 +576,8 @@ class _HomePageState extends State<HomePage>
           'block': '',
           'floor': '',
         },
-        'latitude': currentLocation.latitude.toString(),
-        'longitude': currentLocation.longitude.toString(),
+        // 'latitude': currentLocation.latitude.toString(),
+        // 'longitude': currentLocation.longitude.toString(),
         'status': 'request',
         'time': DateTime.now(),
         'type': 'help',
@@ -796,9 +796,9 @@ class _HomePageState extends State<HomePage>
     setState(() => _selectedFloor = value);
   }
 
-  void _updateStatus(PermissionStatus status) {
-    if (status != _status) {
-      _status = status;
-    }
-  }
+  // void _updateStatus(PermissionStatus status) {
+  //   if (status != _status) {
+  //     _status = status;
+  //   }
+  // }
 }

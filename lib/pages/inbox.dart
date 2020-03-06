@@ -155,6 +155,7 @@ class _InboxPageState extends State<InboxPage> {
             content: Container(
               child: Column(
                 children: <Widget>[
+                  Text("'date'"),
                   Text(
                       DateFormat("hh:mm:ss a")
                           .format(document['time'].toDate()),
@@ -230,22 +231,22 @@ class _InboxPageState extends State<InboxPage> {
                     fontFamily: 'black_label',
                     fontWeight: FontWeight.w900),
               )),
-              Container(
-                width: ScreenUtil.getInstance().setWidth(350),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                        child: AutoSizeText(
-                      new DateFormat("dd MMM yyyy hh:mm:ss")
-                          .format(document['time'].toDate()),
-                      maxLines: 1,
-                      style: TextStyle(
-                        wordSpacing: ScreenUtil.getInstance().setSp(1),
-                      ),
-                    )),
-                  ],
-                ),
-              ),
+              // Container(
+              //   width: ScreenUtil.getInstance().setWidth(350),
+              //   child: Row(
+              //     children: <Widget>[
+              //       Expanded(
+              //           child: AutoSizeText(
+              //         new DateFormat("dd MMM yyyy hh:mm:ss")
+              //             .format(document['time'].toDate()),
+              //         maxLines: 1,
+              //         style: TextStyle(
+              //           wordSpacing: ScreenUtil.getInstance().setSp(1),
+              //         ),
+              //       )),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
           onTap: () {

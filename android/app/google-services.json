@@ -1,42 +1,35 @@
 {
   "project_info": {
-    "project_number": "719000176076",
-    "firebase_url": "https://sosnypfypj2019-6a6fd.firebaseio.com",
-    "project_id": "sosnypfypj2019-6a6fd",
-    "storage_bucket": "sosnypfypj2019-6a6fd.appspot.com"
+    "project_number": "729116916823",
+    "firebase_url": "https://nyp-fypj-sosapp.firebaseio.com",
+    "project_id": "nyp-fypj-sosapp",
+    "storage_bucket": "nyp-fypj-sosapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:719000176076:android:b2169252d959ac27",
+        "mobilesdk_app_id": "1:729116916823:android:320da82947544a4c257712",
         "android_client_info": {
           "package_name": "com.example.sosnyp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "719000176076-94ejkg0l5e55j451amujjfljvgv0r7ea.apps.googleusercontent.com",
+          "client_id": "729116916823-e2a5v649hgse48fllpcuu1ck803tdlcp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDiliV5izXpe7TEWYf-zaOZ88dLD6Cv0Fo"
+          "current_key": "AIzaSyB-UxVJxyjbGElTZ2_6c5k2dqTACxsnvT0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "719000176076-94ejkg0l5e55j451amujjfljvgv0r7ea.apps.googleusercontent.com",
+              "client_id": "729116916823-e2a5v649hgse48fllpcuu1ck803tdlcp.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "719000176076-g3i3vcvlkg8g297nk0lse2pbvujq9j52.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.nypsit.sosnypfypj2019"
-              }
             }
           ]
         }
