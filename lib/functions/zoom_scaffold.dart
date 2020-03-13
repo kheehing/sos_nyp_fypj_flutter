@@ -145,7 +145,7 @@ class ZoomScaffoldMenuControllerState
             ? null
             : ProfilePage().popupMenu(rootContext);
         break;
-      case 'DashBoard':
+      case 'Logs':
         x = DashBoardPage();
         y = null;
         break;
@@ -294,7 +294,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
     ];
     final List<MenuItem> staffOptions = [
       MenuItem(Icons.inbox, 'Inbox'),
-      MenuItem(Icons.dashboard, 'DashBoard'),
+      MenuItem(Icons.history, 'Logs'),
     ];
     final List<MenuItem> adminOptions = [
       MenuItem(Icons.adb, 'Test'),

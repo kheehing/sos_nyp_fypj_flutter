@@ -148,6 +148,9 @@ class _InboxOnClickPageState extends State<InboxOnClickPage> {
                   maxLines: 1,
                   style: TextStyle(fontSize: 24),
                 )),
+            widget.document.data["helper"]["otw"] == ""
+                ? Container()
+                : Text("Staff OTW: ${widget.document.data["helper"]["otw"]}"),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
