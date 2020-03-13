@@ -131,26 +131,39 @@ class _InboxOnClickPageState extends State<InboxOnClickPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Text(
-                      "Date: ${DateFormat("dd MMM yyyy").format(widget.datetime)}"),
+                    "Date: ${DateFormat("dd MMM yyyy").format(widget.datetime)}",
+                    style: TextStyle(fontSize: 18),
+                  ),
                   Text(
-                      "Time: ${DateFormat("hh:mm:ss a").format(widget.datetime)}"),
+                    "Time: ${DateFormat("hh:mm:ss a").format(widget.datetime)}",
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ]),
+            SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                widget.document.data["details"]["block"] == ""
+                    ? Text("Block:")
+                    : Text(
+                        "Block: ${widget.document.data["details"]["block"]}",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                widget.document.data["details"]["floor"] == ""
+                    ? Text("Floor:")
+                    : Text(
+                        "Floor: ${widget.document.data["details"]["floor"]}",
+                        style: TextStyle(fontSize: 18),
+                      ),
+              ],
+            ),
             SizedBox(height: 10),
-            RaisedButton(
-                color: tCelestialBlue,
-                onPressed: () => {
-                      updateHelper().then((value) {
-                        Navigator.of(context, rootNavigator: true).pop();
-                      })
-                    },
-                child: AutoSizeText(
-                  'I\'m on the way',
-                  maxLines: 1,
-                  style: TextStyle(fontSize: 24),
-                )),
             widget.document.data["helper"]["otw"] == ""
                 ? Container()
-                : Text("Staff OTW: ${widget.document.data["helper"]["otw"]}"),
+                : Text(
+                    "Staff OTW: ${widget.document.data["helper"]["otw"]}",
+                    style: TextStyle(fontSize: 18),
+                  ),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -159,11 +172,7 @@ class _InboxOnClickPageState extends State<InboxOnClickPage> {
                       onPressed: () => _openMap().whenComplete(() {
                             Navigator.of(context, rootNavigator: true).pop();
                           }),
-                      child: AutoSizeText(
-                        'Map',
-                        maxLines: 1,
-                        style: TextStyle(fontSize: 24),
-                      )),
+                      child: Icon(Icons.map)),
                   RaisedButton(
                       color: Colors.green,
                       onPressed: () => {attended()},
@@ -172,6 +181,14 @@ class _InboxOnClickPageState extends State<InboxOnClickPage> {
                         maxLines: 1,
                         style: TextStyle(fontSize: 24),
                       )),
+                  RaisedButton(
+                      color: tCelestialBlue,
+                      onPressed: () => {
+                            updateHelper().then((value) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                            })
+                          },
+                      child: Icon(Icons.directions_run)),
                 ]),
           ],
         ),

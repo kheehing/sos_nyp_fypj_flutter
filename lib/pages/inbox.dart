@@ -84,6 +84,9 @@ class _InboxPageState extends State<InboxPage> {
                     document.data["helper"]["otw"] == ""
                         ? Container()
                         : Icon(Icons.directions_run),
+                    document.data["details"]["block"] == ""
+                        ? Container()
+                        : Icon(Icons.assignment_turned_in),
                     AutoSizeText(
                         new DateFormat("hh:mm:ss a")
                             .format(document['time'].toDate()),
