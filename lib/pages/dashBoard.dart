@@ -14,6 +14,14 @@ import 'package:url_launcher/url_launcher.dart';
 class DashBoardPage extends StatefulWidget {
   @override
   _DashBoardPageState createState() => new _DashBoardPageState();
+
+  popupMenu(context) {
+    return IconButton(
+        icon: Icon(Icons.refresh),
+        onPressed: () {
+          _DashBoardPageState()._getStatistics();
+        });
+  }
 }
 
 class _DashBoardPageState extends State<DashBoardPage>
@@ -84,8 +92,11 @@ class _DashBoardPageState extends State<DashBoardPage>
                       color: Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(
                           ScreenUtil.getInstance().setSp(10))),
-                  width: ScreenUtil.getInstance().setWidth(340),
-                  child: Column(children: <Widget>[
+                  width: 170,
+                  height: 100,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
                     Text(
                       'Current',
                       textAlign: TextAlign.center,
@@ -95,15 +106,28 @@ class _DashBoardPageState extends State<DashBoardPage>
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    Text(
-                      numCurrent == null ? '-' : numCurrent.toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.grey.shade800,
-                        fontSize: ScreenUtil.getInstance().setSp(32),
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
+                    StreamBuilder(
+                        stream: Firestore.instance
+                            .collection('help.current')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                                  ConnectionState.none ||
+                              snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else
+                            return Text(
+                                numCurrent == null
+                                    ? '-'
+                                    : '${snapshot.data.documents.length}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.grey.shade800,
+                                  fontSize:  50,
+                                  fontWeight: FontWeight.w900,
+                                ));
+                        }),
                   ]),
                 ),
                 Spacer(),
@@ -115,8 +139,11 @@ class _DashBoardPageState extends State<DashBoardPage>
                       color: Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(
                           ScreenUtil.getInstance().setSp(10))),
-                  width: ScreenUtil.getInstance().setWidth(340),
-                  child: Column(children: <Widget>[
+                  width: 170,
+                  height: 100,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
                     Text(
                       'Attended',
                       textAlign: TextAlign.center,
@@ -126,15 +153,28 @@ class _DashBoardPageState extends State<DashBoardPage>
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    Text(
-                      numAttended == null ? '-' : numAttended.toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.grey.shade800,
-                        fontSize: ScreenUtil.getInstance().setSp(32),
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
+                    StreamBuilder(
+                        stream: Firestore.instance
+                            .collection('help.attended')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                                  ConnectionState.none ||
+                              snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else
+                            return Text(
+                                numCurrent == null
+                                    ? '-'
+                                    : '${snapshot.data.documents.length}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.grey.shade800,
+                                  fontSize:  50,
+                                  fontWeight: FontWeight.w900,
+                                ));
+                        }),
                   ]),
                 ),
                 Container(),

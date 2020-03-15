@@ -533,16 +533,20 @@ class _HomePageState extends State<HomePage>
   }
 
   helpButtonOnClick(context) async {
-    void _onStatusRequest(Map<PermissionStatus.PermissionGroup, PermissionStatus.PermissionStatus> statuses) {
-      final status = statuses[PermissionStatus.PermissionGroup.locationWhenInUse];
+    void _onStatusRequest(
+        Map<PermissionStatus.PermissionGroup, PermissionStatus.PermissionStatus>
+            statuses) {
+      final status =
+          statuses[PermissionStatus.PermissionGroup.locationWhenInUse];
       _updateStatus(status);
       if (status != PermissionStatus.PermissionStatus.granted) {
         PermissionStatus.PermissionHandler().openAppSettings();
       }
     }
 
-    PermissionStatus.PermissionHandler().requestPermissions(
-        [PermissionStatus.PermissionGroup.locationWhenInUse]).then(_onStatusRequest);
+    PermissionStatus.PermissionHandler().requestPermissions([
+      PermissionStatus.PermissionGroup.locationWhenInUse
+    ]).then(_onStatusRequest);
     var currentLocation = LocationData.fromMap(Map<String, double>());
     var location = new Location();
     try {

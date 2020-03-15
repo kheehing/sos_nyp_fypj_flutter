@@ -101,7 +101,7 @@ class _InboxOnClickPageState extends State<InboxOnClickPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             widget.imageUrl == null
                 ? Image(
                     height: 200,
@@ -164,6 +164,20 @@ class _InboxOnClickPageState extends State<InboxOnClickPage> {
                     "Staff OTW: ${widget.document.data["helper"]["otw"]}",
                     style: TextStyle(fontSize: 18),
                   ),
+            SizedBox(height: 5),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                      width: 90,
+                      child: Center(child: Text("Map"))),
+                  Container(
+                      width: 130,
+                      child: Center(child: Text("Assisted"))),
+                  Container(
+                      width: 90,
+                      child: Center(child: Text("On The Way"))),
+                ]),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
